@@ -13,6 +13,7 @@
   </template>
   
   <script>
+
   export default {
     name: 'NavigationBar',
     // 여기에 Vue 데이터, 계산된 속성, 메소드 등을 추가할 수 있습니다.

@@ -1,135 +1,142 @@
 <template>
-  <div class="main-container">
-    <!-- 상단 앱바 -->
-    <div class="header-bar">
-      <div class="logo">Reforme</div>
-      <div class="search-icon"></div>
-    </div>
+  <div v-if="step == 0" class="main-container">
+    <!-- Navigation Bar -->
+    <navigator></navigator>
 
-    <!-- 게시글 목록 -->
+    <!-- Post List -->
     <div class="post-list">
       <div v-for="post in posts" :key="post.id" class="post-item">
         <div class="post-image"></div>
         <div class="post-info">
           <h3>{{ post.title }}</h3>
-          <p>{{ post.timestamp }}</p>
-          <span>{{ post.comments }} comments</span>
+          <div class="post-details">
+            <p>{{ post.timestamp }} | <span>{{ post.type }}</span></p>
+            <span>{{ post.comments }} 댓글</span>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 하단 앱바 -->
+    <!-- Footer Bar with Buttons -->
     <div class="footer-bar">
-      <div>리포미</div>
-      <div>리포유</div>
+      <div class="footer-button reform-me">리포미</div>
+      <div class="footer-button reform-you">리포유</div>
     </div>
 
-    <!-- 액션 버튼 -->
+    <!-- Floating Action Buttons -->
     <div class="action-buttons">
-      <button class="create-button">+</button>
-      <button class="chat-button">🗨️</button>
+      <button @click="step = 1" class="create-button">+</button>
+      <button @click="step = 2" class="chat-button">🗨️</button>
     </div>
+  </div>
+
+  <div v-if="step == 1">
+    <writePost @back="step = 0"></writePost>
   </div>
 </template>
 
 <script>
+import navigator from './components/navigator.vue';
+import writePost from './components/writePost.vue';
+
 export default {
   name: 'App',
+  components: {
+    navigator,
+    writePost,
+  },
   data() {
     return {
+      step: 0,
       posts: [
-        { id: 1, title: '제목 상의', timestamp: '08/23/16:49', comments: 0 },
-        { id: 2, title: '제목 하의', timestamp: '08/23/16:49', comments: 0 },
-        // more posts
-      ]
-    }
-  }
-}
+        { id: 1, title: '제목', timestamp: '08/23/16:49', type: '상의', comments: 0 },
+        { id: 2, title: '제목', timestamp: '08/23/16:49', type: '하의', comments: 0 },
+      ],
+    };
+  },
+};
 </script>
 
 <style scoped>
 .main-container {
-  position: absolute;
   width: 430px;
   height: 932px;
-  background: #FFFFFF;
+  position: relative;
+  background: #ffffff;
 }
 
-.header-bar {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-  padding: 9px 10px;
-  position: absolute;
-  width: 430px;
+.navigator {
+  width: 100%;
   height: 89px;
-  background: #2E482D;
-}
-.logo {
-  flex: 1;
-  color: white;
-  font-size: 24px;
-}
-.search-icon {
- 
-  width: 30px;
-  height: 30px;
+  background: #2e482d;
 }
 
 .post-list {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  position: absolute;
-  top: 87px;
-  width: 430px;
-  height: 720px;
+  width: 100%;
+  overflow-y: auto;
+  margin-top: 89px;
+  height: calc(100% - 174px);
 }
+
 .post-item {
   display: flex;
   align-items: center;
-  gap: 10px;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
 }
+
 .post-image {
-  background: #B1B1B1;
   width: 75px;
   height: 75px;
+  background: #b1b1b1;
   border-radius: 10px;
-}
-.post-info {
-  display: flex;
-  flex-direction: column;
+  margin-right: 10px;
 }
 
 .footer-bar {
   display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 4px 21px;
-  position: absolute;
-  width: 430px;
+  width: 100%;
   height: 85px;
-  top: 847px;
-  background: #2E482D;
+  background-color: #2e482d;
+}
+
+.footer-button {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 18px;
+  border: none;
+  outline: none;
+}
+
+.reform-me {
+  background-color: #4c724c;
+}
+
+.reform-you {
+  background-color: #2e482d;
 }
 
 .action-buttons {
+  position: absolute;
+  bottom: 100px;
+  right: 20px;
   display: flex;
-  flex-direction: row;
-  align-items: flex-start;
-  gap: 10px;
-  position:absolute;
-  left: 350px;
-  top: 689px;
+  flex-direction: column;
+  align-items: center;
 }
-.create-button, .chat-button {
+
+.create-button,
+.chat-button {
   width: 70px;
   height: 70px;
-  background: #2E482D;
   border-radius: 50%;
+  background: #2e482d;
   color: white;
   font-size: 36px;
   border: none;
+  margin-bottom: 10px;
 }
 </style>
