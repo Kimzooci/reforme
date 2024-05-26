@@ -19,7 +19,10 @@
     <textarea placeholder="내용을 입력해주세요" v-model="content" class="input-content"></textarea>
 
     <div class="image-upload-buttons">
-      <button v-for="n in 5" :key="n" class="image-upload-button" @click="triggerFileUpload">+</button>
+      <button v-for="(image, index) in images" :key="index" class="image-upload-button" @click="triggerFileUpload(index)">
+        <div v-if="image" class="image-preview" :style="{ backgroundImage: 'url(' + image + ')' }"></div>
+        <div v-else>+</div>
+      </button>
       <input type="file" id="file-input" ref="fileInput" style="display: none;" multiple @change="handleFiles"/>
     </div>
 
@@ -43,18 +46,29 @@ export default {
       selectedCategory: null,
       title: '',
       content: '',
+      images: [null, null, null, null, null], // 이미지 배열 초기화
     };
   },
   methods: {
     selectCategory(id) {
       this.selectedCategory = id;
     },
-    triggerFileUpload() {
+    triggerFileUpload(index) {
+      this.uploadIndex = index; // 업로드할 버튼 인덱스를 저장
       this.$refs.fileInput.click();
     },
     handleFiles(event) {
       const files = event.target.files;
-      console.log(files);
+      if (files.length > 0) {
+        this.readImage(files[0], this.uploadIndex);
+      }
+    },
+    readImage(file, index) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.images[index] = e.target.result; // Vue 3에서는 직접 배열 요소 수정
+      };
+      reader.readAsDataURL(file);
     },
   },
 };
@@ -124,7 +138,6 @@ export default {
   border-radius: 10px 0px 0px 0px;
   border: 1px 0px 0px 0px;
   opacity: 0px;
-
   resize: none;
 }
 
@@ -165,5 +178,14 @@ export default {
   border-radius: 10px;
   background-color: #4a7648;
   cursor: pointer;
+  position: relative;
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
 }
 </style>
