@@ -72,16 +72,17 @@ export default {
     },
     submitPost() {
       const newPost = {
+        id: Date.now(),
         title: this.title,
         timestamp: new Date().toLocaleString(),
-        type: this.categories.find(category => category.id === this.selectedCategory)?.name,
+        type: this.selectedCategory,
         comments: 0,
-        image: this.images.find(image => image !== null)
+        image: this.images[0] // 첫 번째 이미지를 사용
       };
       this.$emit('submit-post', newPost);
-      this.$emit('back'); // 목록 화면으로 돌아가기
+      this.$emit('back'); // 추가된 부분: 확인 버튼 클릭 시 app.vue로 돌아가기
     }
-  },
+  }
 };
 </script>
 

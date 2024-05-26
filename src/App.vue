@@ -5,7 +5,7 @@
 
     <!-- Post List -->
     <div class="post-list">
-      <div v-for="post in posts" :key="post.id" class="post-item">
+      <div v-for="post in posts" :key="post.id" class="post-item" @click="viewPost(post)">
         <div class="post-image" :style="{ backgroundImage: 'url(' + post.image + ')' }"></div>
         <div class="post-info">
           <h3>{{ post.title }}</h3>
@@ -19,8 +19,14 @@
 
     <!-- Footer Bar with Buttons -->
     <div class="footer-bar">
-      <div class="footer-button reform-me">리포미</div>
-      <div class="footer-button reform-you">리포유</div>
+      <div 
+        class="footer-button" 
+        :class="{ 'active': activeButton === 'reformMe' }" 
+        @click="setActiveButton('reformMe')">리포미</div>
+      <div 
+        class="footer-button" 
+        :class="{ 'active': activeButton === 'reformYou' }" 
+        @click="setActiveButton('reformYou')">리포유</div>
     </div>
 
     <!-- Floating Action Buttons -->
@@ -34,33 +40,45 @@
     <writePost @back="step = 0" @submit-post="addPost"></writePost>
   </div>
 
-  <!-- <div v-if="step == 2">
-    <chatbotVue @back="step = 0"></chatbotVue>
-  </div> -->
+  <div v-if="step == 3">
+    <postDetails :post="selectedPost" @back="step = 0"></postDetails>
+  </div>
 </template>
 
 <script>
 import navigator from './components/navigator.vue';
 import writePost from './components/writePost.vue';
+import postDetails from './components/postDetails.vue';
 
 export default {
   name: 'App',
   components: {
     navigator,
     writePost,
+    postDetails,
   },
   data() {
     return {
       step: 0,
       posts: [
-        { id: 1, title: '제목', timestamp: '08/23/16:49', type: '상의', comments: 0 },
-        { id: 2, title: '제목', timestamp: '08/23/16:49', type: '하의', comments: 0 },
+        { id: 1, title: '제목', timestamp: '08/23/16:49', type: '상의', comments: 0, image: null },
+        { id: 2, title: '제목', timestamp: '08/23/16:49', type: '하의', comments: 0, image: null },
       ],
+      selectedPost: null,
+      activeButton: 'reformMe', // 기본값 설정
     };
   },
   methods: {
     addPost(post) {
       this.posts.push(post);
+      this.step = 0; // 게시글 작성 후 메인 화면으로 이동
+    },
+    viewPost(post) {
+      this.selectedPost = post;
+      this.step = 3; // 게시글 상세보기 화면으로 이동
+    },
+    setActiveButton(button) {
+      this.activeButton = button;
     }
   }
 };
@@ -92,6 +110,7 @@ export default {
   align-items: center;
   padding: 10px;
   border-bottom: 1px solid #ccc;
+  cursor: pointer;
 }
 
 .post-image {
@@ -118,6 +137,15 @@ export default {
   font-size: 18px;
   border: none;
   outline: none;
+  cursor: pointer;
+}
+
+.footer-button.active {
+  background-color: #2e482d;
+}
+
+.footer-button:not(.active) {
+  background-color: #4c724c;
 }
 
 .reform-me {
