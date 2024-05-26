@@ -61,8 +61,8 @@ export default {
     return {
       step: 0,
       posts: [
-        { id: 1, title: '제목', timestamp: '08/23/16:49', type: '상의', comments: 0, image: null },
-        { id: 2, title: '제목', timestamp: '08/23/16:49', type: '하의', comments: 0, image: null },
+        { id: 1, title: '디자이너 구해요!', timestamp: '08/23/16:49', type: '하의', comments: 0, image: null },
+        { id: 2, title: '상의 리폼 해주실분ㅋ', timestamp: '08/23/16:49', type: '상의', comments: 0, image: null },
       ],
       selectedPost: null,
       activeButton: 'reformMe', // 기본값 설정
