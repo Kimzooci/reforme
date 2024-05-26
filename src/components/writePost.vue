@@ -27,7 +27,7 @@
     </div>
 
     <div class="action-buttons">
-      <button class="submit-button">확인</button>
+      <button class="submit-button" @click="submitPost">확인</button>
     </div>
   </div>
 </template>
@@ -70,6 +70,17 @@ export default {
       };
       reader.readAsDataURL(file);
     },
+    submitPost() {
+      const newPost = {
+        title: this.title,
+        timestamp: new Date().toLocaleString(),
+        type: this.categories.find(category => category.id === this.selectedCategory)?.name,
+        comments: 0,
+        image: this.images.find(image => image !== null)
+      };
+      this.$emit('submit-post', newPost);
+      this.$emit('back'); // 목록 화면으로 돌아가기
+    }
   },
 };
 </script>

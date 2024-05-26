@@ -6,7 +6,7 @@
     <!-- Post List -->
     <div class="post-list">
       <div v-for="post in posts" :key="post.id" class="post-item">
-        <div class="post-image"></div>
+        <div class="post-image" :style="{ backgroundImage: 'url(' + post.image + ')' }"></div>
         <div class="post-info">
           <h3>{{ post.title }}</h3>
           <div class="post-details">
@@ -31,8 +31,12 @@
   </div>
 
   <div v-if="step == 1">
-    <writePost @back="step = 0"></writePost>
+    <writePost @back="step = 0" @submit-post="addPost"></writePost>
   </div>
+
+  <!-- <div v-if="step == 2">
+    <chatbotVue @back="step = 0"></chatbotVue>
+  </div> -->
 </template>
 
 <script>
@@ -54,6 +58,11 @@ export default {
       ],
     };
   },
+  methods: {
+    addPost(post) {
+      this.posts.push(post);
+    }
+  }
 };
 </script>
 
