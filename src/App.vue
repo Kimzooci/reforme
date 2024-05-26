@@ -5,7 +5,7 @@
 
     <!-- Post List -->
     <div class="post-list">
-      <div v-for="post in posts" :key="post.id" class="post-item">
+      <div v-for="post in posts" :key="post.id" class="post-item" @click="openPostDetails(post)">
         <div class="post-image" :style="{ backgroundImage: 'url(' + post.image + ')' }"></div>
         <div class="post-info">
           <h3>{{ post.title }}</h3>
@@ -19,13 +19,13 @@
 
     <!-- Footer Bar with Buttons -->
     <div class="footer-bar">
-      <div 
-        class="footer-button" 
-        :class="{'active': selectedFooterButton === '리포미'}" 
+      <div
+        class="footer-button"
+        :class="{'active': selectedFooterButton === '리포미'}"
         @click="selectFooterButton('리포미')">리포미</div>
-      <div 
-        class="footer-button" 
-        :class="{'active': selectedFooterButton === '리포유'}" 
+      <div
+        class="footer-button"
+        :class="{'active': selectedFooterButton === '리포유'}"
         @click="selectFooterButton('리포유')">리포유</div>
     </div>
 
@@ -40,6 +40,10 @@
     <writePost @back="step = 0" @submit-post="addPost"></writePost>
   </div>
 
+  <div v-if="step == 3">
+    <post-details :post="selectedPost" @back="step = 0"></post-details>
+  </div>
+
   <!-- <div v-if="step == 2">
     <chatbotVue @back="step = 0"></chatbotVue>
   </div> -->
@@ -48,32 +52,39 @@
 <script>
 import navigator from './components/navigator.vue';
 import writePost from './components/writePost.vue';
+import postDetails from './components/postDetails.vue';
 
 export default {
   name: 'App',
   components: {
     navigator,
     writePost,
+    postDetails,
   },
   data() {
     return {
       step: 0,
       selectedFooterButton: '리포미',
       posts: [
-        { id: 1, title: '제목', timestamp: '08/23/16:49', type: '상의', comments: 0 },
-        { id: 2, title: '제목', timestamp: '08/23/16:49', type: '하의', comments: 0 },
+        { id: 1, title: '제목', timestamp: '08/23/16:49', type: '상의', comments: 0, image: null },
+        { id: 2, title: '제목', timestamp: '08/23/16:49', type: '하의', comments: 0, image: null },
       ],
+      selectedPost: null,
     };
   },
   methods: {
     addPost(post) {
       this.posts.push(post);
-      this.step = 0; // 포스트를 추가한 후 메인 화면으로 이동
+      this.step = 0; // 돌아가기
     },
     selectFooterButton(button) {
       this.selectedFooterButton = button;
-    }
-  }
+    },
+    openPostDetails(post) {
+      this.selectedPost = post;
+      this.step = 3;
+    },
+  },
 };
 </script>
 
@@ -81,7 +92,8 @@ export default {
 .main-container {
   width: 430px;
   height: 932px;
-  position: relative;
+  display: flex;
+  flex-direction: column;
   background: #ffffff;
 }
 
@@ -89,12 +101,12 @@ export default {
   width: 100%;
   height: 89px;
   background: #2e482d;
-  margin: 0; /* 공백 제거 */
 }
 
 .post-list {
   width: 100%;
   overflow-y: auto;
+  margin-top: 0; /* 공백 없애기 */
   height: calc(100% - 174px);
 }
 
@@ -117,6 +129,8 @@ export default {
   display: flex;
   width: 100%;
   height: 85px;
+  background-color: #2e482d;
+  position: relative;
 }
 
 .footer-button {
@@ -131,14 +145,6 @@ export default {
   cursor: pointer;
 }
 
-.reform-me {
-  background-color: #4c724c;
-}
-
-.reform-you {
-  background-color: #2e482d;
-}
-
 .footer-button.active {
   background-color: #2e482d;
 }
@@ -147,16 +153,22 @@ export default {
   background-color: #4c724c;
 }
 
+.reform-me {
+  background-color: #4c724c;
+}
+
+.reform-you {
+  background-color: #2e482d;
+}
+
 .action-buttons {
-  position: absolute;
+  position: fixed;
   bottom: 100px;
   right: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-
-
 
 .create-button,
 .chat-button {
@@ -168,5 +180,6 @@ export default {
   font-size: 36px;
   border: none;
   margin-bottom: 10px;
+  cursor: pointer;
 }
 </style>
