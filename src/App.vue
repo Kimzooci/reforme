@@ -5,13 +5,13 @@
 
     <!-- Post List -->
     <div class="post-list">
-      <div v-for="post in posts" :key="post.id" class="post-item" @click="openPostDetails(post)">
-        <div class="post-image" :style="{ backgroundImage: 'url(' + getFirstImage(post.images) + ')' }"></div>
+      <div v-for="post in filteredPosts" :key="post.id" class="post-item" @click="openPostDetails(post)">
+        <div class="post-image" :style="{ backgroundImage: 'url(' + post.image + ')' }"></div>
         <div class="post-info">
           <h3>{{ post.title }}</h3>
           <div class="post-details">
-            <p>{{ post.timestamp }} | <span>{{ getCategoryName(post.type) }}</span></p>
-            <span>{{ post.comments }} 댓글</span>
+            <p>{{ post.timestamp }} | <span>{{ post.type }}</span></p>
+            <span>{{ post.comments.length }} 댓글</span>
           </div>
         </div>
       </div>
@@ -41,7 +41,7 @@
   </div>
 
   <div v-if="step == 3">
-    <post-details :post="selectedPost" @back="step = 0"></post-details>
+    <post-details :post="selectedPost" @back="step = 0" @delete-post="deletePost" @edit-post="editPost"></post-details>
   </div>
 
   <!-- <div v-if="step == 2">
@@ -66,13 +66,20 @@ export default {
       step: 0,
       selectedFooterButton: '리포미',
       posts: [
-        
+        { id: 1, title: '제목', timestamp: '08/23/16:49', type: '상의', comments: [], image: null, content: '안녕하세요.', category: '리포미' },
+        { id: 2, title: '제목', timestamp: '08/23/16:49', type: '하의', comments: [], image: null, content: '안녕하세요.', category: '리포유' },
       ],
       selectedPost: null,
     };
   },
+  computed: {
+    filteredPosts() {
+      return this.posts.filter(post => post.category === this.selectedFooterButton);
+    }
+  },
   methods: {
     addPost(post) {
+      post.category = this.selectedFooterButton; // 현재 선택된 카테고리를 글에 저장
       this.posts.push(post);
       this.step = 0; // 돌아가기
     },
@@ -83,19 +90,17 @@ export default {
       this.selectedPost = post;
       this.step = 3;
     },
-    getFirstImage(images) {
-      return images.find(image => image !== null) || '';
+    deletePost(postId) {
+      this.posts = this.posts.filter(post => post.id !== postId);
+      this.step = 0;
     },
-    getCategoryName(type) {
-      const categoryMap = {
-        1: '상의',
-        2: '외투',
-        3: '하의',
-        4: '가방',
-        5: '기타'
-      };
-      return categoryMap[type] || '';
-    },
+    editPost(updatedPost) {
+      const index = this.posts.findIndex(post => post.id === updatedPost.id);
+      if (index !== -1) {
+        this.posts.splice(index, 1, updatedPost);
+      }
+      this.step = 0;
+    }
   },
 };
 </script>
