@@ -6,11 +6,11 @@
     <!-- Post List -->
     <div class="post-list">
       <div v-for="post in posts" :key="post.id" class="post-item" @click="openPostDetails(post)">
-        <div class="post-image" :style="{ backgroundImage: 'url(' + post.image + ')' }"></div>
+        <div class="post-image" :style="{ backgroundImage: 'url(' + getFirstImage(post.images) + ')' }"></div>
         <div class="post-info">
           <h3>{{ post.title }}</h3>
           <div class="post-details">
-            <p>{{ post.timestamp }} | <span>{{ post.type }}</span></p>
+            <p>{{ post.timestamp }} | <span>{{ getCategoryName(post.type) }}</span></p>
             <span>{{ post.comments }} 댓글</span>
           </div>
         </div>
@@ -66,8 +66,7 @@ export default {
       step: 0,
       selectedFooterButton: '리포미',
       posts: [
-        { id: 1, title: '제목', timestamp: '08/23/16:49', type: '상의', comments: 0, image: null },
-        { id: 2, title: '제목', timestamp: '08/23/16:49', type: '하의', comments: 0, image: null },
+        
       ],
       selectedPost: null,
     };
@@ -84,6 +83,19 @@ export default {
       this.selectedPost = post;
       this.step = 3;
     },
+    getFirstImage(images) {
+      return images.find(image => image !== null) || '';
+    },
+    getCategoryName(type) {
+      const categoryMap = {
+        1: '상의',
+        2: '외투',
+        3: '하의',
+        4: '가방',
+        5: '기타'
+      };
+      return categoryMap[type] || '';
+    },
   },
 };
 </script>
@@ -95,6 +107,7 @@ export default {
   display: flex;
   flex-direction: column;
   background: #ffffff;
+  position: relative; /* 추가 */
 }
 
 .navigator {
@@ -123,6 +136,8 @@ export default {
   background: #b1b1b1;
   border-radius: 10px;
   margin-right: 10px;
+  background-size: cover; /* 이미지의 비율을 유지하면서 컨테이너를 덮음 */
+  background-position: center; /* 이미지의 중심을 기준으로 배치 */
 }
 
 .footer-bar {
@@ -130,7 +145,8 @@ export default {
   width: 100%;
   height: 85px;
   background-color: #2e482d;
-  position: relative;
+  position: absolute; /* 수정 */
+  bottom: 0; /* 수정 */
 }
 
 .footer-button {
@@ -153,16 +169,8 @@ export default {
   background-color: #4c724c;
 }
 
-.reform-me {
-  background-color: #4c724c;
-}
-
-.reform-you {
-  background-color: #2e482d;
-}
-
 .action-buttons {
-  position: fixed;
+  position: absolute;
   bottom: 100px;
   right: 20px;
   display: flex;

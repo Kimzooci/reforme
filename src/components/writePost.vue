@@ -3,7 +3,7 @@
     <div class="navbar" style="background: #2e482d; padding: 9px 10px;">
       <button @click="$emit('back')" class="menu-button">＜</button>
       <span class="navbar-title">Reforme</span>
-      <button class="search-button"></button>
+      <button class="search-button">🔍</button>
     </div>
 
     <div class="categories">
@@ -23,7 +23,7 @@
         <div v-if="image" class="image-preview" :style="{ backgroundImage: 'url(' + image + ')' }"></div>
         <div v-else>+</div>
       </button>
-      <input type="file" id="file-input" ref="fileInput" style="display: none;" multiple @change="handleFiles"/>
+      <input type="file" ref="fileInput" style="display: none;" multiple @change="handleFiles"/>
     </div>
 
     <div class="action-buttons">
@@ -59,8 +59,8 @@ export default {
     },
     handleFiles(event) {
       const files = event.target.files;
-      if (files.length > 0) {
-        this.readImage(files[0], this.uploadIndex);
+      for (let i = 0; i < files.length; i++) {
+        this.readImage(files[i], this.uploadIndex + i);
       }
     },
     readImage(file, index) {
@@ -74,10 +74,11 @@ export default {
       const newPost = {
         id: Date.now(),
         title: this.title,
+        content: this.content,
         timestamp: new Date().toLocaleString(),
         type: this.selectedCategory,
         comments: 0,
-        image: this.images[0] // 첫 번째 이미지를 사용
+        images: this.images.filter(image => image !== null) // 모든 이미지를 사용
       };
       this.$emit('submit-post', newPost);
       this.$emit('back'); // 추가된 부분: 확인 버튼 클릭 시 app.vue로 돌아가기
