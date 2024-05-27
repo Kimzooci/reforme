@@ -20,14 +20,13 @@
           <div class="menu-item">
             <h5>로그아웃</h5>
           </div>
+          <div class="menu-item">상의</div>
           
-          <div class="menu-item">전체</div>
-          
-          <div class="menu-item">의류</div>
-          
+          <div class="menu-item">외투</div>
+
+          <div class="menu-item">하의</div>
+
           <div class="menu-item">가방</div>
-          
-          <div class="menu-item">신발</div>
           
           <div class="menu-item">기타</div>
         </div>

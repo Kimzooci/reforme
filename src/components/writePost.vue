@@ -8,8 +8,8 @@
 
     <div class="categories">
       <button v-for="category in categories" :key="category.id"
-              :class="{ 'active': selectedCategory === category.id }"
-              @click="selectCategory(category.id)">
+              :class="{ 'active': selectedCategory === category.name }"
+              @click="selectCategory(category.name)">
         {{ category.name }}
       </button>
     </div>
@@ -43,15 +43,15 @@ export default {
         { id: 4, name: '가방' },
         { id: 5, name: '기타' },
       ],
-      selectedCategory: null,
+      selectedCategory: '',
       title: '',
       content: '',
       images: [null, null, null, null, null], // 이미지 배열 초기화
     };
   },
   methods: {
-    selectCategory(id) {
-      this.selectedCategory = id;
+    selectCategory(name) {
+      this.selectedCategory = name;
     },
     triggerFileUpload(index) {
       this.uploadIndex = index; // 업로드할 버튼 인덱스를 저장
