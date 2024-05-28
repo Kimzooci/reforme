@@ -6,8 +6,13 @@
         :key="index"
         :class="['message', message.user ? 'user' : 'bot']"
       >
-        <p>{{ message.text }}</p>
-        <img v-if="message.image" :src="message.image" alt="Generated Image" />
+        <p v-if="message.text">{{ message.text }}</p>
+        <img
+          v-if="message.image"
+          :src="message.image"
+          alt="Generated Image"
+          class="chat-image"
+        />
       </div>
     </div>
 
@@ -42,7 +47,17 @@ export default {
   data() {
     return {
       userInput: "",
-      messages: [{ text: "안녕하세요! 뭘 도와드릴까요?", user: false }],
+      messages: [
+        {
+          text: "안녕하세요! 리포미입니다😁",
+          user: false,
+        },
+        {
+          text: "원하시는 프롬프트를 작성해주세요🤗",
+          user: false,
+        },
+        { image: require("../assets/images/cat.png"), user: false },
+      ],
     };
   },
   methods: {
@@ -55,19 +70,28 @@ export default {
       this.scrollToBottom();
 
       try {
-        const response = await axios.post("/api/image", userMessage.text, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        });
+        const response = await axios.post(
+          "/api/image",
+          { prompt: userMessage.text },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
 
-        const botMessage = {
-          text: "Here is the generated image:",
+        const textMessage = {
+          text: "요청하신 이미지 입니다😆",
+          user: false,
+        };
+
+        const imageMessage = {
           image: `data:image/png;base64,${response.data}`,
           user: false,
         };
 
-        this.messages.push(botMessage);
+        this.messages.push(textMessage);
+        this.messages.push(imageMessage);
         this.scrollToBottom();
       } catch (error) {
         console.error("Error generating response:", error);
@@ -92,12 +116,17 @@ export default {
           },
         });
 
+        const textMessage = {
+          text: "수정된 이미지 입니다😊",
+          user: false,
+        };
+
         const imageMessage = {
-          text: "Here is the modified image:",
           image: `data:image/png;base64,${response.data}`,
           user: false,
         };
 
+        this.messages.push(textMessage);
         this.messages.push(imageMessage);
         this.scrollToBottom();
       } catch (error) {
@@ -128,12 +157,12 @@ export default {
   background: white;
   position: relative;
   border: none;
-  padding: 0; /* 여백 제거 */
+  padding: 0;
 }
 
 .chat-window {
   flex-grow: 1;
-  padding: 10px; /* 필요한 경우 padding 조정 */
+  padding: 10px;
   overflow-y: auto;
   overflow-x: hidden;
   width: 100%;
@@ -143,7 +172,6 @@ export default {
   scrollbar-color: rgba(46, 72, 45, 1) rgba(230, 230, 230, 1);
 }
 
-/* For Webkit browsers */
 .chat-window::-webkit-scrollbar {
   width: 8px;
 }
@@ -182,6 +210,12 @@ export default {
   margin: 0;
 }
 
+.message img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
 .image-placeholder {
   width: 300px;
   height: 300px;
@@ -194,12 +228,12 @@ export default {
   display: flex;
   align-items: center;
   background-color: rgba(74, 118, 72, 1);
-  width: 95%; /* 너비를 100%로 설정 */
+  width: 95%;
   height: 50px;
   border-radius: 10px;
   border: none;
-  margin-bottom: 0; /* 간격 제거 */
-  padding: 0 10px; /* 좌우 패딩 추가 */
+  margin-bottom: 0;
+  padding: 0 10px;
 }
 
 .ai_input {
@@ -208,7 +242,7 @@ export default {
   border: none;
   outline: none;
   color: white;
-  padding: 10px; /* 필요한 경우 padding 조정 */
+  padding: 10px;
   font-size: 16px;
 }
 

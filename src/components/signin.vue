@@ -18,6 +18,13 @@
         placeholder="Password"
         required
       />
+      <div class="isFirstTime">
+        <p>처음 이용 하시나요?</p>
+        <p class="gotosignup">
+          <router-link to="/signup" class="signup-link">회원가입</router-link>
+        </p>
+      </div>
+
       <div class="submit">
         <button type="submit" class="active">제출</button>
       </div>
@@ -62,6 +69,8 @@ export default {
 </script>
 
 <style>
+@import url("https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap");
+
 .content {
   width: 430px;
   height: 932px;
@@ -72,6 +81,7 @@ export default {
   position: relative;
   border: none;
   padding: 0; /* 여백 제거 */
+  font-family: "Nanum Gothic", sans-serif;
 }
 
 .navigator {
@@ -112,6 +122,7 @@ export default {
   top: 450px;
   left: 0px;
 }
+
 input {
   width: 420px;
   height: 40px;
@@ -172,5 +183,23 @@ button {
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
+}
+
+.isFirstTime {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-top: 150px;
+}
+
+.isFirstTime p {
+  margin: 0 5px;
+  font-weight: bold;
+}
+
+.signup-link {
+  color: blue;
 }
 </style>
