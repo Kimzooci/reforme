@@ -45,10 +45,18 @@ export default {
   methods: {
     signinSubmit() {
       axios
-        .post("/signin", {
-          userId: this.userId,
-          password: this.password,
-        })
+        .post(
+          "/signin",
+          {
+            userId: this.userId,
+            password: this.password,
+          },
+          {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        )
         .then((response) => {
           // 응답 본문에서 statusCode와 userId 확인
           if (response.data.statusCode === 200 && response.data.userId) {
