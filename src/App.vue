@@ -3,14 +3,29 @@
     <!-- Navigation Bar -->
     <navigator></navigator>
 
+    <!-- 라우터 매핑으로 url 변경될때 변하는 페이지 -->
+
     <!-- Post List -->
     <div class="post-list">
-      <div v-for="post in posts" :key="post.id" class="post-item" @click="openPostDetails(post)">
-        <div class="post-image" :style="{ backgroundImage: 'url(' + getFirstImage(post.images) + ')' }"></div>
+      <div
+        v-for="post in posts"
+        :key="post.id"
+        class="post-item"
+        @click="openPostDetails(post)"
+      >
+        <div
+          class="post-image"
+          :style="{
+            backgroundImage: 'url(' + getFirstImage(post.images) + ')',
+          }"
+        ></div>
         <div class="post-info">
           <h3>{{ post.title }}</h3>
           <div class="post-details">
-            <p>{{ post.timestamp }} | <span>{{ getCategoryName(post.type) }}</span></p>
+            <p>
+              {{ post.timestamp }} |
+              <span>{{ getCategoryName(post.type) }}</span>
+            </p>
             <span>{{ post.comments }} 댓글</span>
           </div>
         </div>
@@ -21,12 +36,18 @@
     <div class="footer-bar">
       <div
         class="footer-button"
-        :class="{'active': selectedFooterButton === '리포미'}"
-        @click="selectFooterButton('리포미')">리포미</div>
+        :class="{ active: selectedFooterButton === '리포미' }"
+        @click="selectFooterButton('리포미')"
+      >
+        리포미
+      </div>
       <div
         class="footer-button"
-        :class="{'active': selectedFooterButton === '리포유'}"
-        @click="selectFooterButton('리포유')">리포유</div>
+        :class="{ active: selectedFooterButton === '리포유' }"
+        @click="selectFooterButton('리포유')"
+      >
+        리포유
+      </div>
     </div>
 
     <!-- Floating Action Buttons -->
@@ -50,12 +71,12 @@
 </template>
 
 <script>
-import navigator from './components/navigator.vue';
-import writePost from './components/writePost.vue';
-import postDetails from './components/postDetails.vue';
+import navigator from "./components/navigator.vue";
+import writePost from "./components/writePost.vue";
+import postDetails from "./components/postDetails.vue";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     navigator,
     writePost,
@@ -64,10 +85,8 @@ export default {
   data() {
     return {
       step: 0,
-      selectedFooterButton: '리포미',
-      posts: [
-        
-      ],
+      selectedFooterButton: "리포미",
+      posts: [],
       selectedPost: null,
     };
   },
@@ -84,17 +103,17 @@ export default {
       this.step = 3;
     },
     getFirstImage(images) {
-      return images.find(image => image !== null) || '';
+      return images.find((image) => image !== null) || "";
     },
     getCategoryName(type) {
       const categoryMap = {
-        1: '상의',
-        2: '외투',
-        3: '하의',
-        4: '가방',
-        5: '기타'
+        1: "상의",
+        2: "외투",
+        3: "하의",
+        4: "가방",
+        5: "기타",
       };
-      return categoryMap[type] || '';
+      return categoryMap[type] || "";
     },
   },
 };
