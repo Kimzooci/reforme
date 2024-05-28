@@ -3,13 +3,13 @@
     <div class="navbar" style="background: #2e482d; padding: 9px 10px;">
       <button @click="$emit('back')" class="menu-button">＜</button>
       <span class="navbar-title">Reforme</span>
-      <button class="search-button"></button>
+      <button class="search-button">🔍</button>
     </div>
 
     <div class="categories">
       <button v-for="category in categories" :key="category.id"
-              :class="{ 'active': selectedCategory === category.id }"
-              @click="selectCategory(category.id)">
+              :class="{ 'active': selectedCategory === category.name }"
+              @click="selectCategory(category.name)">
         {{ category.name }}
       </button>
     </div>
@@ -19,12 +19,15 @@
     <textarea placeholder="내용을 입력해주세요" v-model="content" class="input-content"></textarea>
 
     <div class="image-upload-buttons">
-      <button v-for="n in 5" :key="n" class="image-upload-button" @click="triggerFileUpload">+</button>
-      <input type="file" id="file-input" ref="fileInput" style="display: none;" multiple @change="handleFiles"/>
+      <button v-for="(image, index) in images" :key="index" class="image-upload-button" @click="triggerFileUpload(index)">
+        <div v-if="image" class="image-preview" :style="{ backgroundImage: 'url(' + image + ')' }"></div>
+        <div v-else>+</div>
+      </button>
+      <input type="file" ref="fileInput" style="display: none;" multiple @change="handleFiles"/>
     </div>
 
     <div class="action-buttons">
-      <button class="submit-button">확인</button>
+      <button class="submit-button" @click="submitPost">확인</button>
     </div>
   </div>
 </template>
@@ -40,23 +43,47 @@ export default {
         { id: 4, name: '가방' },
         { id: 5, name: '기타' },
       ],
-      selectedCategory: null,
+      selectedCategory: '',
       title: '',
       content: '',
+      images: [null, null, null, null, null], // 이미지 배열 초기화
     };
   },
   methods: {
-    selectCategory(id) {
-      this.selectedCategory = id;
+    selectCategory(name) {
+      this.selectedCategory = name;
     },
-    triggerFileUpload() {
+    triggerFileUpload(index) {
+      this.uploadIndex = index; // 업로드할 버튼 인덱스를 저장
       this.$refs.fileInput.click();
     },
     handleFiles(event) {
       const files = event.target.files;
-      console.log(files);
+      for (let i = 0; i < files.length; i++) {
+        this.readImage(files[i], this.uploadIndex + i);
+      }
     },
-  },
+    readImage(file, index) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.images[index] = e.target.result; // Vue 3에서는 직접 배열 요소 수정
+      };
+      reader.readAsDataURL(file);
+    },
+    submitPost() {
+      const newPost = {
+        id: Date.now(),
+        title: this.title,
+        content: this.content,
+        timestamp: new Date().toLocaleString(),
+        type: this.selectedCategory,
+        comments: 0,
+        images: this.images.filter(image => image !== null) // 모든 이미지를 사용
+      };
+      this.$emit('submit-post', newPost);
+      this.$emit('back'); // 추가된 부분: 확인 버튼 클릭 시 app.vue로 돌아가기
+    }
+  }
 };
 </script>
 
@@ -124,7 +151,6 @@ export default {
   border-radius: 10px 0px 0px 0px;
   border: 1px 0px 0px 0px;
   opacity: 0px;
-
   resize: none;
 }
 
@@ -165,5 +191,14 @@ export default {
   border-radius: 10px;
   background-color: #4a7648;
   cursor: pointer;
+  position: relative;
+}
+
+.image-preview {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  border-radius: 10px;
 }
 </style>
