@@ -5,12 +5,13 @@ import Signup from '@/components/signup.vue';
 import Signin from '@/components/signin.vue';
 import Chatbot from '@/components/chatbot.vue';
 import Board from '@/components/board.vue';
+import Home from '@/components/home.vue';
 
 const routes = [
     {
         path: '/',
         name: 'home',
-        component: Reforme,
+        component: Home,
     },
     {
         path: '/reforme',

@@ -43,13 +43,14 @@ export default {
           password: this.password,
         })
         .then((response) => {
-          if (response.data.statusCode === 200) {
-            this.$cookies.set("session_id", response.data.sessionId, {
+          // 응답 본문에서 statusCode와 userId 확인
+          if (response.data.statusCode === 200 && response.data.userId) {
+            this.$cookies.set("session_id", response.data.userId, {
               expires: "1d",
             });
             alert("로그인 성공");
           } else {
-            alert("로그인 실패: " + response.data.statusCode);
+            alert("로그인 실패: Invalid credentials");
           }
         })
         .catch((error) => {

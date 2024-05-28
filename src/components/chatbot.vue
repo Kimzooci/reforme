@@ -55,17 +55,11 @@ export default {
       this.scrollToBottom();
 
       try {
-        const response = await axios.post(
-          "/api/image",
-          {
-            prompt: userMessage.text,
+        const response = await axios.post("/api/image", userMessage.text, {
+          headers: {
+            "Content-Type": "application/json",
           },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        });
 
         const botMessage = {
           text: "Here is the generated image:",
@@ -88,11 +82,11 @@ export default {
       if (!file) return;
 
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("image", file);
       formData.append("prompt", this.userInput);
 
       try {
-        const response = await axios.post("/api/image", formData, {
+        const response = await axios.post("/api/edit-image", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
