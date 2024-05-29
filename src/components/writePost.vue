@@ -50,7 +50,16 @@
 </template>
 
 <script>
+
 export default {
+
+  created() {
+    this.emitter.emit('updateButtons', { 
+      menuButton: false, 
+      searchButton: true, 
+      backButton: true 
+    });
+  },
   data() {
     return {
       categories: [
@@ -63,15 +72,22 @@ export default {
       selectedCategory: null,
       title: "",
       content: "",
-      images: [null, null, null, null, null],
+      images: [null, null, null, null, null], // 이미지 배열 초기화
     };
   },
   methods: {
+    fire(){
+      this.emitter.emit('updateButtons', { 
+      menuButton: true, 
+      searchButton: true, 
+      backButton: false 
+    });
+    },
     selectCategory(id) {
       this.selectedCategory = id;
     },
     triggerFileUpload(index) {
-      this.uploadIndex = index;
+      this.uploadIndex = index; // 업로드할 버튼 인덱스를 저장
       this.$refs.fileInput.click();
     },
     handleFiles(event) {
@@ -83,11 +99,12 @@ export default {
     readImage(file, index) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        this.images[index] = e.target.result;
+        this.images[index] = e.target.result; // Vue 3에서는 직접 배열 요소 수정
       };
       reader.readAsDataURL(file);
     },
     submitPost() {
+      this.fire()
       const newPost = {
         id: Date.now(),
         title: this.title,
@@ -95,10 +112,10 @@ export default {
         timestamp: new Date().toLocaleString(),
         type: this.selectedCategory,
         comments: 0,
-        images: this.images.filter((image) => image !== null),
+        images: this.images.filter((image) => image !== null), // 모든 이미지를 사용
       };
       this.$emit("submit-post", newPost);
-      this.$emit("back");
+      this.$emit("back"); // 추가된 부분: 확인 버튼 클릭 시 app.vue로 돌아가기
     },
   },
 };

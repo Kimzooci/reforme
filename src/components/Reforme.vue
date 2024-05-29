@@ -2,7 +2,6 @@
   <div class="main-container">
     <div class="content">
       <!-- <h1 v-if="step == 0">Reforme 페이지</h1> -->
-
       <!-- Post List -->
       <div class="post-list">
         <div
@@ -73,6 +72,13 @@ import postDetails from "./postDetails.vue";
 
 export default {
   name: "Reforme",
+  created() {
+    this.emitter.emit('updateButtons', { 
+      menuButton: true, 
+      searchButton: true, 
+      backButton: false 
+    });
+  },
   components: {
     writePost,
     postDetails,
@@ -88,7 +94,7 @@ export default {
   methods: {
     addPost(post) {
       this.posts.push(post);
-      this.step = 0; // 돌아가기
+      this.step = 0;
     },
     selectFooterButton(button) {
       this.selectedFooterButton = button;
