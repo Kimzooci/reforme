@@ -1,7 +1,12 @@
 <template>
   <div class="navbox">
     <nav class="navbar">
-      <button class="menu-button" @click="toggleMenu">≡</button>
+      <div v-if="!isBackButton">
+        <button  class="menu-button" @click="toggleMenu">≡</button>
+      </div>
+      <div v-if="isBackButton">
+        <button  class="back-button" @click="$emit('back')">＜</button>
+      </div>
       <span class="navbar-title">Reforme</span>
       <button class="search-button" @click="toggleSearch">🔍</button>
     </nav>
@@ -44,15 +49,17 @@
 
 <script>
 export default {
-  name: "NavigationBar",
+  name: "navigator",
+  props: {
+    isBackButton: Boolean,
+  },
   data() {
     return {
-      showMenu: false, // 메뉴의 표시 여부를 저장할 데이터
-      showSearch: false, // 검색창 표시 여부를 저장할 데이터
+      showMenu: false,
+      showSearch: false,
     };
   },
   methods: {
-    // 메뉴 버튼 클릭 시 메뉴를 토글하는 메소드
     toggleMenu() {
       this.showMenu = !this.showMenu;
     },
@@ -75,11 +82,19 @@ export default {
   align-items: center;
   color: white;
   position: relative;
-  z-index: 2; /* Ensure navbar is above other content */
+  z-index: 2;
 }
 
 .menu-button,
 .search-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.back-button {
   background: none;
   border: none;
   color: white;
@@ -92,106 +107,92 @@ export default {
   font-family: "YourFontFamily";
 }
 
-/* 메뉴 컨테이너 스타일 */
 .menu-container {
   position: fixed;
-  top: 0; /* 메뉴를 내비게이션 바 아래로 위치시킴 */
+  top: 0;
   left: 0;
   width: 200px;
-  height: 100%; /* 메뉴의 높이를 전체 화면으로 설정 */
-  background: white; /* 배경을 하얀색으로 설정 */
-  color: black; /* 텍스트 색상을 검정색으로 설정 */
+  height: 100%;
+  background: white;
+  color: black;
   padding: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.2); /* 컨테이너에 반투명 선을 추가 */
-  z-index: 3; /* 메뉴가 다른 요소 위에 표시되도록 z-index 설정 */
-  overflow-y: auto; /* 내용이 넘칠 경우 스크롤 추가 */
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
 }
 
-/* 메뉴 항목 스타일 */
 .menu-item {
-  padding: 10px 0;
+  margin-bottom: 10px;
   cursor: pointer;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2); /* 메뉴 항목에 하단 반투명 선을 추가 */
 }
 
-/* 메뉴 오버레이 스타일 */
 .menu-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* 검정 배경의 투명도 조절 */
-  z-index: 2; /* 메뉴 컨테이너 아래에 표시되도록 z-index 설정 */
-  display: flex;
-  justify-content: center;
-  align-items: flex-start; /* 메뉴를 상단에 정렬 */
-  overflow-y: auto; /* 내용이 넘칠 경우 스크롤 추가 */
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2;
 }
 
-/* 검색 오버레이 스타일 */
-.search-overlay {
-  position: fixed; /* 변경: position을 fixed로 변경 */
-  top: 0; /* 변경: top을 0으로 설정 */
-  left: 0; /* 변경: left를 0으로 설정 */
-  width: 100%; /* 변경: width를 100%로 설정 */
-  height: 100%; /* 변경: height를 100%로 설정 */
-  background-color: rgba(0, 0, 0, 0.5); /* 검정 배경의 투명도 조절 */
-  z-index: 2; /* 검색 컨테이너 아래에 표시되도록 z-index 설정 */
-  display: flex;
-  justify-content: center;
-  align-items: center; /* 검색창을 중앙에 정렬 */
-}
-
-/* 검색 컨테이너 스타일 */
 .search-container {
-  width: 300px;
-  background: rgba(
-    74,
-    118,
-    72,
-    1
-  ); /* 배경을 rgba(74, 118, 72, 1) 색으로 설정 */
-  color: black; /* 텍스트 색상을 검정색으로 설정 */
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 430px;
+  background: white;
   padding: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.2); /* 컨테이너에 반투명 선을 추가 */
-  border-radius: 15px; /* 컨테이너 모서리를 둥글게 설정 */
-  z-index: 3; /* 검색창이 다른 요소 위에 표시되도록 z-index 설정 */
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  z-index: 3;
 }
 
-/* 검색 입력창 스타일 */
 .search-input {
   width: 100%;
   padding: 10px;
-  background: rgba(
-    74,
-    118,
-    72,
-    1
-  ); /* 배경을 rgba(74, 118, 72, 1) 색으로 설정 */
-  border: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2); /* 입력창 하단에 반투명 선을 추가 */
   margin-bottom: 10px;
-  color: white; /* 입력창 텍스트 색상을 흰색으로 설정 */
-  border-radius: 10px; /* 입력창 모서리를 둥글게 설정 */
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
-/* 검색 버튼 컨테이너 스타일 */
+.search-divider {
+  width: 100%;
+  height: 1px;
+  background: #ccc;
+  margin-bottom: 10px;
+}
+
 .search-buttons {
   display: flex;
   justify-content: space-between;
 }
 
-/* 검색 버튼 스타일 */
-.small_complete,
-.small_cancel {
-  background-color: rgba(46, 72, 45, 1);
-  width: 48%;
-  height: 40px;
-  color: white;
-  font-size: 150%;
-  border-radius: 10px;
+.small_cancel,
+.small_complete {
+  padding: 10px 20px;
   border: none;
-  margin: 0; /* 버튼 간의 간격을 없앰 */
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.small_cancel {
+  background: red;
+  color: white;
+}
+
+.small_complete {
+  background: green;
+  color: white;
+}
+
+.search-overlay {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 430px;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2;
 }
 </style>
