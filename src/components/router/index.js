@@ -9,13 +9,41 @@ import Home from '@/components/home.vue';
 import axios from 'axios';
 
 const routes = [
-    { path: '/', name: 'home', component: Home },
-    { path: '/reforme', name: 'reforme', component: Reforme, meta: { requiresAuth: true } },
-    { path: '/reforyou', name: 'reforyou', component: Reforyou, meta: { requiresAuth: true } },
-    { path: '/signup', name: 'signup', component: Signup },
-    { path: '/signin', name: 'signin', component: Signin },
-    { path: '/chatbot', name: 'chatbot', component: Chatbot, meta: { requiresAuth: true } },
-    { path: '/reforme/board', name: 'board', component: Board, meta: { requiresAuth: true } },
+    {
+        path: '/',
+        name: 'home',
+        component: Home,
+    },
+    {
+        path: '/reforme',
+        name: 'reforme',
+        component: Reforme,
+    },
+    {
+        path: '/reforyou',
+        name: 'reforyou',
+        component: Reforyou,
+    },
+    {
+        path: '/signup',
+        name: 'signup',
+        component: Signup,
+    },
+    {
+        path: '/signin',
+        name: 'signin',
+        component: Signin,
+    },
+    {
+        path: '/chatbot',
+        name: 'chatbot',
+        component: Chatbot,
+    },
+    {
+        path: '/reforme/board',
+        name: 'board',
+        component: Board,
+    },
 ];
 
 const router = createRouter({
