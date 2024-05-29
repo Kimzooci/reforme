@@ -126,7 +126,7 @@ export default {
 .post-list {
   width: 100%;
   overflow-y: auto;
-  margin-top: 0; /* 공백 없애기 */
+  margin: 0; /* 공백 없애기 */
   height: calc(100% - 174px);
 }
 

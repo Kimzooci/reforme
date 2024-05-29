@@ -1,7 +1,5 @@
 <template>
   <div class="main-container">
-
-
     <!-- Post Details -->
     <div class="post-details">
       <h2 class="post-title">{{ post.title }}</h2>
@@ -68,43 +66,23 @@ export default {
 
 <style scoped>
 .main-container {
-  width: 430px;
-  height: 932px;
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  padding: 10px;
+  background: #F8F8F8;
   display: flex;
   flex-direction: column;
-  background: #F8F8F8;
-  border: 1px solid #E1E1E1;
-  border-radius: 10px;
-}
-
-.navbar {
-  display: flex;
-  justify-content: space-between;
   align-items: center;
-  background: #2E482D;
-  color: white;
-  padding: 10px;
-  border-radius: 10px 10px 0 0;
-}
-
-.menu-button, .search-button {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 20px;
-  cursor: pointer;
-}
-
-.navbar-title {
-  font-size: 24px;
 }
 
 .post-details {
+  width: 100%;
   padding: 20px;
   background: #FFFFFF;
   border-radius: 10px;
-  margin: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
 .post-title {
@@ -116,6 +94,7 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  margin-bottom: 10px;
 }
 
 .post-author {
@@ -152,7 +131,7 @@ export default {
 }
 
 .post-image {
-  width: 100px;
+  width: calc(33.33% - 10px);
   height: 100px;
   background: #B1B1B1;
   border-radius: 10px;
@@ -161,16 +140,16 @@ export default {
 }
 
 .comments-container {
-  flex-grow: 1;
-  padding: 10px;
+  width: 100%;
+  padding: 20px;
   background: #FFFFFF;
-  margin: 0 20px;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
 }
 
 .comments-header {
-  font-size: 16px;
+  font-size: 18px;
   font-weight: bold;
   margin-bottom: 10px;
 }
@@ -197,14 +176,15 @@ export default {
 }
 
 .input-comment {
-  width: calc(100% - 40px);
-  margin: 20px;
+  width: calc(100% - 20px);
+  margin: 0 auto 20px;
   padding: 10px;
   border: 1px solid #E1E1E1;
   border-radius: 5px;
 }
 
 .footer-bar {
+  width: 100%;
   display: flex;
   justify-content: center;
   padding: 10px 0;

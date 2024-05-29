@@ -7,7 +7,7 @@
         </button>
       </div>
       <div v-if="isBackButton">
-        <button class="back-button"  @click="$emit('back')">＜</button>
+        <button class="back-button" @click="$emit('back')">＜</button>
       </div>
       <span class="navbar-title">Reforme</span>
       <button class="search-button" @click="toggleSearch">🔍</button>
@@ -76,9 +76,11 @@ export default {
 <style scoped>
 .navbox {
   border: 2px solid black;
+  margin: 0;
 }
 .navbar {
   background: #2e482d;
+  margin: 0;
   padding: 9px 10px;
   display: flex;
   justify-content: space-between;
@@ -86,6 +88,8 @@ export default {
   color: white;
   position: relative;
   z-index: 2; /* Ensure navbar is above other content */
+  margin-bottom: 0; /* Remove bottom margin */
+  border-bottom: 1px solid #e0e0e0; /* Optional: add bottom border */
 }
 
 .menu-button,

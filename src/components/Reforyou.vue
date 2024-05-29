@@ -1,7 +1,7 @@
 <template>
   <div class="main-container">
     <div class="content">
-      <!-- <h1 v-if="step === 0">Reforyou 페이지</h1> -->
+      <!-- <h1 v-if="step == 0">Reforyou 페이지</h1> -->
 
       <!-- Post List -->
       <div class="post-list">
@@ -56,13 +56,9 @@
       <button @click="step = 1" class="create-button">+</button>
       <router-link to="/chatbot" class="chat-button">🗨️</router-link>
     </div>
-
+    <!-- step == 2 삭제 -> link 이동으로 변경함 -->
     <div v-if="step == 1">
       <writePost @back="step = 0" @submit-post="addPost"></writePost>
-    </div>
-
-    <div v-if="step == 2">
-      <chatbot @back="step = 0"></chatbot>
     </div>
 
     <div v-if="step == 3">
@@ -74,19 +70,17 @@
 <script>
 import writePost from "./writePost.vue";
 import postDetails from "./postDetails.vue";
-import chatbot from "./chatbot.vue";
 
 export default {
-  name: "Reforyou",
+  name: "Reforme",
   components: {
     writePost,
     postDetails,
-    chatbot,
   },
   data() {
     return {
       step: 0,
-      selectedFooterButton: "리포유",
+      selectedFooterButton: "리포미",
       posts: [],
       selectedPost: null,
     };
