@@ -1,7 +1,7 @@
 <template>
   <div class="main-container">
     <div class="content">
-      <h1>Reforme 페이지</h1>
+      <!-- <h1 v-if="step == 0">Reforme 페이지</h1> -->
 
       <!-- Post List -->
       <div class="post-list">
@@ -124,21 +124,27 @@ export default {
 }
 
 .post-list {
-  margin-bottom: 70px;
+  width: 100%;
+  overflow-y: auto;
+  margin-top: 0; /* 공백 없애기 */
+  height: calc(100% - 174px);
 }
 
 .post-item {
   display: flex;
-  margin-bottom: 20px;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #e0e0e0;
   cursor: pointer;
 }
 
 .post-image {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   background-size: cover;
   background-position: center;
   margin-right: 20px;
+  border-radius: 10px;
 }
 
 .post-info {

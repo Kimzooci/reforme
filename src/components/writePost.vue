@@ -10,20 +10,17 @@
         {{ category.name }}
       </button>
     </div>
-<!--제목-->
     <input
       type="text"
       placeholder="제목을 입력해주세요"
       v-model="title"
       class="input-title"
     />
-<!--내용-->
     <textarea
       placeholder="내용을 입력해주세요"
       v-model="content"
       class="input-content"
     ></textarea>
-<!--이미지 업로드 버튼 -->
     <div class="image-upload-buttons">
       <button
         v-for="(image, index) in images"
@@ -38,7 +35,6 @@
         ></div>
         <div v-else>+</div>
       </button>
-      
       <input
         type="file"
         ref="fileInput"
@@ -47,7 +43,6 @@
         @change="handleFiles"
       />
     </div>
-
     <div class="action-buttons">
       <button class="submit-button" @click="submitPost">확인</button>
     </div>
@@ -55,10 +50,7 @@
 </template>
 
 <script>
-
 export default {
-
-  
   data() {
     return {
       categories: [
@@ -71,7 +63,7 @@ export default {
       selectedCategory: null,
       title: "",
       content: "",
-      images: [null, null, null, null, null], // 이미지 배열 초기화
+      images: [null, null, null, null, null],
     };
   },
   methods: {
@@ -79,7 +71,7 @@ export default {
       this.selectedCategory = id;
     },
     triggerFileUpload(index) {
-      this.uploadIndex = index; // 업로드할 버튼 인덱스를 저장
+      this.uploadIndex = index;
       this.$refs.fileInput.click();
     },
     handleFiles(event) {
@@ -91,12 +83,11 @@ export default {
     readImage(file, index) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        this.images[index] = e.target.result; // Vue 3에서는 직접 배열 요소 수정
+        this.images[index] = e.target.result;
       };
       reader.readAsDataURL(file);
     },
     submitPost() {
-      
       const newPost = {
         id: Date.now(),
         title: this.title,
@@ -104,10 +95,10 @@ export default {
         timestamp: new Date().toLocaleString(),
         type: this.selectedCategory,
         comments: 0,
-        images: this.images.filter((image) => image !== null), // 모든 이미지를 사용
+        images: this.images.filter((image) => image !== null),
       };
       this.$emit("submit-post", newPost);
-      this.$emit("back"); // 추가된 부분: 확인 버튼 클릭 시 app.vue로 돌아가기
+      this.$emit("back");
     },
   },
 };
@@ -143,8 +134,6 @@ export default {
 }
 
 .categories {
-  display: flex;
-  justify-content: space-around;
   padding: 10px 0;
 }
 
@@ -155,12 +144,22 @@ export default {
   background-color: #b1b1b1;
   color: black;
   font-size: 16px;
+  transition: background-color 0.3s; /* 배경 색상 전환 애니메이션 */
+  flex: 1; /* 각 버튼의 크기를 균등하게 만듦 */
+  max-width: 70px; /* 버튼 최대 너비를 설정 */
+}
+
+.categories button:focus {
+  outline: none; /* 버튼 포커스 시 테두리 제거 */
+  box-shadow: none; /* 버튼 포커스 시 그림자 제거 */
 }
 
 .categories .active {
   background-color: #4a7648;
   color: white;
 }
+
+
 
 .input-title,
 .input-content {
@@ -184,10 +183,11 @@ export default {
   display: flex;
   justify-content: center;
   padding: 20px 0;
+  width: 90%; /* 수정 */
 }
 
 .submit-button {
-  width: 410px;
+  width: calc(100%); /* 수정: 양쪽 여백 포함 */
   height: 76px;
   padding: 10px 20px;
   background-color: #4a7648;
