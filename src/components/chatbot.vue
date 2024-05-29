@@ -30,6 +30,8 @@
         style="display: none"
         @change="uploadImage"
       />
+      <input type="radio" name="프롬프트" />
+      <input type="radio" name="메세지" />
       <button class="ai_submit_button" @click="triggerFileInput">
         <img src="../assets/images/imagelogo.png" alt="image" />
       </button>
