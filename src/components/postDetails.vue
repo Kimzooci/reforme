@@ -1,11 +1,6 @@
 <template>
   <div class="main-container">
-    <!-- Navigation Bar -->
-    <div class="navbar">
-      <button class="menu-button" @click="$emit('back')">＜</button>
-      <span class="navbar-title">Reforme</span>
-      <button class="search-button">🔍</button>
-    </div>
+
 
     <!-- Post Details -->
     <div class="post-details">
