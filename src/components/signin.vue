@@ -59,14 +59,10 @@ export default {
         )
         .then((response) => {
           // 응답 본문에서 statusCode와 userId 확인
-          if (
-            response.data.statusCode === 200
-            //&&response.data.userId === this.userId
-          ) {
-            this.$cookies.set("session_id", response.data.userId, {
-              expires: "1d",
-            });
+          if (response.data.statusCode === 200) {
             alert("로그인 성공");
+
+            this.$router.push("/reforme");
           } else {
             alert("로그인 실패: Invalid credentials");
           }
