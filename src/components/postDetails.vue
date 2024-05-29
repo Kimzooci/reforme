@@ -3,14 +3,7 @@
     <!-- Post Details -->
     <div class="post-details">
       <h2 class="post-title">{{ post.title }}</h2>
-      <div class="post-header">
-        <p class="post-author">{{ post.author }}</p>
-        <div class="post-actions">
-          <button class="edit-button">수정</button>
-          <button class="delete-button">삭제</button>
-        </div>
-      </div>
-      <hr class="divider" />
+      <p class="post-author">{{ post.author }}</p>
       <div class="post-content">{{ post.content }}</div>
       <div class="post-images">
         <div v-for="(image, index) in post.images" :key="index" class="post-image" :style="{ backgroundImage: 'url(' + image + ')' }"></div>
@@ -19,14 +12,18 @@
 
     <!-- Comments Section -->
     <div class="comments-container">
-      <p class="comments-header">댓글 목록</p>
-      <hr class="divider" />
       <div v-for="comment in comments" :key="comment.id" class="comment">
-        <div class="comment-header">
-          <span class="comment-author">{{ comment.author }}</span>
-        </div>
         <div class="comment-text">{{ comment.text }}</div>
+        <button class="comment-action">Hug</button>
       </div>
+    </div>
+
+    <!-- Comment Input -->
+    <input v-model="newComment" class="input-comment" placeholder="댓글을 입력하세요" />
+
+    <!-- Footer Bar with Button -->
+    <div class="footer-bar">
+      <button class="comment-submit" @click="addComment">댓글달기</button>
     </div>
 
     <!-- Comment Input -->
@@ -66,23 +63,43 @@ export default {
 
 <style scoped>
 .main-container {
-  width: 100%;
-  max-width: 430px;
-  margin: 0 auto;
-  padding: 10px;
-  background: #F8F8F8;
+  width: 430px;
+  height: 932px;
   display: flex;
   flex-direction: column;
+  background: #F8F8F8;
+  border: 1px solid #E1E1E1;
+  border-radius: 10px;
+}
+
+.navbar {
+  display: flex;
+  justify-content: space-between;
   align-items: center;
+  background: #2E482D;
+  color: white;
+  padding: 10px;
+  border-radius: 10px 10px 0 0;
+}
+
+.menu-button, .search-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.navbar-title {
+  font-size: 24px;
 }
 
 .post-details {
-  width: 100%;
   padding: 20px;
   background: #FFFFFF;
   border-radius: 10px;
+  margin: 20px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
 }
 
 .post-title {
@@ -90,33 +107,9 @@ export default {
   margin-bottom: 10px;
 }
 
-.post-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10px;
-}
-
 .post-author {
   color: #888;
-}
-
-.post-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.edit-button, .delete-button {
-  background: none;
-  border: none;
-  color: #2E482D;
-  cursor: pointer;
-}
-
-.divider {
-  margin: 10px 0;
-  border: none;
-  border-top: 1px solid #E1E1E1;
+  margin-bottom: 20px;
 }
 
 .post-content {
@@ -131,60 +124,54 @@ export default {
 }
 
 .post-image {
-  width: calc(33.33% - 10px);
+  width: 100px;
   height: 100px;
   background: #B1B1B1;
   border-radius: 10px;
-  background-size: cover;
-  background-position: center;
+  margin-bottom: 20px;
+  background-size: cover; /* 이미지의 비율을 유지하면서 컨테이너를 덮음 */
+  background-position: center; /* 이미지의 중심을 기준으로 배치 */
 }
 
 .comments-container {
-  width: 100%;
-  padding: 20px;
+  flex-grow: 1;
+  padding: 10px;
   background: #FFFFFF;
+  margin: 0 20px;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-  margin-bottom: 20px;
-}
-
-.comments-header {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 10px;
 }
 
 .comment {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid #E1E1E1;
-}
-
-.comment-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 5px;
-}
-
-.comment-author {
-  font-size: 14px;
-  font-weight: bold;
-  margin-right: 10px;
 }
 
 .comment-text {
   font-size: 14px;
 }
 
+.comment-action {
+  background: #2E482D;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
 .input-comment {
-  width: calc(100% - 20px);
-  margin: 0 auto 20px;
+  width: calc(100% - 40px);
+  margin: 20px;
   padding: 10px;
   border: 1px solid #E1E1E1;
   border-radius: 5px;
 }
 
 .footer-bar {
-  width: 100%;
   display: flex;
   justify-content: center;
   padding: 10px 0;

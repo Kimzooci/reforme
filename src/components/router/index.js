@@ -43,7 +43,6 @@ const routes = [
         name: 'board',
         component: Board,
     },
-
 ];
 
 const router = createRouter({
