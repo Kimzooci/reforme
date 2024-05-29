@@ -59,7 +59,10 @@ export default {
         )
         .then((response) => {
           // 응답 본문에서 statusCode와 userId 확인
-          if (response.data.statusCode === 200 && response.data.userId) {
+          if (
+            response.data.statusCode === 200
+            //&&response.data.userId === this.userId
+          ) {
             this.$cookies.set("session_id", response.data.userId, {
               expires: "1d",
             });
