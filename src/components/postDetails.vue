@@ -14,23 +14,15 @@
     <div class="comments-container">
       <div v-for="comment in comments" :key="comment.id" class="comment">
         <div class="comment-text">{{ comment.text }}</div>
-        <button class="comment-action">Hug</button>
+        <button class="comment-action">수정</button>
+        <button class="comment-action">삭제</button>
       </div>
     </div>
 
-    <!-- Comment Input -->
-    <input v-model="newComment" class="input-comment" placeholder="댓글을 입력하세요" />
-
     <!-- Footer Bar with Button -->
     <div class="footer-bar">
-      <button class="comment-submit" @click="addComment">댓글달기</button>
-    </div>
-
-    <!-- Comment Input -->
+          <!-- Comment Input -->
     <input v-model="newComment" class="input-comment" placeholder="댓글을 입력하세요" />
-
-    <!-- Footer Bar with Button -->
-    <div class="footer-bar">
       <button class="comment-submit" @click="addComment">댓글달기</button>
     </div>
   </div>
@@ -70,6 +62,7 @@ export default {
   background: #F8F8F8;
   border: 1px solid #E1E1E1;
   border-radius: 10px;
+  
 }
 
 .navbar {
@@ -95,7 +88,7 @@ export default {
 }
 
 .post-details {
-  padding: 20px;
+  padding: 150px;
   background: #FFFFFF;
   border-radius: 10px;
   margin: 20px;
@@ -135,12 +128,16 @@ export default {
 
 .comments-container {
   flex-grow: 1;
-  padding: 10px;
+  padding: 10px 20px;
   background: #FFFFFF;
-  margin: 0 20px;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 0px;
+  width : 350px;
+  height: 300px; /* 높이를 고정 */
+  overflow-y: auto; /* 세로 스크롤 가능 */
 }
+
 
 .comment {
   display: flex;
@@ -149,6 +146,7 @@ export default {
   padding: 10px 0;
   border-bottom: 1px solid #E1E1E1;
 }
+
 
 .comment-text {
   font-size: 14px;
@@ -163,20 +161,25 @@ export default {
   cursor: pointer;
 }
 
-.input-comment {
-  width: calc(100% - 40px);
-  margin: 20px;
-  padding: 10px;
-  border: 1px solid #E1E1E1;
-  border-radius: 5px;
-}
-
 .footer-bar {
   display: flex;
   justify-content: center;
+  align-items: center; /* 수직 정렬을 중앙으로 맞춤 */
   padding: 10px 0;
   background: #2E482D;
-  border-radius: 0 0 10px 10px;
+  border-radius: 0px 0px 10px 10px;
+  height: fit-content;
+  width: 390px;
+}
+
+.input-comment {
+  margin-right: 10px; /* 버튼과의 간격 조정 */
+  padding: 10px;
+  border: 1px solid #E1E1E1;
+  border-radius: 5px;
+  height: 40px; /* 버튼과 동일한 높이로 설정 */
+  width: 250px;
+  box-sizing: border-box;
 }
 
 .comment-submit {
@@ -186,5 +189,7 @@ export default {
   border-radius: 5px;
   padding: 10px 20px;
   cursor: pointer;
+  height: 40px; /* 입력 필드와 동일한 높이로 설정 */
 }
+
 </style>
