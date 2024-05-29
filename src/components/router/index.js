@@ -1,4 +1,4 @@
-import { createWebHistory, createRouter } from 'vue-router';
+import { createWebHashHistory, createRouter } from 'vue-router';
 import Reforme from '@/components/Reforme.vue';
 import Reforyou from '@/components/Reforyou.vue';
 import Signup from '@/components/signup.vue';
@@ -43,11 +43,10 @@ const routes = [
         name: 'board',
         component: Board,
     },
-
 ];
 
 const router = createRouter({
-    history: createWebHistory(),
+    history: createWebHashHistory(),
     routes,
 });
 

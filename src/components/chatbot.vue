@@ -30,9 +30,31 @@
         style="display: none"
         @change="uploadImage"
       />
-      <input type="radio" name="프롬프트" />
-      <input type="radio" name="메세지" />
-      <button class="ai_submit_button" @click="triggerFileInput">
+      <div class="radio-buttons">
+        <label>
+          <input
+            type="radio"
+            name="inputType"
+            value="prompt"
+            v-model="inputType"
+          />
+          프롬프트
+        </label>
+        <label>
+          <input
+            type="radio"
+            name="inputType"
+            value="message"
+            v-model="inputType"
+          />
+          메세지
+        </label>
+      </div>
+      <button
+        class="ai_submit_button"
+        @click="triggerFileInput"
+        v-if="inputType === 'prompt'"
+      >
         <img src="../assets/images/imagelogo.png" alt="image" />
       </button>
       <button class="ai_submit_button" @click="sendMessage">
@@ -49,6 +71,7 @@ export default {
   data() {
     return {
       userInput: "",
+      inputType: "prompt",
       messages: [
         {
           text: "안녕하세요! 리포미입니다😁",
@@ -72,28 +95,47 @@ export default {
       this.scrollToBottom();
 
       try {
-        const response = await axios.post(
-          "/api/image",
-          { prompt: userMessage.text },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        if (this.inputType === "prompt") {
+          const response = await axios.post(
+            "/api/image",
+            { prompt: userMessage.text },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
 
-        const textMessage = {
-          text: "요청하신 이미지 입니다😆",
-          user: false,
-        };
+          const textMessage = {
+            text: "요청하신 이미지 입니다😆",
+            user: false,
+          };
 
-        const imageMessage = {
-          image: `data:image/png;base64,${response.data}`,
-          user: false,
-        };
+          const imageMessage = {
+            image: `data:image/png;base64,${response.data}`,
+            user: false,
+          };
 
-        this.messages.push(textMessage);
-        this.messages.push(imageMessage);
+          this.messages.push(textMessage);
+          this.messages.push(imageMessage);
+        } else {
+          const response = await axios.post(
+            "/api/message",
+            { message: userMessage.text },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          const botMessage = {
+            text: response.data,
+            user: false,
+          };
+
+          this.messages.push(botMessage);
+        }
         this.scrollToBottom();
       } catch (error) {
         console.error("Error generating response:", error);
