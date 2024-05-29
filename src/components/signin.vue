@@ -44,24 +44,20 @@ export default {
   },
   methods: {
     signinSubmit() {
+      const formData = new FormData();
+      formData.append("userId", this.userId);
+      formData.append("password", this.password);
+
       axios
-        .post(
-          "/signin",
-          {
-            userId: this.userId,
-            password: this.password,
+        .post("/signin", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
           },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        )
+        })
         .then((response) => {
-          // 응답 본문에서 statusCode와 userId 확인
           if (response.data.statusCode === 200) {
             alert("로그인 성공");
-
+            //localStorage.setItem("token", response.data.data); // JWT 토큰 저장
             this.$router.push("/reforme");
           } else {
             alert("로그인 실패: Invalid credentials");
