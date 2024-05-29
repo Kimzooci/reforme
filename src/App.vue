@@ -1,7 +1,7 @@
 <template>
   <div v-if="step == 0" class="main-container">
     <!-- Navigation Bar -->
-    <navigator></navigator>
+    <navigator :isBackButton="isBackButton"></navigator>
 
     <!-- 라우터 매핑으로 url 변경될때 변하는 페이지 -->
 
@@ -52,17 +52,19 @@
 
     <!-- Floating Action Buttons -->
     <div class="action-buttons">
-      <button @click="step = 1" class="create-button">+</button>
-      <button @click="step = 2" class="chat-button">🗨️</button>
+      <button @click="goToStep(1)"  this.isBackButton = false; class="create-button">+</button>
+      <button @click="goToStep(2)" class="chat-button">🗨️</button>
     </div>
   </div>
 
   <div v-if="step == 1">
-    <writePost @back="step = 0" @submit-post="addPost"></writePost>
+    <navigator :isBackButton="isBackButton"></navigator>
+    <writePost @back="goToStep(0)" @submit-post="addPost"></writePost>
   </div>
 
   <div v-if="step == 3">
-    <post-details :post="selectedPost" @back="step = 0"></post-details>
+    <navigator :isBackButton="isBackButton"></navigator>
+    <post-details :post="selectedPost" @back="goToStep(0)"></post-details>
   </div>
 
   <!-- <div v-if="step == 2">
@@ -72,7 +74,7 @@
 
 <script>
 import navigator from "./components/navigator.vue";
-import writePost from "./components/writePost.vue";
+import writePost from "./components/writePost.vue"; 
 import postDetails from "./components/postDetails.vue";
 
 export default {
@@ -88,19 +90,20 @@ export default {
       selectedFooterButton: "리포미",
       posts: [],
       selectedPost: null,
+      isBackButton : Boolean,
     };
   },
   methods: {
     addPost(post) {
       this.posts.push(post);
-      this.step = 0; // 돌아가기
+      this.goToStep(0); // 돌아가기
     },
     selectFooterButton(button) {
       this.selectedFooterButton = button;
     },
     openPostDetails(post) {
       this.selectedPost = post;
-      this.step = 3;
+      this.goToStep(3);
     },
     getFirstImage(images) {
       return images.find((image) => image !== null) || "";
@@ -114,6 +117,18 @@ export default {
         5: "기타",
       };
       return categoryMap[type] || "";
+    },
+    goToStep(step) {
+      this.step = step;
+      this.naviCheck();
+    },
+    naviCheck() {
+      console.log(typeof this.isBackButton);
+      if (this.step == 1 || this.step == 3 )
+        this.isBackButton = true;
+      else
+      this.isBackButton = false;
+        
     },
   },
 };

@@ -10,20 +10,20 @@
         {{ category.name }}
       </button>
     </div>
-
+<!--제목-->
     <input
       type="text"
       placeholder="제목을 입력해주세요"
       v-model="title"
       class="input-title"
     />
-
+<!--내용-->
     <textarea
       placeholder="내용을 입력해주세요"
       v-model="content"
       class="input-content"
     ></textarea>
-
+<!--이미지 업로드 버튼 -->
     <div class="image-upload-buttons">
       <button
         v-for="(image, index) in images"
@@ -38,6 +38,7 @@
         ></div>
         <div v-else>+</div>
       </button>
+      
       <input
         type="file"
         ref="fileInput"
@@ -54,7 +55,10 @@
 </template>
 
 <script>
+
 export default {
+
+  
   data() {
     return {
       categories: [
@@ -92,6 +96,7 @@ export default {
       reader.readAsDataURL(file);
     },
     submitPost() {
+      
       const newPost = {
         id: Date.now(),
         title: this.title,

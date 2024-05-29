@@ -1,7 +1,14 @@
 <template>
   <div class="navbox">
     <nav class="navbar">
-      <button class="menu-button" @click="toggleMenu">≡</button>
+      <div v-if="!isBackButton">
+        <button class="menu-button"  @click="toggleMenu">
+          ≡
+        </button>
+      </div>
+      <div v-if="isBackButton">
+        <button class="back-button"  @click="$emit('back')">＜</button>
+      </div>
       <span class="navbar-title">Reforme</span>
       <button class="search-button" @click="toggleSearch">🔍</button>
     </nav>
@@ -45,6 +52,9 @@
 <script>
 export default {
   name: "NavigationBar",
+  props: {
+    isBackButton: Boolean,
+  },
   data() {
     return {
       showMenu: false, // 메뉴의 표시 여부를 저장할 데이터
