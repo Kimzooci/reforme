@@ -80,6 +80,12 @@ import postDetails from "./postDetails.vue";
 
 export default {
   name: "Reforme",
+  mounted(){
+    // navigator.vue로부터 이벤트를 받아서 처리
+    this.emitter.on('backfunction', (data) => {
+  this.step = data;
+});
+  },
   created() {
 
     this.emitter.emit('updateButtons', { 
