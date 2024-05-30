@@ -52,7 +52,9 @@
 <script>
 export default {
   name: "PostDetails",
-
+  /*mounted(){
+      console.log(this.post.id)
+  },*/
   created() {
     this.emitter.emit("updateButtons", {
       menuButton: false,
@@ -108,7 +110,7 @@ export default {
 <style scoped>
 .main-container {
   width: 430px;
-  height: 932px;
+  height: 1485px;
   display: flex;
   flex-direction: column;
   background: #f8f8f8;

@@ -104,6 +104,31 @@ export default {
     },
     submitPost() {
       this.fire()
+      const formData = new FormData();
+      formData.append("title": this.title);
+      formData.append("body": this.content,);
+      formData.append("images": [ ], );
+      formData.append("category": this.selectedCategory);
+
+      axios
+        .post("/reforme/board", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          if (response.data.statusCode === 200) {
+            alert("게시글 작성 성공");
+            //localStorage.setItem("token", response.data.data); // JWT 토큰 저장
+            this.$router.push("/reforme_page");
+          } else {
+            alert("게시글 작성 실패");
+          }
+        })
+        .catch((error) => {
+          alert("게시글 작성 실패: " + error.message);
+        });
+      /*
       const newPost = {
         id: Date.now(),
         title: this.title,
@@ -112,7 +137,7 @@ export default {
         type: this.selectedCategory,
         comments: 0,
         images: this.images.filter((image) => image !== null).length > 0 ? this.images.filter((image) => image !== null) : [this.defaultImage], // 기본 이미지를 사용
-      };
+      };*/
       this.$emit("submit-post", newPost);
       this.$emit("back"); // 추가된 부분: 확인 버튼 클릭 시 app.vue로 돌아가기
     },
