@@ -7,10 +7,10 @@
     <div class="inner-content">
       <p>기초 캡스톤 디자인 프로젝트</p>
       <div class="link">
-        <router-link to="/signup">회원가입</router-link>
-        <router-link to="/signin">로그인</router-link>
-        <router-link to="/chatbot">챗봇</router-link>
-        <router-link to="/reforme">리포미</router-link>
+        <router-link to="/signup_page">회원가입</router-link>
+        <router-link to="/signin_page">로그인</router-link>
+        <router-link to="/chatbot_page">챗봇</router-link>
+        <router-link to="/reforme_page">리포미</router-link>
       </div>
     </div>
   </div>
