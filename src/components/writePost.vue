@@ -50,6 +50,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   created() {
     this.emitter.emit("updateButtons", {
