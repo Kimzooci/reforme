@@ -15,13 +15,49 @@
         />
       </div>
     </div>
-
+    <div
+      class="radio-buttons-container-wrapper"
+      :class="{ active: showRadioButtons }"
+    >
+      <div class="radio-buttons-container">
+        <div class="radio-buttons">
+          <label class="custom-radio">
+            <input
+              type="radio"
+              name="inputType"
+              value="prompt"
+              v-model="inputType"
+            />
+            <span class="radio-btn">
+              <i class="fas fa-check"></i>
+              <div class="hobbies-icon"></div>
+            </span>
+            프롬프트
+          </label>
+          <label class="custom-radio">
+            <input
+              type="radio"
+              name="inputType"
+              value="message"
+              v-model="inputType"
+            />
+            <span class="radio-btn">
+              <i class="fas fa-check"></i>
+              <div class="hobbies-icon"></div>
+            </span>
+            메세지
+          </label>
+        </div>
+      </div>
+    </div>
     <div class="ai_input_container">
       <input
         type="text"
         v-model="userInput"
         class="ai_input"
         placeholder="Type here..."
+        @focus="showRadioButtons = true"
+        @blur="hideRadioButtons"
         @keyup.enter="sendMessage"
       />
       <input
@@ -30,34 +66,23 @@
         style="display: none"
         @change="uploadImage"
       />
-      <div class="radio-buttons">
-        <label>
-          <input
-            type="radio"
-            name="inputType"
-            value="prompt"
-            v-model="inputType"
-          />
-          프롬프트
-        </label>
-        <label>
-          <input
-            type="radio"
-            name="inputType"
-            value="message"
-            v-model="inputType"
-          />
-          메세지
-        </label>
-      </div>
       <button
         class="ai_submit_button"
-        @click="triggerFileInput"
+        @click="
+          triggerFileInput;
+          showRadioButtons = true;
+        "
         v-if="inputType === 'prompt'"
       >
         <img src="../assets/images/imagelogo.png" alt="image" />
       </button>
-      <button class="ai_submit_button" @click="sendMessage">
+      <button
+        class="ai_submit_button"
+        @click="
+          sendMessage;
+          showRadioButtons = true;
+        "
+      >
         <img src="../assets/images/submitlogo.png" alt="submit" />
       </button>
     </div>
@@ -83,6 +108,7 @@ export default {
         },
         { image: require("../assets/images/cat.png"), user: false },
       ],
+      showRadioButtons: false,
     };
   },
   methods: {
@@ -184,6 +210,11 @@ export default {
         chatWindow.scrollTop = chatWindow.scrollHeight;
       });
     },
+    hideRadioButtons() {
+      setTimeout(() => {
+        this.showRadioButtons = false;
+      }, 200); // Adjust timeout if necessary to prevent premature hiding
+    },
   },
   mounted() {
     this.scrollToBottom();
@@ -192,6 +223,8 @@ export default {
 </script>
 
 <style scoped>
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css");
+
 .content {
   width: 430px;
   height: 932px;
@@ -276,7 +309,7 @@ export default {
   height: 50px;
   border-radius: 10px;
   border: none;
-  margin-bottom: 0;
+  margin-bottom: 10px;
   padding: 0 10px;
 }
 
@@ -308,5 +341,89 @@ export default {
 
 .ai_submit_button img:first-child {
   margin-right: 10px;
+}
+
+.radio-buttons-container-wrapper {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  position: relative;
+}
+
+.radio-buttons-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  overflow: hidden;
+  height: 0;
+  transition: height 0.3s ease;
+  position: absolute;
+  bottom: 60px; /* Adjust this value to ensure it is above the input */
+}
+
+.radio-buttons-container-wrapper:hover .radio-buttons-container,
+.radio-buttons-container-wrapper.active .radio-buttons-container {
+  height: 80px; /* Adjust this height to the desired size */
+}
+
+.radio-buttons {
+  display: flex;
+  gap: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.radio-buttons-container-wrapper:hover .radio-buttons,
+.radio-buttons-container-wrapper.active .radio-buttons {
+  opacity: 1;
+}
+
+.custom-radio {
+  position: relative;
+  cursor: pointer;
+}
+
+.custom-radio input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.radio-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  width: 50px;
+  background-color: #e6e6e6;
+  border-radius: 50%;
+  position: relative;
+  transition: background-color 0.2s;
+}
+
+.radio-btn .hobbies-icon {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.radio-btn i {
+  display: none;
+}
+
+.custom-radio input:checked ~ .radio-btn {
+  background-color: #4a7648;
+}
+
+.custom-radio input:checked ~ .radio-btn i {
+  display: block;
+  color: white;
+  position: absolute;
+  font-size: 24px;
 }
 </style>
