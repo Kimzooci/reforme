@@ -1,11 +1,13 @@
-
+<!-- 김동윤 돼지  -->
 <template>
   <div class="navbox">
     <nav class="navbar">
       <button v-if="menu" class="menu-button" @click="toggleMenu">≡</button>
       <button v-if="back" class="back-button" @click="$emit('back')">＜</button>
       <span class="navbar-title">Reforme</span>
-      <button v-if="search" class="search-button" @click="toggleSearch">🔍</button>
+      <button v-if="search" class="search-button" @click="toggleSearch">
+        🔍
+      </button>
     </nav>
     <div v-if="showMenu" class="menu-overlay" @click="toggleMenu">
       <div class="menu-container" @click.stop>
@@ -22,7 +24,11 @@
     </div>
     <div v-if="showSearch" class="search-overlay" @click="toggleSearch">
       <div class="search-container" @click.stop>
-        <input type="text" class="search-input" placeholder="검색어를 입력하세요" />
+        <input
+          type="text"
+          class="search-input"
+          placeholder="검색어를 입력하세요"
+        />
         <div class="search-divider"></div>
         <div class="search-buttons">
           <button class="small_cancel" @click="toggleSearch">취소</button>
@@ -59,17 +65,17 @@ export default {
     },
     searchButton(newVal) {
       this.search = newVal;
-    }
+    },
   },
   created() {
-    this.emitter.on('updateButtons', (data) => {
+    this.emitter.on("updateButtons", (data) => {
       this.menu = data.menuButton;
       this.search = data.searchButton;
       this.back = data.backButton;
     });
   },
   beforeUnmount() {
-    this.emitter.off('updateButtons'); // 이벤트 핸들러를 제거합니다
+    this.emitter.off("updateButtons"); // 이벤트 핸들러를 제거합니다
   },
   methods: {
     toggleMenu() {
@@ -185,7 +191,7 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-.back-button{
+.back-button {
   background: none;
   border: none;
   color: white;
