@@ -81,7 +81,7 @@ export default {
   methods: {
     backFunction() {
       
-      this.$router.push('/reforme');
+      this.$router.push('/reforme_page');
       this.emitter.emit('backfunction', 0);
       this.emitter.emit('updateButtons', { 
       menuButton: true, 
