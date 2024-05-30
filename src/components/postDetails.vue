@@ -39,6 +39,13 @@
 <script>
 export default {
   name: 'PostDetails',
+  created() {
+    this.emitter.emit('updateButtons', { 
+      menuButton: false, 
+      searchButton: false, 
+      backButton: true 
+    });
+  },
   props: {
     post: {
       type: Object,

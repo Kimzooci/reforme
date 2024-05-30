@@ -1,7 +1,6 @@
 <template>
   <div class="main-container">
     <div class="content">
-      <!-- <h1 v-if="step == 0">Reforme 페이지</h1> -->
       <!-- Post List -->
       <div class="post-list">
         <div
@@ -46,7 +45,7 @@
         :class="{ active: selectedFooterButton === 'reforyou' }"
         @click="selectFooterButton('reforyou')"
       >
-      reforyou
+        reforyou
       </router-link>
     </div>
 
@@ -65,23 +64,19 @@
     </div>
 
     <div v-if="step == 3">
-      <post-details 
-        :post="selectedPost" 
-        @back="step = 0"
-        @edit-post="editPost"
-        @delete-post="deletePost"
-      ></post-details>
+      <post-details :post="selectedPost" @back="step = 0" @delete-post="deletePost"></post-details>
     </div>
   </div>
 </template>
 
 <script>
-import writePost from "./writePost.vue";
-import postDetails from "./postDetails.vue";
+import defaultImage from '../assets/images/default-image.png';
+import writePost from './writePost.vue';
+import postDetails from './postDetails.vue';
 
 export default {
   name: "Reforme",
-  mounted(){
+  mounted() {
     // navigator.vue로부터 이벤트를 받아서 처리
     this.emitter.on('backfunction', (data) => {
       this.step = data;
@@ -111,6 +106,10 @@ export default {
       this.posts.push(post);
       this.step = 0;
     },
+    deletePost(postId) {
+      this.posts = this.posts.filter(post => post.id !== postId);
+      this.step = 0;
+    },
     selectFooterButton(button) {
       this.selectedFooterButton = button;
     },
@@ -118,16 +117,8 @@ export default {
       this.selectedPost = post;
       this.step = 3;
     },
-    editPost(post) {
-      // Logic to edit the post, for now, just logging
-      console.log('Edit post:', post);
-    },
-    deletePost(postId) {
-      this.posts = this.posts.filter(post => post.id !== postId);
-      this.step = 0;
-    },
     getFirstImage(images) {
-      return images.find((image) => image !== null) || "";
+      return images && images.length ? images.find((image) => image !== null) : defaultImage;
     },
     getCategoryName(type) {
       const categoryMap = {
@@ -142,6 +133,7 @@ export default {
   },
 };
 </script>
+
 
 
 <style scoped>
@@ -202,4 +194,15 @@ export default {
   margin-bottom: 10px;
   cursor: pointer;
 }
+
+.post-image {
+  width: 60px;
+  height: 60px;
+  background-size: cover;
+  background-position: center;
+  margin-right: 20px;
+  border-radius: 10px;
+  background-color: #f0f0f0; /* 기본 배경색 추가 */
+}
+
 </style>
