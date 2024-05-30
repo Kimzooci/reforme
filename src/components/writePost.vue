@@ -50,6 +50,7 @@
 </template>
 
 <script>
+import axios from 'axios'
 export default {
   created() {
     this.emitter.emit('updateButtons', { 
@@ -105,10 +106,14 @@ export default {
     submitPost() {
       this.fire()
       const formData = new FormData();
-      formData.append("title": this.title);
-      formData.append("body": this.content,);
-      formData.append("images": [ ], );
-      formData.append("category": this.selectedCategory);
+      formData.append("title", this.title);
+      alert("제목 전송 완료")
+      formData.append("body" , this.content,);
+      alert("내용 전송 완료")
+      formData.append("images" , this.images, );
+      alert("이미지 전송 완료")
+      formData.append("category" , this.selectedCategory);
+      alert("킥보드 전송 완료")
 
       axios
         .post("/reforme/board", formData, {
@@ -138,7 +143,7 @@ export default {
         comments: 0,
         images: this.images.filter((image) => image !== null).length > 0 ? this.images.filter((image) => image !== null) : [this.defaultImage], // 기본 이미지를 사용
       };*/
-      this.$emit("submit-post", newPost);
+      //this.$emit("submit-post", newPost);
       this.$emit("back"); // 추가된 부분: 확인 버튼 클릭 시 app.vue로 돌아가기
     },
   },
