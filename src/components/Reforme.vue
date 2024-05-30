@@ -35,18 +35,18 @@
       <router-link
         to="/reforme"
         class="footer-button"
-        :class="{ active: selectedFooterButton === '리포미' }"
-        @click="selectFooterButton('리포미')"
+        :class="{ active: selectedFooterButton === 'reforme' }"
+        @click="selectFooterButton('reforme')"
       >
-        리포미
+        reforme
       </router-link>
       <router-link
         to="/reforyou"
         class="footer-button"
-        :class="{ active: selectedFooterButton === '리포유' }"
-        @click="selectFooterButton('리포유')"
+        :class="{ active: selectedFooterButton === 'reforyou' }"
+        @click="selectFooterButton('reforyou')"
       >
-        리포유
+      reforyou
       </router-link>
     </div>
 
@@ -65,7 +65,12 @@
     </div>
 
     <div v-if="step == 3">
-      <post-details :post="selectedPost" @back="step = 0"></post-details>
+      <post-details 
+        :post="selectedPost" 
+        @back="step = 0"
+        @edit-post="editPost"
+        @delete-post="deletePost"
+      ></post-details>
     </div>
   </div>
 </template>
@@ -79,8 +84,8 @@ export default {
   mounted(){
     // navigator.vue로부터 이벤트를 받아서 처리
     this.emitter.on('backfunction', (data) => {
-  this.step = data;
-});
+      this.step = data;
+    });
   },
   created() {
     this.emitter.emit('updateButtons', { 
@@ -113,6 +118,14 @@ export default {
       this.selectedPost = post;
       this.step = 3;
     },
+    editPost(post) {
+      // Logic to edit the post, for now, just logging
+      console.log('Edit post:', post);
+    },
+    deletePost(postId) {
+      this.posts = this.posts.filter(post => post.id !== postId);
+      this.step = 0;
+    },
     getFirstImage(images) {
       return images.find((image) => image !== null) || "";
     },
@@ -129,6 +142,7 @@ export default {
   },
 };
 </script>
+
 
 <style scoped>
 @import "../styles/main.css";

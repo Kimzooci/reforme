@@ -24,8 +24,8 @@
     <div class="comments-container">
       <div v-for="comment in comments" :key="comment.id" class="comment">
         <div class="comment-text">{{ comment.text }}</div>
-        <button class="comment-action">수정</button>
-        <button class="comment-action">삭제</button>
+        <button class="comment-action" @click="editComment(comment)">수정</button>
+        <button class="comment-action" @click="deleteComment(comment.id)">삭제</button>
       </div>
     </div>
 
@@ -35,7 +35,6 @@
     </div>
   </div>
 </template>
-
 
 <script>
 export default {
@@ -65,15 +64,23 @@ export default {
       }
     },
     editPost() {
-      // Edit post logic here
+      this.$emit('edit-post', this.post);
     },
     deletePost() {
-      // Delete post logic here
+      this.$emit('delete-post', this.post.id);
+    },
+    editComment(comment) {
+      const updatedText = prompt("Enter new comment text:", comment.text);
+      if (updatedText) {
+        comment.text = updatedText;
+      }
+    },
+    deleteComment(commentId) {
+      this.comments = this.comments.filter(comment => comment.id !== commentId);
     }
   }
 }
 </script>
-
 
 <style scoped>
 .main-container {
@@ -83,6 +90,7 @@ export default {
   flex-direction: column;
   background: #F8F8F8;
   border: 1px solid #E1E1E1;
+  border-radius: 10px;
   overflow-y: auto;
 }
 
@@ -125,7 +133,6 @@ export default {
   cursor: pointer;
 }
 
-
 .post-images-section {
   flex-grow: 1;
   padding: 10px 20px;
@@ -166,7 +173,6 @@ export default {
   flex-grow: 1;
   padding: 10px 20px;
   background: #FFFFFF;
-
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin: 0px;
   width: 350px;
