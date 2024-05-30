@@ -3,7 +3,7 @@
     <!-- Post Title and Author Section -->
     <div class="post-header">
       <h2 class="post-title">{{ post.title }}</h2>
-      <p class="post-author">{{ post.author }} 작성자 </p>
+      <p class="post-author">{{ post.author }} 작성자</p>
       <div class="post-actions">
         <button class="edit-button" @click="editPost">수정</button>
         <button class="delete-button" @click="deletePost">삭제</button>
@@ -12,7 +12,12 @@
 
     <!-- Post Images Section -->
     <div class="post-images-section" v-if="post.images && post.images.length">
-      <div v-for="(image, index) in post.images" :key="index" class="post-image" :style="{ backgroundImage: 'url(' + image + ')' }"></div>
+      <div
+        v-for="(image, index) in post.images"
+        :key="index"
+        class="post-image"
+        :style="{ backgroundImage: 'url(' + image + ')' }"
+      ></div>
     </div>
 
     <!-- Post Content Section -->
@@ -24,57 +29,66 @@
     <div class="comments-container">
       <div v-for="comment in comments" :key="comment.id" class="comment">
         <div class="comment-text">{{ comment.text }}</div>
-        <button class="comment-action" @click="editComment(comment)">수정</button>
-        <button class="comment-action" @click="deleteComment(comment.id)">삭제</button>
+        <button class="comment-action" @click="editComment(comment)">
+          수정
+        </button>
+        <button class="comment-action" @click="deleteComment(comment.id)">
+          삭제
+        </button>
       </div>
     </div>
 
     <!-- Footer Bar with Input -->
     <div class="footer-bar">
-      <input v-model="newComment" class="input-comment" @keyup.enter="addComment" />
+      <input
+        v-model="newComment"
+        class="input-comment"
+        @keyup.enter="addComment"
+      />
     </div>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'PostDetails',
+  name: "PostDetails",
+
   created() {
-    this.emitter.emit('updateButtons', { 
-      menuButton: false, 
-      searchButton: false, 
-      backButton: true 
+    this.emitter.emit("updateButtons", {
+      menuButton: false,
+      searchButton: false,
+      backButton: true,
     });
   },
   props: {
     post: {
       type: Object,
       required: false,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   data() {
     return {
       comments: [],
-      newComment: ''
-    }
+      newComment: "",
+    };
   },
   methods: {
     addComment() {
-      if (this.newComment.trim() !== '') {
+      if (this.newComment.trim() !== "") {
         this.comments.push({
           id: Date.now(),
-          author: 'Designer',
-          text: this.newComment
+          author: "Designer",
+          text: this.newComment,
         });
-        this.newComment = '';
+        this.newComment = "";
       }
     },
     editPost() {
-      this.$emit('edit-post', this.post);
+      this.$emit("edit-post", this.post);
     },
     deletePost() {
-      this.$emit('delete-post', this.post.id);
+      this.$emit("delete-post", this.post.id);
     },
     editComment(comment) {
       const updatedText = prompt("Enter new comment text:", comment.text);
@@ -83,10 +97,12 @@ export default {
       }
     },
     deleteComment(commentId) {
-      this.comments = this.comments.filter(comment => comment.id !== commentId);
-    }
-  }
-}
+      this.comments = this.comments.filter(
+        (comment) => comment.id !== commentId
+      );
+    },
+  },
+};
 </script>
 
 <style scoped>
@@ -95,8 +111,8 @@ export default {
   height: 932px;
   display: flex;
   flex-direction: column;
-  background: #F8F8F8;
-  border: 1px solid #E1E1E1;
+  background: #f8f8f8;
+  border: 1px solid #e1e1e1;
   border-radius: 10px;
   overflow-y: auto;
 }
@@ -104,7 +120,7 @@ export default {
 .post-header {
   flex-grow: 1;
   padding: 10px 20px;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin: 0px;
   width: 350px;
@@ -131,8 +147,9 @@ export default {
   margin-right: 0;
 }
 
-.edit-button, .delete-button {
-  background: #2E482D;
+.edit-button,
+.delete-button {
+  background: #2e482d;
   color: white;
   border: none;
   border-radius: 5px;
@@ -143,7 +160,7 @@ export default {
 .post-images-section {
   flex-grow: 1;
   padding: 10px 20px;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin: 0px;
   width: 350px;
@@ -154,7 +171,7 @@ export default {
 .post-image {
   width: 100px;
   height: 100px;
-  background: #B1B1B1;
+  background: #b1b1b1;
   border-radius: 10px;
   background-size: cover;
   background-position: center;
@@ -163,7 +180,7 @@ export default {
 .post-content-section {
   flex-grow: 1;
   padding: 10px 20px;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin: 0px;
   width: 350px;
@@ -179,7 +196,7 @@ export default {
 .comments-container {
   flex-grow: 1;
   padding: 10px 20px;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin: 0px;
   width: 350px;
@@ -192,7 +209,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #E1E1E1;
+  border-bottom: 1px solid #e1e1e1;
 }
 
 .comment-text {
@@ -201,7 +218,7 @@ export default {
 }
 
 .comment-action {
-  background: #2E482D;
+  background: #2e482d;
   color: white;
   border: none;
   border-radius: 5px;
@@ -214,7 +231,7 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background: #2E482D;
+  background: #2e482d;
   border-radius: 0 0 10px 10px;
   width: 390px;
   box-sizing: border-box;
@@ -223,7 +240,7 @@ export default {
 .input-comment {
   margin-right: 10px;
   padding: 10px 10px;
-  border: 1px solid #E1E1E1;
+  border: 1px solid #e1e1e1;
   border-radius: 5px;
   height: 40px;
   width: 300px;
