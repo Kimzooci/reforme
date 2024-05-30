@@ -5,7 +5,7 @@
       <!-- Post List -->
       <div class="post-list">
         <div
-          v-for="post in posts"
+          v-for="post in 게시글"
           :key="post.id"
           class="post-item"
           @click="openPostDetails(post)"
@@ -97,13 +97,13 @@ export default {
     return {
       step: 0,
       selectedFooterButton: "리포미",
-      posts: [],
+      게시글: [],
       selectedPost: null,
     };
   },
   methods: {
     addPost(post) {
-      this.posts.push(post);
+      this.게시글.push(post);
       this.step = 0;
     },
     selectFooterButton(button) {
@@ -118,11 +118,11 @@ export default {
     },
     getCategoryName(type) {
       const categoryMap = {
-        1: "상의",
-        2: "외투",
-        3: "하의",
-        4: "가방",
-        5: "기타",
+        TOP: "상의",
+        OUTER: "외투",
+        BOTTOM: "하의",
+        BAG: "가방",
+        ETC: "기타",
       };
       return categoryMap[type] || "";
     },

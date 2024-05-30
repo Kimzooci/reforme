@@ -61,11 +61,11 @@ export default {
   data() {
     return {
       categories: [
-        { id: 1, name: "상의" },
-        { id: 2, name: "외투" },
-        { id: 3, name: "하의" },
-        { id: 4, name: "가방" },
-        { id: 5, name: "기타" },
+        { id: 'TOP', name: "상의" },
+        { id: 'OUTER', name: "외투" },
+        { id: 'BOTTOM', name: "하의" },
+        { id: 'BAG', name: "가방" },
+        { id: 'ETC', name: "기타" },
       ],
       selectedCategory: null,
       title: "",
