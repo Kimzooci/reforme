@@ -50,9 +50,7 @@
 </template>
 
 <script>
-
 export default {
-
   created() {
     this.emitter.emit('updateButtons', { 
       menuButton: false, 
@@ -73,10 +71,11 @@ export default {
       title: "",
       content: "",
       images: [null, null, null, null, null], // 이미지 배열 초기화
+      defaultImage: "../assets/images/default-image.png" // 기본 이미지 경로 설정
     };
   },
   methods: {
-    fire(){
+    fire() {
       this.emitter.emit('updateButtons', { 
       menuButton: true, 
       searchButton: true, 
@@ -112,7 +111,7 @@ export default {
         timestamp: new Date().toLocaleString(),
         type: this.selectedCategory,
         comments: 0,
-        images: this.images.filter((image) => image !== null), // 모든 이미지를 사용
+        images: this.images.filter((image) => image !== null).length > 0 ? this.images.filter((image) => image !== null) : [this.defaultImage], // 기본 이미지를 사용
       };
       this.$emit("submit-post", newPost);
       this.$emit("back"); // 추가된 부분: 확인 버튼 클릭 시 app.vue로 돌아가기
@@ -175,8 +174,6 @@ export default {
   background-color: #4a7648;
   color: white;
 }
-
-
 
 .input-title,
 .input-content {

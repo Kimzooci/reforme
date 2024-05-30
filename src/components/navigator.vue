@@ -1,17 +1,18 @@
-
 <template>
   <div class="navbox">
     <nav class="navbar">
       <button v-if="menu" class="menu-button" @click="toggleMenu">≡</button>
-      <button v-if="back" class="back-button" @click="$emit('back')">＜</button>
+      <button v-if="back" class="back-button" @click="backFunction">＜</button>
       <span class="navbar-title">Reforme</span>
-      <button v-if="search" class="search-button" @click="toggleSearch">🔍</button>
+      <button v-if="search" class="search-button" @click="toggleSearch">
+        🔍
+      </button>
     </nav>
     <div v-if="showMenu" class="menu-overlay" @click="toggleMenu">
       <div class="menu-container" @click.stop>
         <div class="menu-content">
           <div class="menu-item">닉네임</div>
-          <div class="menu-item"><h5>로그아웃</h5></div>
+          <div class="menu-item" @click="logout"><h5>로그아웃</h5></div>
           <div class="menu-item">전체</div>
           <div class="menu-item">의류</div>
           <div class="menu-item">가방</div>
@@ -22,7 +23,11 @@
     </div>
     <div v-if="showSearch" class="search-overlay" @click="toggleSearch">
       <div class="search-container" @click.stop>
-        <input type="text" class="search-input" placeholder="검색어를 입력하세요" />
+        <input
+          type="text"
+          class="search-input"
+          placeholder="검색어를 입력하세요"
+        />
         <div class="search-divider"></div>
         <div class="search-buttons">
           <button class="small_cancel" @click="toggleSearch">취소</button>
@@ -34,6 +39,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "NavigationBar",
   props: {
@@ -59,24 +66,50 @@ export default {
     },
     searchButton(newVal) {
       this.search = newVal;
-    }
+    },
   },
   created() {
-    this.emitter.on('updateButtons', (data) => {
+    this.emitter.on("updateButtons", (data) => {
       this.menu = data.menuButton;
       this.search = data.searchButton;
       this.back = data.backButton;
     });
   },
   beforeUnmount() {
-    this.emitter.off('updateButtons'); // 이벤트 핸들러를 제거합니다
+    this.emitter.off("updateButtons"); // 이벤트 핸들러를 제거합니다
   },
   methods: {
+    backFunction() {
+      
+      this.$router.push('/reforme');
+      this.emitter.emit('backfunction', 0);
+      this.emitter.emit('updateButtons', { 
+      menuButton: true, 
+      searchButton: true, 
+      backButton: false 
+    });
+    },
     toggleMenu() {
       this.showMenu = !this.showMenu;
     },
     toggleSearch() {
       this.showSearch = !this.showSearch;
+    },
+    logout() {
+      axios
+        .post("/logout", {}, { withCredentials: true })
+        .then((response) => {
+          if (response.status === 200) {
+            alert("로그아웃 성공");
+            // Redirect to the login page or any other page
+            this.$router.push("/");
+          } else {
+            alert("로그아웃 실패");
+          }
+        })
+        .catch((error) => {
+          alert("로그아웃 실패: " + error.message);
+        });
     },
   },
 };
@@ -185,7 +218,7 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-.back-button{
+.back-button {
   background: none;
   border: none;
   color: white;

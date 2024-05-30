@@ -75,6 +75,15 @@
 import axios from "axios";
 
 export default {
+  created() {
+    
+    this.emitter.emit('updateButtons', { 
+      menuButton: false, 
+      searchButton: false, 
+      backButton: true 
+      
+    }); 
+  },
   data() {
     return {
       userInput: "",
