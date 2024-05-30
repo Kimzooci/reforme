@@ -1,4 +1,3 @@
-<!-- 김동윤 돼지  -->
 <template>
   <div class="navbox">
     <nav class="navbar">
@@ -13,7 +12,7 @@
       <div class="menu-container" @click.stop>
         <div class="menu-content">
           <div class="menu-item">닉네임</div>
-          <div class="menu-item"><h5>로그아웃</h5></div>
+          <div class="menu-item" @click="logout"><h5>로그아웃</h5></div>
           <div class="menu-item">전체</div>
           <div class="menu-item">의류</div>
           <div class="menu-item">가방</div>
@@ -40,6 +39,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "NavigationBar",
   props: {
@@ -83,6 +84,22 @@ export default {
     },
     toggleSearch() {
       this.showSearch = !this.showSearch;
+    },
+    logout() {
+      axios
+        .post("/logout", {}, { withCredentials: true })
+        .then((response) => {
+          if (response.status === 200) {
+            alert("로그아웃 성공");
+            // Redirect to the login page or any other page
+            this.$router.push("/");
+          } else {
+            alert("로그아웃 실패");
+          }
+        })
+        .catch((error) => {
+          alert("로그아웃 실패: " + error.message);
+        });
     },
   },
 };
