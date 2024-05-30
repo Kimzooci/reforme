@@ -16,7 +16,7 @@ const routes = [
     { path: '/reforme_page', name: 'reforme_page', component: Reforme, meta: { requiresAuth: true } },
     { path: '/reforme_page/:id', name: 'reforme_detail', component: Reforme, meta: { requiresAuth: true } },
     { path: '/reforyou_page', name: 'reforyou_page', component: Reforyou, meta: { requiresAuth: true } },
-    { path: '/reforyou_page/:id', name: 'reforme_detail', component: Reforyou, meta: { requiresAuth: true } },
+    { path: '/reforyou_page/:id', name: 'reforyou_detail', component: Reforyou, meta: { requiresAuth: true } },
     { path: '/signup_page', name: 'signup_page', component: Signup },
     { path: '/signin_page', name: 'signin_page', component: Signin },
     { path: '/chatbot_page', name: 'chatbot_page', component: Chatbot, meta: { requiresAuth: true } },
@@ -38,6 +38,7 @@ router.beforeEach(async (to, from, next) => {
                 next({ name: 'signin_page' }); // 세션이 유효하지 않은 경우 로그인 페이지로 이동
             }
         } catch (error) {
+            console.error('Error checking session:', error); // 오류 로그 출력
             next({ name: 'error_page' }); // 오류 발생 시 오류 페이지로 이동
         }
     } else {

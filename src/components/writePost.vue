@@ -50,37 +50,39 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   created() {
-    this.emitter.emit('updateButtons', { 
-      menuButton: false, 
-      searchButton: true, 
-      backButton: true 
+    this.emitter.emit("updateButtons", {
+      menuButton: false,
+      searchButton: true,
+      backButton: true,
     });
   },
   data() {
     return {
       categories: [
-        { id: 'TOP', name: "상의" },
-        { id: 'OUTER', name: "외투" },
-        { id: 'BOTTOM', name: "하의" },
-        { id: 'BAG', name: "가방" },
-        { id: 'ETC', name: "기타" },
+        { id: "TOP", name: "상의" },
+        { id: "OUTER", name: "외투" },
+        { id: "BOTTOM", name: "하의" },
+        { id: "BAG", name: "가방" },
+        { id: "ETC", name: "기타" },
       ],
       selectedCategory: null,
       title: "",
       content: "",
       images: [null, null, null, null, null], // 이미지 배열 초기화
-      defaultImage: "../assets/images/default-image.png" // 기본 이미지 경로 설정
+      defaultImage: "../assets/images/default-image.png", // 기본 이미지 경로 설정
     };
   },
   methods: {
     fire() {
-      this.emitter.emit('updateButtons', { 
-      menuButton: true, 
-      searchButton: true, 
-      backButton: false 
-    });
+      this.emitter.emit("updateButtons", {
+        menuButton: true,
+        searchButton: true,
+        backButton: false,
+      });
     },
     selectCategory(id) {
       this.selectedCategory = id;
@@ -103,12 +105,12 @@ export default {
       reader.readAsDataURL(file);
     },
     submitPost() {
-      this.fire()
+      this.fire();
       const formData = new FormData();
-      formData.append("title": this.title);
-      formData.append("body": this.content,);
-      formData.append("images": [ ], );
-      formData.append("category": this.selectedCategory);
+      formData.append("title", this.title);
+      formData.append("body", this.content);
+      formData.append("images", []);
+      formData.append("category", this.selectedCategory);
 
       axios
         .post("/reforme/board", formData, {
@@ -138,7 +140,7 @@ export default {
         comments: 0,
         images: this.images.filter((image) => image !== null).length > 0 ? this.images.filter((image) => image !== null) : [this.defaultImage], // 기본 이미지를 사용
       };*/
-      this.$emit("submit-post", newPost);
+      //this.$emit("submit-post", newPost);
       this.$emit("back"); // 추가된 부분: 확인 버튼 클릭 시 app.vue로 돌아가기
     },
   },
