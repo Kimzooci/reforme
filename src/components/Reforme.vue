@@ -33,7 +33,7 @@
     <!-- Footer Bar with Buttons -->
     <div class="footer-bar">
       <router-link
-        to="/reforme"
+        to="/reforme_page"
         class="footer-button"
         :class="{ active: selectedFooterButton === '리포미' }"
         @click="selectFooterButton('리포미')"
@@ -41,7 +41,7 @@
         리포미
       </router-link>
       <router-link
-        to="/reforyou"
+        to="/reforyou_page"
         class="footer-button"
         :class="{ active: selectedFooterButton === '리포유' }"
         @click="selectFooterButton('리포유')"
@@ -53,7 +53,7 @@
     <!-- Floating Action Buttons -->
     <div class="action-buttons">
       <button @click="step = 1" class="create-button">+</button>
-      <router-link to="/chatbot" class="chat-button">🗨️</router-link>
+      <router-link to="/chatbot_page" class="chat-button">🗨️</router-link>
     </div>
     <!-- step == 2 삭제 -> link 이동으로 변경함 -->
     <div v-if="step == 1">
@@ -73,10 +73,10 @@ import postDetails from "./postDetails.vue";
 export default {
   name: "Reforme",
   created() {
-    this.emitter.emit('updateButtons', { 
-      menuButton: true, 
-      searchButton: true, 
-      backButton: false 
+    this.emitter.emit("updateButtons", {
+      menuButton: true,
+      searchButton: true,
+      backButton: false,
     });
   },
   components: {

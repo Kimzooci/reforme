@@ -21,7 +21,9 @@
       <div class="isFirstTime">
         <p>처음 이용 하시나요?</p>
         <p class="gotosignup">
-          <router-link to="/signup" class="signup-link">회원가입</router-link>
+          <router-link to="/signup_page" class="signup-link"
+            >회원가입</router-link
+          >
         </p>
       </div>
 
@@ -58,7 +60,7 @@ export default {
           if (response.data.statusCode === 200) {
             alert("로그인 성공");
             //localStorage.setItem("token", response.data.data); // JWT 토큰 저장
-            this.$router.push("/reforme");
+            this.$router.push("/reforme_page");
           } else {
             alert("로그인 실패: Invalid credentials");
           }
