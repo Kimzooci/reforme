@@ -15,40 +15,33 @@
         />
       </div>
     </div>
-    <div
-      class="radio-buttons-container-wrapper"
-      :class="{ active: showRadioButtons }"
-    >
-      <div class="radio-buttons-container">
-        <div class="radio-buttons">
-          <label class="custom-radio">
-            <input
-              type="radio"
-              name="inputType"
-              value="prompt"
-              v-model="inputType"
-            />
-            <span class="radio-btn">
-              <i class="fas fa-check"></i>
-              <div class="hobbies-icon"></div>
-            </span>
-            프롬프트
-          </label>
-          <label class="custom-radio">
-            <input
-              type="radio"
-              name="inputType"
-              value="message"
-              v-model="inputType"
-            />
-            <span class="radio-btn">
-              <i class="fas fa-check"></i>
-              <div class="hobbies-icon"></div>
-            </span>
-            메세지
-          </label>
-        </div>
-      </div>
+    <div class="radio-buttons">
+      <label class="custom-radio">
+        <input
+          type="radio"
+          name="inputType"
+          value="prompt"
+          v-model="inputType"
+        />
+        <span class="radio-btn">
+          <i class="fas fa-check"></i>
+          <div class="hobbies-icon"></div>
+        </span>
+        프롬프트
+      </label>
+      <label class="custom-radio">
+        <input
+          type="radio"
+          name="inputType"
+          value="message"
+          v-model="inputType"
+        />
+        <span class="radio-btn">
+          <i class="fas fa-check"></i>
+          <div class="hobbies-icon"></div>
+        </span>
+        메세지
+      </label>
     </div>
     <div class="ai_input_container">
       <input
@@ -56,8 +49,6 @@
         v-model="userInput"
         class="ai_input"
         placeholder="Type here..."
-        @focus="showRadioButtons = true"
-        @blur="hideRadioButtons"
         @keyup.enter="sendMessage"
       />
       <input
@@ -68,21 +59,12 @@
       />
       <button
         class="ai_submit_button"
-        @click="
-          triggerFileInput;
-          showRadioButtons = true;
-        "
+        @click="triggerFileInput"
         v-if="inputType === 'prompt'"
       >
         <img src="../assets/images/imagelogo.png" alt="image" />
       </button>
-      <button
-        class="ai_submit_button"
-        @click="
-          sendMessage;
-          showRadioButtons = true;
-        "
-      >
+      <button class="ai_submit_button" @click="sendMessage">
         <img src="../assets/images/submitlogo.png" alt="submit" />
       </button>
     </div>
@@ -108,7 +90,6 @@ export default {
         },
         { image: require("../assets/images/cat.png"), user: false },
       ],
-      showRadioButtons: false,
     };
   },
   methods: {
@@ -209,11 +190,6 @@ export default {
         const chatWindow = this.$refs.chatWindow;
         chatWindow.scrollTop = chatWindow.scrollHeight;
       });
-    },
-    hideRadioButtons() {
-      setTimeout(() => {
-        this.showRadioButtons = false;
-      }, 200); // Adjust timeout if necessary to prevent premature hiding
     },
   },
   mounted() {
@@ -343,40 +319,13 @@ export default {
   margin-right: 10px;
 }
 
-.radio-buttons-container-wrapper {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  position: relative;
-}
-
-.radio-buttons-container {
+.radio-buttons {
   display: flex;
   justify-content: center;
   align-items: center;
-  width: 100%;
-  overflow: hidden;
-  height: 0;
-  transition: height 0.3s ease;
-  position: absolute;
-  bottom: 60px; /* Adjust this value to ensure it is above the input */
-}
-
-.radio-buttons-container-wrapper:hover .radio-buttons-container,
-.radio-buttons-container-wrapper.active .radio-buttons-container {
-  height: 80px; /* Adjust this height to the desired size */
-}
-
-.radio-buttons {
-  display: flex;
+  margin-top: 10px;
+  margin-bottom: 10px;
   gap: 20px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.radio-buttons-container-wrapper:hover .radio-buttons,
-.radio-buttons-container-wrapper.active .radio-buttons {
-  opacity: 1;
 }
 
 .custom-radio {
