@@ -17,7 +17,17 @@
 </template>
 
 <script>
-export default {};
+export default {
+  mounted() {
+    
+    this.emitter.emit('updateButtons', { 
+      menuButton: false, 
+      searchButton: false, 
+      backButton: false 
+      
+    }); 
+  },
+};
 </script>
 
 <style>

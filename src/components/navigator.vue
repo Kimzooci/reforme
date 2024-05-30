@@ -128,6 +128,7 @@ export default {
   color: white;
   position: relative;
   z-index: 2;
+  height: 50px;
 }
 
 .menu-button,
@@ -142,8 +143,9 @@ export default {
 .navbar-title {
   font-size: 24px;
   font-family: "YourFontFamily";
-  margin-left: auto;
-  margin-right: auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .menu-container {
