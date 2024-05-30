@@ -42,6 +42,14 @@
         </span>
         메세지
       </label>
+      <label class="custom-radio">
+        <input type="radio" name="inputType" value="edit" v-model="inputType" />
+        <span class="radio-btn">
+          <i class="fas fa-check"></i>
+          <div class="hobbies-icon"></div>
+        </span>
+        수정하기
+      </label>
     </div>
     <div class="ai_input_container">
       <input
@@ -60,7 +68,7 @@
       <button
         class="ai_submit_button"
         @click="triggerFileInput"
-        v-if="inputType === 'prompt'"
+        v-if="inputType === 'edit'"
       >
         <img src="../assets/images/imagelogo.png" alt="image" />
       </button>
@@ -75,17 +83,10 @@
 import axios from "axios";
 
 export default {
-  created() {
-    this.emitter.emit("updateButtons", {
-      menuButton: false,
-      searchButton: false,
-      backButton: true,
-    });
-  },
   data() {
     return {
       userInput: "",
-      inputType: "prompt",
+      inputType: "prompt", // 기본값을 'prompt'로 설정하여 이미지를 업로드할 때 트리거됩니다.
       messages: [
         {
           text: "안녕하세요! 리포미입니다😁",
@@ -109,39 +110,10 @@ export default {
       this.scrollToBottom();
 
       try {
-        if (this.inputType === "prompt") {
-          const response = await axios.post(
-            "/aichat/chat_image",
-            { prompt: userMessage.text },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-
-          const textMessage = {
-            text: "요청하신 이미지 입니다😆",
-            user: false,
-          };
-
-          const imageMessage = {
-            image: `data:image/png;base64,${response.data}`,
-            user: false,
-          };
-
-          this.messages.push(textMessage);
-          this.messages.push(imageMessage);
-        } else {
-          const response = await axios.post(
-            "/aichat/chat_text",
-            { text: userMessage.text },
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
+        if (this.inputType === "message") {
+          const response = await axios.post("/aichat/chat_text", null, {
+            params: { text: userMessage.text },
+          });
 
           const botMessage = {
             text: response.data,
@@ -149,15 +121,31 @@ export default {
           };
 
           this.messages.push(botMessage);
+        } else if (this.inputType === "prompt") {
+          // 프롬프트로 이미지를 생성합니다.
+          const formData = new FormData();
+          formData.append("prompt", userMessage.text);
+
+          const response = await axios.post("/aichat/chat_image", formData);
+
+          const botMessage = {
+            text: "생성된 이미지입니다😊",
+            user: false,
+          };
+
+          const generatedImageMessage = {
+            image: `data:image/png;base64,${response.data}`,
+            user: false,
+          };
+
+          this.messages.push(botMessage);
+          this.messages.push(generatedImageMessage);
         }
         this.scrollToBottom();
       } catch (error) {
         console.error("Error generating response:", error);
         this.messages.push({ text: "Error generating response", user: false });
       }
-    },
-    triggerFileInput() {
-      this.$refs.fileInput.click();
     },
     async uploadImage(event) {
       const file = event.target.files[0];
@@ -167,7 +155,6 @@ export default {
       formData.append("image", file);
       formData.append("prompt", this.userInput);
 
-      // Add user message for prompt and image
       const userMessage = { text: this.userInput, user: true };
       this.messages.push(userMessage);
 
@@ -180,7 +167,7 @@ export default {
       this.scrollToBottom();
 
       try {
-        const response = await axios.post("/aichat/chat_image", formData, {
+        const response = await axios.post("/aichat/chat_modify", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
@@ -204,15 +191,15 @@ export default {
         this.messages.push({ text: "Error uploading image", user: false });
       }
     },
+    triggerFileInput() {
+      this.$refs.fileInput.click();
+    },
     scrollToBottom() {
       this.$nextTick(() => {
         const chatWindow = this.$refs.chatWindow;
         chatWindow.scrollTop = chatWindow.scrollHeight;
       });
     },
-  },
-  mounted() {
-    this.scrollToBottom();
   },
 };
 </script>
