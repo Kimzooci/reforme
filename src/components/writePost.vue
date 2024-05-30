@@ -20,7 +20,7 @@
       />
       <textarea
         placeholder="내용을 입력해주세요"
-        v-model="content"
+        v-model="body"
         class="input-content"
       ></textarea>
       <div class="image-upload-buttons">
@@ -67,7 +67,7 @@ export default {
       ],
       selectedCategory: null,
       title: "",
-      content: "",
+      body: "",
       images: [null, null, null, null, null], // 이미지 배열 초기화
       uploadIndex: null,
     };
@@ -96,7 +96,7 @@ export default {
     submitPost() {
       const formData = new FormData();
       formData.append("title", this.title);
-      formData.append("body", this.content);
+      formData.append("body", this.body);
       formData.append("category", this.selectedCategory);
       this.images.forEach((image, index) => {
         if (image) {
