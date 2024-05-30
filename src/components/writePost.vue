@@ -16,11 +16,12 @@
       v-model="title"
       class="input-title"
     />
-    <textarea
+    <input
+      type="text"
       placeholder="내용을 입력해주세요"
       v-model="content"
       class="input-content"
-    ></textarea>
+    />
     <div class="image-upload-buttons">
       <button
         v-for="(image, index) in images"
