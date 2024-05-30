@@ -1,5 +1,6 @@
 <template>
   <div class="error-container">
+    <h1>오류가 발생했습니다</h1>
     <h1>페이지를 찾을 수 없습니다</h1>
     <p>요청하신 페이지를 찾을 수 없습니다. 다시 시도해주세요.</p>
     <button @click="goHome">홈으로 이동</button>
