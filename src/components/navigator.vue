@@ -11,7 +11,7 @@
     <div v-if="showMenu" class="menu-overlay" @click="toggleMenu">
       <div class="menu-container" @click.stop>
         <div class="menu-content">
-          <div class="menu-item">닉네임</div>
+          <div class="menu-item">{{ userId }}</div>
           <div class="menu-item" @click="logout">로그아웃</div>
           <div class="menu-item">전체</div>
           <div class="menu-item">의류</div>
@@ -50,7 +50,7 @@ export default {
   },
   data() {
     return {
-      userId: this.userId,
+      userId: null,
       showMenu: false,
       showSearch: false,
       back: this.backButton,
@@ -75,9 +75,25 @@ export default {
       this.search = data.searchButton;
       this.back = data.backButton;
     });
+
+    axios
+      .get("/", {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        if (response.data.statusCode === 200) {
+          this.userId = response.data.data.userId;
+        }
+      })
+      .catch((error) => {
+        this.$router.push("/error_page");
+        console.log(error.message);
+      });
   },
   beforeUnmount() {
-    this.emitter.off("updateButtons"); // 이벤트 핸들러를 제거합니다
+    this.emitter.off("updateButtons");
   },
   methods: {
     backFunction() {
@@ -101,7 +117,6 @@ export default {
         .then((response) => {
           if (response.status === 200) {
             alert("로그아웃 성공");
-            // Redirect to the login page or any other page
             this.$router.push("/");
           } else {
             alert("로그아웃 실패");

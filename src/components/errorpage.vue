@@ -1,0 +1,52 @@
+<template>
+  <div class="error-container">
+    <h1>페이지를 찾을 수 없습니다</h1>
+    <p>요청하신 페이지를 찾을 수 없습니다. 다시 시도해주세요.</p>
+    <button @click="goHome">홈으로 이동</button>
+  </div>
+</template>
+
+<script>
+export default {
+  name: "ErrorPage",
+  methods: {
+    goHome() {
+      this.$router.push("/");
+    },
+  },
+};
+</script>
+
+<style scoped>
+.error-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  text-align: center;
+}
+
+.error-container h1 {
+  font-size: 2em;
+  margin-bottom: 20px;
+}
+
+.error-container p {
+  margin-bottom: 20px;
+}
+
+.error-container button {
+  background-color: #4a7648;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  font-size: 1em;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.error-container button:hover {
+  background-color: #2e482d;
+}
+</style>
