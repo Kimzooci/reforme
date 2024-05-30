@@ -55,7 +55,7 @@ export default {
   created() {
     this.emitter.emit('updateButtons', { 
       menuButton: false, 
-      searchButton: true, 
+      searchButton: false, 
       backButton: true 
     });
   },

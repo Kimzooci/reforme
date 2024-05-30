@@ -1,10 +1,13 @@
 <template>
   <div class="main-container">
     <div class="content">
-      <!-- Post List -->
+      <div class="search-bar">
+        <input v-model="searchQuery" placeholder="검색어를 입력하세요" />
+        <button @click="searchPosts">확인</button>
+      </div>
       <div class="post-list">
         <div
-          v-for="post in posts"
+          v-for="post in filteredPosts"
           :key="post.id"
           class="post-item"
           @click="openPostDetails(post)"
@@ -70,14 +73,12 @@
 </template>
 
 <script>
-import defaultImage from '../assets/images/default-image.png';
-import writePost from './writePost.vue';
-import postDetails from './postDetails.vue';
+import writePost from "./writePost.vue";
+import postDetails from "./postDetails.vue";
 
 export default {
   name: "Reforme",
-  mounted() {
-    // navigator.vue로부터 이벤트를 받아서 처리
+  mounted(){
     this.emitter.on('backfunction', (data) => {
       this.step = data;
     });
@@ -99,15 +100,24 @@ export default {
       selectedFooterButton: "리포미",
       posts: [],
       selectedPost: null,
+      searchQuery: "",
     };
+  },
+  computed: {
+    filteredPosts() {
+      if (this.searchQuery) {
+        return this.posts.filter(post =>
+          post.title.includes(this.searchQuery) ||
+          post.content.includes(this.searchQuery)
+        );
+      } else {
+        return this.posts;
+      }
+    }
   },
   methods: {
     addPost(post) {
       this.posts.push(post);
-      this.step = 0;
-    },
-    deletePost(postId) {
-      this.posts = this.posts.filter(post => post.id !== postId);
       this.step = 0;
     },
     selectFooterButton(button) {
@@ -118,7 +128,7 @@ export default {
       this.step = 3;
     },
     getFirstImage(images) {
-      return images && images.length ? images.find((image) => image !== null) : defaultImage;
+      return images.find((image) => image !== null) || "";
     },
     getCategoryName(type) {
       const categoryMap = {
@@ -130,10 +140,12 @@ export default {
       };
       return categoryMap[type] || "";
     },
+    searchPosts() {
+      // 이 메서드는 컴퓨티드 속성을 업데이트하여 필터링된 게시글을 보여줍니다
+    }
   },
 };
 </script>
-
 
 
 <style scoped>
