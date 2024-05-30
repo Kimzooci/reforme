@@ -178,6 +178,8 @@ export default {
 
 .categories {
   padding: 10px 0;
+  display: flex; /* Flexbox 사용 */
+  justify-content: space-between; /* 버튼 간격 균등 배치 */
 }
 
 .categories button {
@@ -204,20 +206,16 @@ export default {
 
 .input-title,
 .input-content {
-  width: 412px;
-  height: 69px;
+  width: 90%; /* 90%로 수정 */
+  margin: 10px auto; /* 가운데 정렬 */
   border: 1px solid #ccc;
   border-radius: 10px;
+  padding: 10px; /* 패딩 추가 */
 }
 
 .input-content {
-  width: 410px;
-  height: 378px;
-  gap: 0px;
-  border-radius: 10px 0px 0px 0px;
-  border: 1px 0px 0px 0px;
-  opacity: 0px;
-  resize: none;
+  height: 200px; /* 높이 조정 */
+  resize: none; /* 크기 조정 불가 */
 }
 
 .action-buttons {
@@ -228,7 +226,7 @@ export default {
 }
 
 .submit-button {
-  width: calc(100%); /* 수정: 양쪽 여백 포함 */
+  width: 100%; /* 수정: 양쪽 여백 포함 */
   height: 76px;
   padding: 10px 20px;
   background-color: #4a7648;
@@ -241,10 +239,11 @@ export default {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 410px;
+  width: 90%; /* 90%로 수정 */
   height: 74px;
   padding: 0 10px;
-  background-color: #ffffffff;
+  margin: 0 auto; /* 가운데 정렬 */
+  background-color: #ffffff;
 }
 
 .image-upload-button {
