@@ -30,18 +30,13 @@
           class="image-upload-button"
           @click.prevent="triggerFileUpload(index)"
         >
-          <div
-            v-if="image"
-            class="image-preview"
-            :style="{ backgroundImage: 'url(' + image + ')' }"
-          ></div>
+          <div v-if="image" class="image-preview" :style="{ backgroundImage: 'url(' + image + ')' }"></div>
           <div v-else>+</div>
         </button>
         <input
           type="file"
           ref="fileInput"
           style="display: none"
-          multiple
           @change="handleFiles"
         />
       </div>
@@ -79,18 +74,23 @@ export default {
     triggerFileUpload(index) {
       this.uploadIndex = index; // 업로드할 버튼 인덱스를 저장
       this.$refs.fileInput.click();
+      console.log(`Trigger file upload for index: ${this.uploadIndex}`);
     },
     handleFiles(event) {
       const files = event.target.files;
+      console.log("Files selected:", files);
       for (let i = 0; i < files.length; i++) {
         this.readImage(files[i], this.uploadIndex + i);
       }
     },
     readImage(file, index) {
+      console.log("Reading image file:", file, "for index:", index);
+       this.images[index] = file
       const reader = new FileReader();
-      reader.onload = (e) => {
+      /*reader.onload = (e) => {
         this.images[index] = e.target.result; // Vue 3에서는 직접 배열 요소 수정
-      };
+        console.log(`Image loaded at index ${index}:`, this.images[index]);
+      };*/
       reader.readAsDataURL(file);
     },
     submitPost() {
@@ -105,6 +105,7 @@ export default {
             this.dataURLtoBlob(image),
             `image${index}.png`
           );
+          console.log(`Image ${index} added to form data:`, image);
         }
       });
 
@@ -115,6 +116,7 @@ export default {
           },
         })
         .then((response) => {
+          console.log("Response from server:", response);
           if (response.data.statusCode === 200) {
             alert("게시글 작성 성공");
             this.$router.push("/reforme_page");
@@ -123,6 +125,7 @@ export default {
           }
         })
         .catch((error) => {
+          console.log("Error posting data:", error);
           alert("게시글 작성 실패: " + error.message);
         });
     },
@@ -135,7 +138,9 @@ export default {
       while (n--) {
         u8arr[n] = bstr.charCodeAt(n);
       }
-      return new Blob([u8arr], { type: mime });
+      const blob = new Blob([u8arr], { type: mime });
+      console.log("Converted data URL to blob:", blob);
+      return blob;
     },
   },
 };
