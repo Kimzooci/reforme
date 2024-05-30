@@ -12,7 +12,7 @@
       <div class="menu-container" @click.stop>
         <div class="menu-content">
           <div class="menu-item">닉네임</div>
-          <div class="menu-item" @click="logout"><h5>로그아웃</h5></div>
+          <div class="menu-item" @click="logout">로그아웃</div>
           <div class="menu-item">전체</div>
           <div class="menu-item">의류</div>
           <div class="menu-item">가방</div>
@@ -50,6 +50,7 @@ export default {
   },
   data() {
     return {
+      userId: this.userId,
       showMenu: false,
       showSearch: false,
       back: this.backButton,
@@ -80,14 +81,13 @@ export default {
   },
   methods: {
     backFunction() {
-      
-      this.$router.push('/reforme_page');
-      this.emitter.emit('backfunction', 0);
-      this.emitter.emit('updateButtons', { 
-      menuButton: true, 
-      searchButton: true, 
-      backButton: false 
-    });
+      this.$router.push("/reforme_page");
+      this.emitter.emit("backfunction", 0);
+      this.emitter.emit("updateButtons", {
+        menuButton: true,
+        searchButton: true,
+        backButton: false,
+      });
     },
     toggleMenu() {
       this.showMenu = !this.showMenu;

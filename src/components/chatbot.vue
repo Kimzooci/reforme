@@ -111,7 +111,7 @@ export default {
       try {
         if (this.inputType === "prompt") {
           const response = await axios.post(
-            "/api/image",
+            "/aichat/chat_image",
             { prompt: userMessage.text },
             {
               headers: {
@@ -134,8 +134,8 @@ export default {
           this.messages.push(imageMessage);
         } else {
           const response = await axios.post(
-            "/api/message",
-            { message: userMessage.text },
+            "/aichat/chat_text",
+            { text: userMessage.text },
             {
               headers: {
                 "Content-Type": "application/json",
@@ -180,7 +180,7 @@ export default {
       this.scrollToBottom();
 
       try {
-        const response = await axios.post("/api/edit-image", formData, {
+        const response = await axios.post("/aichat/chat_image", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
