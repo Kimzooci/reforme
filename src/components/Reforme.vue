@@ -52,16 +52,12 @@
 
     <!-- Floating Action Buttons -->
     <div class="action-buttons">
-
-
       <button @click="step = 1" class="create-button">
-        <img src="../assets/images/generate1.png" alt="">
+        <img src="../assets/images/generate1.png" alt="" />
       </button>
       <router-link to="/chatbot_page" class="chat-button">
-        <img src="../assets/images/chatbot.png" alt="">
+        <img src="../assets/images/chatbot.png" alt="" />
       </router-link>
-
-
     </div>
     <!-- step == 2 삭제 -> link 이동으로 변경함 -->
     <div v-if="step == 1">
@@ -81,21 +77,11 @@ import postDetails from "./postDetails.vue";
 export default {
   name: "Reforme",
   created() {
-<<<<<<< HEAD
-
-    this.emitter.emit('updateButtons', { 
-      menuButton: true, 
-      searchButton: true, 
-      backButton: false 
-    }); 
-
-=======
     this.emitter.emit("updateButtons", {
       menuButton: true,
       searchButton: true,
       backButton: false,
     });
->>>>>>> f1b7fdc0a0fd883d63c2c320a2657868335ac384
   },
   components: {
     writePost,
