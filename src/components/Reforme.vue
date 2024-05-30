@@ -118,11 +118,11 @@ export default {
     },
     getCategoryName(type) {
       const categoryMap = {
-        1: "상의",
-        2: "외투",
-        3: "하의",
-        4: "가방",
-        5: "기타",
+        TOP: "상의",
+        OUTER: "외투",
+        BOTTOM: "하의",
+        BAG: "가방",
+        ETC: "기타",
       };
       return categoryMap[type] || "";
     },
