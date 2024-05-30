@@ -76,13 +76,11 @@ import axios from "axios";
 
 export default {
   created() {
-    
-    this.emitter.emit('updateButtons', { 
-      menuButton: false, 
-      searchButton: false, 
-      backButton: true 
-      
-    }); 
+    this.emitter.emit("updateButtons", {
+      menuButton: false,
+      searchButton: false,
+      backButton: true,
+    });
   },
   data() {
     return {
@@ -169,6 +167,18 @@ export default {
       formData.append("image", file);
       formData.append("prompt", this.userInput);
 
+      // Add user message for prompt and image
+      const userMessage = { text: this.userInput, user: true };
+      this.messages.push(userMessage);
+
+      const imageMessage = {
+        image: URL.createObjectURL(file),
+        user: true,
+      };
+      this.messages.push(imageMessage);
+      this.userInput = "";
+      this.scrollToBottom();
+
       try {
         const response = await axios.post("/api/edit-image", formData, {
           headers: {
@@ -181,13 +191,13 @@ export default {
           user: false,
         };
 
-        const imageMessage = {
+        const editedImageMessage = {
           image: `data:image/png;base64,${response.data}`,
           user: false,
         };
 
         this.messages.push(textMessage);
-        this.messages.push(imageMessage);
+        this.messages.push(editedImageMessage);
         this.scrollToBottom();
       } catch (error) {
         console.error("Error uploading image:", error);
