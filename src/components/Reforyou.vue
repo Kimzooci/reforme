@@ -1,6 +1,8 @@
 <template>
   <div class="main-container">
     <div class="content">
+      <!-- <h1 v-if="step == 0">Reforyou 페이지</h1> -->
+
       <!-- Post List -->
       <div class="post-list">
         <div
@@ -34,34 +36,25 @@
       <router-link
         to="/reforme_page"
         class="footer-button"
-        :class="{ active: selectedFooterButton === 'reforme' }"
-        @click="selectFooterButton('reforme')"
+        :class="{ active: selectedFooterButton === '리포미' }"
+        @click="selectFooterButton('리포미')"
       >
-        reforme
+        리포미
       </router-link>
       <router-link
         to="/reforyou_page"
         class="footer-button"
-        :class="{ active: selectedFooterButton === 'reforyou' }"
-        @click="selectFooterButton('reforyou')"
+        :class="{ active: selectedFooterButton === '리포유' }"
+        @click="selectFooterButton('리포유')"
       >
-        reforyou
+        리포유
       </router-link>
     </div>
 
     <!-- Floating Action Buttons -->
     <div class="action-buttons">
-<<<<<<< HEAD
-      <button @click="step = 1" class="create-button">
-        <img src="../assets/images/generate1.png" alt="">
-      </button>
-      <router-link to="/chatbot" class="chat-button">
-        <img src="../assets/images/chatbot.png" alt="">
-      </router-link>
-=======
       <button @click="step = 1" class="create-button">+</button>
       <router-link to="/chatbot_page" class="chat-button">🗨️</router-link>
->>>>>>> c61901fa32f0bf90a33220a0ade2f9f391414bcf
     </div>
     <!-- step == 2 삭제 -> link 이동으로 변경함 -->
     <div v-if="step == 1">
@@ -69,31 +62,17 @@
     </div>
 
     <div v-if="step == 3">
-      <post-details :post="selectedPost" @back="step = 0" @delete-post="deletePost"></post-details>
+      <post-details :post="selectedPost" @back="step = 0"></post-details>
     </div>
   </div>
 </template>
 
 <script>
-import defaultImage from '../assets/images/default-image.png';
-import writePost from './writePost.vue';
-import postDetails from './postDetails.vue';
+import writePost from "./writePost.vue";
+import postDetails from "./postDetails.vue";
 
 export default {
   name: "Reforme",
-  mounted() {
-    // navigator.vue로부터 이벤트를 받아서 처리
-    this.emitter.on('backfunction', (data) => {
-      this.step = data;
-    });
-  },
-  created() {
-    this.emitter.emit('updateButtons', { 
-      menuButton: true, 
-      searchButton: true, 
-      backButton: false 
-    }); 
-  },
   components: {
     writePost,
     postDetails,
@@ -109,11 +88,7 @@ export default {
   methods: {
     addPost(post) {
       this.posts.push(post);
-      this.step = 0;
-    },
-    deletePost(postId) {
-      this.posts = this.posts.filter(post => post.id !== postId);
-      this.step = 0;
+      this.step = 0; // 돌아가기
     },
     selectFooterButton(button) {
       this.selectedFooterButton = button;
@@ -123,7 +98,7 @@ export default {
       this.step = 3;
     },
     getFirstImage(images) {
-      return images && images.length ? images.find((image) => image !== null) : defaultImage;
+      return images.find((image) => image !== null) || "";
     },
     getCategoryName(type) {
       const categoryMap = {
@@ -138,8 +113,6 @@ export default {
   },
 };
 </script>
-
-
 
 <style scoped>
 @import "../styles/main.css";
@@ -199,15 +172,4 @@ export default {
   margin-bottom: 10px;
   cursor: pointer;
 }
-
-.post-image {
-  width: 60px;
-  height: 60px;
-  background-size: cover;
-  background-position: center;
-  margin-right: 20px;
-  border-radius: 10px;
-  background-color: #f0f0f0; /* 기본 배경색 추가 */
-}
-
 </style>
