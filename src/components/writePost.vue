@@ -46,6 +46,7 @@
     <div class="action-buttons">
       <button class="submit-button" @click="submitPost">확인</button>
     </div>
+    <div v-if="errorMessage" class="error-message">{{ errorMessage }}</div>
   </div>
 </template>
 
@@ -71,19 +72,21 @@ export default {
       title: "",
       content: "",
       images: [null, null, null, null, null], // 이미지 배열 초기화
-      defaultImage: "../assets/images/default-image.png" // 기본 이미지 경로 설정
+      defaultImage: "../assets/images/default-image.png", // 기본 이미지 경로 설정
+      errorMessage: "" // 오류 메시지 상태 추가
     };
   },
   methods: {
     fire() {
       this.emitter.emit('updateButtons', { 
-      menuButton: true, 
-      searchButton: true, 
-      backButton: false 
-    });
+        menuButton: true, 
+        searchButton: true, 
+        backButton: false 
+      });
     },
     selectCategory(id) {
       this.selectedCategory = id;
+      this.errorMessage = ""; // 카테고리를 선택하면 오류 메시지를 초기화
     },
     triggerFileUpload(index) {
       this.uploadIndex = index; // 업로드할 버튼 인덱스를 저장
@@ -103,7 +106,18 @@ export default {
       reader.readAsDataURL(file);
     },
     submitPost() {
-      this.fire()
+      if (!this.selectedCategory) {
+        this.errorMessage = "카테고리를 선택해주세요.";
+        return;
+      }
+
+      if (!this.title.trim() || !this.content.trim()) {
+        this.errorMessage = "제목과 내용을 입력해주세요.";
+        return;
+      }
+
+      this.fire();
+
       const newPost = {
         id: Date.now(),
         title: this.title,
@@ -113,6 +127,7 @@ export default {
         comments: 0,
         images: this.images.filter((image) => image !== null).length > 0 ? this.images.filter((image) => image !== null) : [this.defaultImage], // 기본 이미지를 사용
       };
+
       this.$emit("submit-post", newPost);
       this.$emit("back"); // 추가된 부분: 확인 버튼 클릭 시 app.vue로 돌아가기
     },
@@ -240,5 +255,12 @@ export default {
   background-size: cover;
   background-position: center;
   border-radius: 10px;
+}
+
+.error-message {
+  color: red;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 10px;
 }
 </style>
