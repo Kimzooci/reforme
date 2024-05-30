@@ -1,19 +1,17 @@
+
 <template>
   <div class="navbox">
     <nav class="navbar">
-      <button class="menu-button" @click="toggleMenu">≡</button>
+      <button v-if="menu" class="menu-button" @click="toggleMenu">≡</button>
+      <button v-if="back" class="back-button" @click="$emit('back')">＜</button>
       <span class="navbar-title">Reforme</span>
-      <button class="search-button" @click="toggleSearch">🔍</button>
+      <button v-if="search" class="search-button" @click="toggleSearch">🔍</button>
     </nav>
-    <!-- 메뉴가 열리면 보여질 컴포넌트 -->
     <div v-if="showMenu" class="menu-overlay" @click="toggleMenu">
       <div class="menu-container" @click.stop>
-        <!-- 닉네임과 항목들을 표시할 내용 -->
         <div class="menu-content">
           <div class="menu-item">닉네임</div>
-          <div class="menu-item">
-            <h5>로그아웃</h5>
-          </div>
+          <div class="menu-item"><h5>로그아웃</h5></div>
           <div class="menu-item">전체</div>
           <div class="menu-item">의류</div>
           <div class="menu-item">가방</div>
@@ -22,16 +20,9 @@
         </div>
       </div>
     </div>
-
-    <!-- 검색창이 열리면 보여질 컴포넌트 -->
     <div v-if="showSearch" class="search-overlay" @click="toggleSearch">
       <div class="search-container" @click.stop>
-        <!-- 검색 입력창과 버튼들 -->
-        <input
-          type="text"
-          class="search-input"
-          placeholder="검색어를 입력하세요"
-        />
+        <input type="text" class="search-input" placeholder="검색어를 입력하세요" />
         <div class="search-divider"></div>
         <div class="search-buttons">
           <button class="small_cancel" @click="toggleSearch">취소</button>
@@ -45,14 +36,42 @@
 <script>
 export default {
   name: "NavigationBar",
+  props: {
+    backButton: Boolean,
+    menuButton: Boolean,
+    searchButton: Boolean,
+  },
   data() {
     return {
-      showMenu: false, // 메뉴의 표시 여부를 저장할 데이터
-      showSearch: false, // 검색창 표시 여부를 저장할 데이터
+      showMenu: false,
+      showSearch: false,
+      back: this.backButton,
+      menu: this.menuButton,
+      search: this.searchButton,
     };
   },
+  watch: {
+    backButton(newVal) {
+      this.back = newVal;
+    },
+    menuButton(newVal) {
+      this.menu = newVal;
+    },
+    searchButton(newVal) {
+      this.search = newVal;
+    }
+  },
+  created() {
+    this.emitter.on('updateButtons', (data) => {
+      this.menu = data.menuButton;
+      this.search = data.searchButton;
+      this.back = data.backButton;
+    });
+  },
+  beforeUnmount() {
+    this.emitter.off('updateButtons'); // 이벤트 핸들러를 제거합니다
+  },
   methods: {
-    // 메뉴 버튼 클릭 시 메뉴를 토글하는 메소드
     toggleMenu() {
       this.showMenu = !this.showMenu;
     },
@@ -75,7 +94,7 @@ export default {
   align-items: center;
   color: white;
   position: relative;
-  z-index: 2; /* Ensure navbar is above other content */
+  z-index: 2;
 }
 
 .menu-button,
@@ -90,99 +109,90 @@ export default {
 .navbar-title {
   font-size: 24px;
   font-family: "YourFontFamily";
+  margin-left: auto;
+  margin-right: auto;
 }
 
-/* 메뉴 컨테이너 스타일 */
 .menu-container {
   position: fixed;
-  top: 0; /* 메뉴를 내비게이션 바 아래로 위치시킴 */
+  top: 0;
   left: 0;
   width: 200px;
-  height: 100%; /* 메뉴의 높이를 전체 화면으로 설정 */
-  background: white; /* 배경을 하얀색으로 설정 */
-  color: black; /* 텍스트 색상을 검정색으로 설정 */
+  height: 100%;
+  background: white;
+  color: black;
   padding: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.2); /* 컨테이너에 반투명 선을 추가 */
-  z-index: 3; /* 메뉴가 다른 요소 위에 표시되도록 z-index 설정 */
-  overflow-y: auto; /* 내용이 넘칠 경우 스크롤 추가 */
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  z-index: 3;
+  overflow-y: auto;
 }
 
-/* 메뉴 항목 스타일 */
 .menu-item {
   padding: 10px 0;
   cursor: pointer;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2); /* 메뉴 항목에 하단 반투명 선을 추가 */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-/* 메뉴 오버레이 스타일 */
 .menu-overlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.5); /* 검정 배경의 투명도 조절 */
-  z-index: 2; /* 메뉴 컨테이너 아래에 표시되도록 z-index 설정 */
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
   display: flex;
   justify-content: center;
-  align-items: flex-start; /* 메뉴를 상단에 정렬 */
-  overflow-y: auto; /* 내용이 넘칠 경우 스크롤 추가 */
+  align-items: flex-start;
+  overflow-y: auto;
 }
 
-/* 검색 오버레이 스타일 */
 .search-overlay {
-  position: fixed; /* 변경: position을 fixed로 변경 */
-  top: 0; /* 변경: top을 0으로 설정 */
-  left: 0; /* 변경: left를 0으로 설정 */
-  width: 100%; /* 변경: width를 100%로 설정 */
-  height: 100%; /* 변경: height를 100%로 설정 */
-  background-color: rgba(0, 0, 0, 0.5); /* 검정 배경의 투명도 조절 */
-  z-index: 2; /* 검색 컨테이너 아래에 표시되도록 z-index 설정 */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 2;
   display: flex;
   justify-content: center;
-  align-items: center; /* 검색창을 중앙에 정렬 */
+  align-items: center;
 }
 
-/* 검색 컨테이너 스타일 */
 .search-container {
   width: 300px;
-  background: rgba(
-    74,
-    118,
-    72,
-    1
-  ); /* 배경을 rgba(74, 118, 72, 1) 색으로 설정 */
-  color: black; /* 텍스트 색상을 검정색으로 설정 */
+  background: rgba(74, 118, 72, 1);
+  color: black;
   padding: 20px;
-  border: 1px solid rgba(0, 0, 0, 0.2); /* 컨테이너에 반투명 선을 추가 */
-  border-radius: 15px; /* 컨테이너 모서리를 둥글게 설정 */
-  z-index: 3; /* 검색창이 다른 요소 위에 표시되도록 z-index 설정 */
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 15px;
+  z-index: 3;
 }
 
-/* 검색 입력창 스타일 */
 .search-input {
   width: 100%;
   padding: 10px;
-  background: rgba(
-    74,
-    118,
-    72,
-    1
-  ); /* 배경을 rgba(74, 118, 72, 1) 색으로 설정 */
+  background: rgba(74, 118, 72, 1);
   border: none;
-  border-bottom: 1px solid rgba(0, 0, 0, 0.2); /* 입력창 하단에 반투명 선을 추가 */
+  border-bottom: 1px solid rgba(0, 0, 0, 0.2);
   margin-bottom: 10px;
-  color: white; /* 입력창 텍스트 색상을 흰색으로 설정 */
-  border-radius: 10px; /* 입력창 모서리를 둥글게 설정 */
+  color: white;
+  border-radius: 10px;
 }
 
-/* 검색 버튼 컨테이너 스타일 */
 .search-buttons {
   display: flex;
   justify-content: space-between;
 }
+.back-button{
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
 
-/* 검색 버튼 스타일 */
 .small_complete,
 .small_cancel {
   background-color: rgba(46, 72, 45, 1);
@@ -192,6 +202,6 @@ export default {
   font-size: 150%;
   border-radius: 10px;
   border: none;
-  margin: 0; /* 버튼 간의 간격을 없앰 */
+  margin: 0;
 }
 </style>

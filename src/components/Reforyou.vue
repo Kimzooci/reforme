@@ -1,7 +1,7 @@
 <template>
   <div class="main-container">
     <div class="content">
-      <h1>Reforyou 페이지</h1>
+      <!-- <h1 v-if="step == 0">Reforyou 페이지</h1> -->
 
       <!-- Post List -->
       <div class="post-list">
@@ -56,13 +56,9 @@
       <button @click="step = 1" class="create-button">+</button>
       <router-link to="/chatbot" class="chat-button">🗨️</router-link>
     </div>
-
+    <!-- step == 2 삭제 -> link 이동으로 변경함 -->
     <div v-if="step == 1">
       <writePost @back="step = 0" @submit-post="addPost"></writePost>
-    </div>
-
-    <div v-if="step == 2">
-      <chatbot @back="step = 0"></chatbot>
     </div>
 
     <div v-if="step == 3">
@@ -74,19 +70,17 @@
 <script>
 import writePost from "./writePost.vue";
 import postDetails from "./postDetails.vue";
-import chatbot from "./chatbot.vue";
 
 export default {
-  name: "Reforyou",
+  name: "Reforme",
   components: {
     writePost,
     postDetails,
-    chatbot,
   },
   data() {
     return {
       step: 0,
-      selectedFooterButton: "리포유",
+      selectedFooterButton: "리포미",
       posts: [],
       selectedPost: null,
     };
@@ -130,21 +124,27 @@ export default {
 }
 
 .post-list {
-  margin-bottom: 70px;
+  width: 100%;
+  overflow-y: auto;
+  margin-top: 0; /* 공백 없애기 */
+  height: calc(100% - 174px);
 }
 
 .post-item {
   display: flex;
-  margin-bottom: 20px;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #e0e0e0;
   cursor: pointer;
 }
 
 .post-image {
-  width: 80px;
-  height: 80px;
+  width: 60px;
+  height: 60px;
   background-size: cover;
   background-position: center;
   margin-right: 20px;
+  border-radius: 10px;
 }
 
 .post-info {
@@ -155,6 +155,7 @@ export default {
   font-size: 14px;
   color: gray;
 }
+
 /* 스타일 조정 */
 .chat-button {
   display: flex;

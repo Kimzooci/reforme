@@ -1,23 +1,9 @@
 <template>
   <div class="main-container">
-    <!-- Navigation Bar -->
-    <div class="navbar">
-      <button class="menu-button" @click="$emit('back')">＜</button>
-      <span class="navbar-title">Reforme</span>
-      <button class="search-button">🔍</button>
-    </div>
-
     <!-- Post Details -->
     <div class="post-details">
       <h2 class="post-title">{{ post.title }}</h2>
-      <div class="post-header">
-        <p class="post-author">{{ post.author }}</p>
-        <div class="post-actions">
-          <button class="edit-button">수정</button>
-          <button class="delete-button">삭제</button>
-        </div>
-      </div>
-      <hr class="divider" />
+      <p class="post-author">{{ post.author }}</p>
       <div class="post-content">{{ post.content }}</div>
       <div class="post-images">
         <div v-for="(image, index) in post.images" :key="index" class="post-image" :style="{ backgroundImage: 'url(' + image + ')' }"></div>
@@ -26,21 +12,17 @@
 
     <!-- Comments Section -->
     <div class="comments-container">
-      <p class="comments-header">댓글 목록</p>
-      <hr class="divider" />
       <div v-for="comment in comments" :key="comment.id" class="comment">
-        <div class="comment-header">
-          <span class="comment-author">{{ comment.author }}</span>
-        </div>
         <div class="comment-text">{{ comment.text }}</div>
+        <button class="comment-action">수정</button>
+        <button class="comment-action">삭제</button>
       </div>
     </div>
 
-    <!-- Comment Input -->
-    <input v-model="newComment" class="input-comment" placeholder="댓글을 입력하세요" />
-
     <!-- Footer Bar with Button -->
     <div class="footer-bar">
+          <!-- Comment Input -->
+    <input v-model="newComment" class="input-comment" placeholder="댓글을 입력하세요" />
       <button class="comment-submit" @click="addComment">댓글달기</button>
     </div>
   </div>
@@ -80,6 +62,7 @@ export default {
   background: #F8F8F8;
   border: 1px solid #E1E1E1;
   border-radius: 10px;
+  
 }
 
 .navbar {
@@ -105,7 +88,7 @@ export default {
 }
 
 .post-details {
-  padding: 20px;
+  padding: 150px;
   background: #FFFFFF;
   border-radius: 10px;
   margin: 20px;
@@ -117,32 +100,9 @@ export default {
   margin-bottom: 10px;
 }
 
-.post-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .post-author {
   color: #888;
-}
-
-.post-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.edit-button, .delete-button {
-  background: none;
-  border: none;
-  color: #2E482D;
-  cursor: pointer;
-}
-
-.divider {
-  margin: 10px 0;
-  border: none;
-  border-top: 1px solid #E1E1E1;
+  margin-bottom: 20px;
 }
 
 .post-content {
@@ -161,60 +121,65 @@ export default {
   height: 100px;
   background: #B1B1B1;
   border-radius: 10px;
-  background-size: cover;
-  background-position: center;
+  margin-bottom: 20px;
+  background-size: cover; /* 이미지의 비율을 유지하면서 컨테이너를 덮음 */
+  background-position: center; /* 이미지의 중심을 기준으로 배치 */
 }
 
 .comments-container {
   flex-grow: 1;
-  padding: 10px;
+  padding: 10px 20px;
   background: #FFFFFF;
-  margin: 0 20px;
   border-radius: 10px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 0px;
+  width : 350px;
+  height: 300px; /* 높이를 고정 */
+  overflow-y: auto; /* 세로 스크롤 가능 */
 }
 
-.comments-header {
-  font-size: 16px;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
 
 .comment {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: 10px 0;
   border-bottom: 1px solid #E1E1E1;
 }
 
-.comment-header {
-  display: flex;
-  align-items: center;
-  margin-bottom: 5px;
-}
-
-.comment-author {
-  font-size: 14px;
-  font-weight: bold;
-  margin-right: 10px;
-}
 
 .comment-text {
   font-size: 14px;
 }
 
-.input-comment {
-  width: calc(100% - 40px);
-  margin: 20px;
-  padding: 10px;
-  border: 1px solid #E1E1E1;
+.comment-action {
+  background: #2E482D;
+  color: white;
+  border: none;
   border-radius: 5px;
+  padding: 5px 10px;
+  cursor: pointer;
 }
 
 .footer-bar {
   display: flex;
   justify-content: center;
+  align-items: center; /* 수직 정렬을 중앙으로 맞춤 */
   padding: 10px 0;
   background: #2E482D;
-  border-radius: 0 0 10px 10px;
+  border-radius: 0px 0px 10px 10px;
+  height: fit-content;
+  width: 390px;
+}
+
+.input-comment {
+  margin-right: 10px; /* 버튼과의 간격 조정 */
+  padding: 10px;
+  border: 1px solid #E1E1E1;
+  border-radius: 5px;
+  height: 40px; /* 버튼과 동일한 높이로 설정 */
+  width: 250px;
+  box-sizing: border-box;
 }
 
 .comment-submit {
@@ -224,5 +189,7 @@ export default {
   border-radius: 5px;
   padding: 10px 20px;
   cursor: pointer;
+  height: 40px; /* 입력 필드와 동일한 높이로 설정 */
 }
+
 </style>

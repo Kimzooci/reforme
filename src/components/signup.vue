@@ -49,7 +49,7 @@ export default {
       userId: "",
       password: "",
       nickname: "",
-      isDuplicateChecked: false, //ID 중복 검사 확인 파트
+      isDuplicateChecked: false, // ID 중복 검사 확인 파트
     };
   },
   methods: {
@@ -133,7 +133,7 @@ export default {
 .logo {
   width: 430px;
   height: 430px;
-  position: relative;
+  position: absolute;
   overflow: hidden;
 }
 
@@ -142,7 +142,7 @@ export default {
   height: 100%;
   object-fit: contain;
   position: absolute;
-  top: 0;
+  top: -100px;
   left: 0;
 }
 
@@ -184,7 +184,6 @@ input.underline:focus {
   width: 80px;
   height: auto;
   font-size: 90%;
-  border: none;
   cursor: pointer;
   position: absolute;
   top: 0px;
@@ -194,11 +193,12 @@ input.underline:focus {
 }
 
 .submit {
-  position: absolute;
-  top: 300px;
-  left: 0;
-  right: 0;
+  margin-top: 20px;
+  width: 100%;
   text-align: center;
+  position: absolute;
+  top: 0px;
+  left: 0px;
 }
 
 button {

@@ -6,11 +6,43 @@
         :key="index"
         :class="['message', message.user ? 'user' : 'bot']"
       >
-        <p>{{ message.text }}</p>
-        <img v-if="message.image" :src="message.image" alt="Generated Image" />
+        <p v-if="message.text">{{ message.text }}</p>
+        <img
+          v-if="message.image"
+          :src="message.image"
+          alt="Generated Image"
+          class="chat-image"
+        />
       </div>
     </div>
-
+    <div class="radio-buttons">
+      <label class="custom-radio">
+        <input
+          type="radio"
+          name="inputType"
+          value="prompt"
+          v-model="inputType"
+        />
+        <span class="radio-btn">
+          <i class="fas fa-check"></i>
+          <div class="hobbies-icon"></div>
+        </span>
+        프롬프트
+      </label>
+      <label class="custom-radio">
+        <input
+          type="radio"
+          name="inputType"
+          value="message"
+          v-model="inputType"
+        />
+        <span class="radio-btn">
+          <i class="fas fa-check"></i>
+          <div class="hobbies-icon"></div>
+        </span>
+        메세지
+      </label>
+    </div>
     <div class="ai_input_container">
       <input
         type="text"
@@ -25,7 +57,11 @@
         style="display: none"
         @change="uploadImage"
       />
-      <button class="ai_submit_button" @click="triggerFileInput">
+      <button
+        class="ai_submit_button"
+        @click="triggerFileInput"
+        v-if="inputType === 'prompt'"
+      >
         <img src="../assets/images/imagelogo.png" alt="image" />
       </button>
       <button class="ai_submit_button" @click="sendMessage">
@@ -42,7 +78,18 @@ export default {
   data() {
     return {
       userInput: "",
-      messages: [{ text: "안녕하세요! 뭘 도와드릴까요?", user: false }],
+      inputType: "prompt",
+      messages: [
+        {
+          text: "안녕하세요! 리포미입니다😁",
+          user: false,
+        },
+        {
+          text: "원하시는 프롬프트를 작성해주세요🤗",
+          user: false,
+        },
+        { image: require("../assets/images/cat.png"), user: false },
+      ],
     };
   },
   methods: {
@@ -55,25 +102,47 @@ export default {
       this.scrollToBottom();
 
       try {
-        const response = await axios.post(
-          "/api/image",
-          {
-            prompt: userMessage.text,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+        if (this.inputType === "prompt") {
+          const response = await axios.post(
+            "/api/image",
+            { prompt: userMessage.text },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
 
-        const botMessage = {
-          text: "Here is the generated image:",
-          image: `data:image/png;base64,${response.data}`,
-          user: false,
-        };
+          const textMessage = {
+            text: "요청하신 이미지 입니다😆",
+            user: false,
+          };
 
-        this.messages.push(botMessage);
+          const imageMessage = {
+            image: `data:image/png;base64,${response.data}`,
+            user: false,
+          };
+
+          this.messages.push(textMessage);
+          this.messages.push(imageMessage);
+        } else {
+          const response = await axios.post(
+            "/api/message",
+            { message: userMessage.text },
+            {
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+
+          const botMessage = {
+            text: response.data,
+            user: false,
+          };
+
+          this.messages.push(botMessage);
+        }
         this.scrollToBottom();
       } catch (error) {
         console.error("Error generating response:", error);
@@ -88,22 +157,27 @@ export default {
       if (!file) return;
 
       const formData = new FormData();
-      formData.append("file", file);
+      formData.append("image", file);
       formData.append("prompt", this.userInput);
 
       try {
-        const response = await axios.post("/api/image", formData, {
+        const response = await axios.post("/api/edit-image", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },
         });
 
+        const textMessage = {
+          text: "수정된 이미지 입니다😊",
+          user: false,
+        };
+
         const imageMessage = {
-          text: "Here is the modified image:",
           image: `data:image/png;base64,${response.data}`,
           user: false,
         };
 
+        this.messages.push(textMessage);
         this.messages.push(imageMessage);
         this.scrollToBottom();
       } catch (error) {
@@ -125,6 +199,8 @@ export default {
 </script>
 
 <style scoped>
+@import url("https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css");
+
 .content {
   width: 430px;
   height: 932px;
@@ -134,12 +210,12 @@ export default {
   background: white;
   position: relative;
   border: none;
-  padding: 0; /* 여백 제거 */
+  padding: 0;
 }
 
 .chat-window {
   flex-grow: 1;
-  padding: 10px; /* 필요한 경우 padding 조정 */
+  padding: 10px;
   overflow-y: auto;
   overflow-x: hidden;
   width: 100%;
@@ -149,7 +225,6 @@ export default {
   scrollbar-color: rgba(46, 72, 45, 1) rgba(230, 230, 230, 1);
 }
 
-/* For Webkit browsers */
 .chat-window::-webkit-scrollbar {
   width: 8px;
 }
@@ -188,6 +263,12 @@ export default {
   margin: 0;
 }
 
+.message img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
 .image-placeholder {
   width: 300px;
   height: 300px;
@@ -200,12 +281,12 @@ export default {
   display: flex;
   align-items: center;
   background-color: rgba(74, 118, 72, 1);
-  width: 95%; /* 너비를 100%로 설정 */
+  width: 95%;
   height: 50px;
   border-radius: 10px;
   border: none;
-  margin-bottom: 0; /* 간격 제거 */
-  padding: 0 10px; /* 좌우 패딩 추가 */
+  margin-bottom: 10px;
+  padding: 0 10px;
 }
 
 .ai_input {
@@ -214,7 +295,7 @@ export default {
   border: none;
   outline: none;
   color: white;
-  padding: 10px; /* 필요한 경우 padding 조정 */
+  padding: 10px;
   font-size: 16px;
 }
 
@@ -236,5 +317,62 @@ export default {
 
 .ai_submit_button img:first-child {
   margin-right: 10px;
+}
+
+.radio-buttons {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  gap: 20px;
+}
+
+.custom-radio {
+  position: relative;
+  cursor: pointer;
+}
+
+.custom-radio input {
+  position: absolute;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.radio-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  width: 50px;
+  background-color: #e6e6e6;
+  border-radius: 50%;
+  position: relative;
+  transition: background-color 0.2s;
+}
+
+.radio-btn .hobbies-icon {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+}
+
+.radio-btn i {
+  display: none;
+}
+
+.custom-radio input:checked ~ .radio-btn {
+  background-color: #4a7648;
+}
+
+.custom-radio input:checked ~ .radio-btn i {
+  display: block;
+  color: white;
+  position: absolute;
+  font-size: 24px;
 }
 </style>
