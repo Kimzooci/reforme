@@ -1,8 +1,7 @@
 <template>
   <div class="main-container">
     <div class="content">
-      <!-- <h1 v-if="step == 0">Reforyou 페이지</h1> -->
-
+      <!-- <h1 v-if="step == 0">Reforme 페이지</h1> -->
       <!-- Post List -->
       <div class="post-list">
         <div
@@ -53,8 +52,12 @@
 
     <!-- Floating Action Buttons -->
     <div class="action-buttons">
-      <button @click="step = 1" class="create-button">+</button>
-      <router-link to="/chatbot" class="chat-button">🗨️</router-link>
+      <button @click="step = 1" class="create-button">
+        <img src="../assets/images/generate1.png" alt="">
+      </button>
+      <router-link to="/chatbot" class="chat-button">
+        <img src="../assets/images/chatbot.png" alt="">
+      </router-link>
     </div>
     <!-- step == 2 삭제 -> link 이동으로 변경함 -->
     <div v-if="step == 1">
@@ -73,6 +76,19 @@ import postDetails from "./postDetails.vue";
 
 export default {
   name: "Reforme",
+  mounted(){
+    // navigator.vue로부터 이벤트를 받아서 처리
+    this.emitter.on('backfunction', (data) => {
+  this.step = data;
+});
+  },
+  created() {
+    this.emitter.emit('updateButtons', { 
+      menuButton: true, 
+      searchButton: true, 
+      backButton: false 
+    }); 
+  },
   components: {
     writePost,
     postDetails,
@@ -88,7 +104,7 @@ export default {
   methods: {
     addPost(post) {
       this.posts.push(post);
-      this.step = 0; // 돌아가기
+      this.step = 0;
     },
     selectFooterButton(button) {
       this.selectedFooterButton = button;

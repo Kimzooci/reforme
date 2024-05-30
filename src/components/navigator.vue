@@ -1,11 +1,12 @@
-
 <template>
   <div class="navbox">
     <nav class="navbar">
       <button v-if="menu" class="menu-button" @click="toggleMenu">≡</button>
-      <button v-if="back" class="back-button" @click="$emit('back')">＜</button>
+      <button v-if="back" class="back-button" @click="backFunction">＜</button>
       <span class="navbar-title">Reforme</span>
-      <button v-if="search" class="search-button" @click="toggleSearch">🔍</button>
+      <button v-if="search" class="search-button" @click="toggleSearch">
+        🔍
+      </button>
     </nav>
     <div v-if="showMenu" class="menu-overlay" @click="toggleMenu">
       <div class="menu-container" @click.stop>
@@ -20,6 +21,7 @@
         </div>
       </div>
     </div>
+    
     <div v-if="showSearch" class="search-overlay" @click="toggleSearch">
       <div class="search-container" @click.stop>
         <input type="text" class="search-input" placeholder="검색어를 입력하세요" />
@@ -62,6 +64,7 @@ export default {
     }
   },
   created() {
+    
     this.emitter.on('updateButtons', (data) => {
       this.menu = data.menuButton;
       this.search = data.searchButton;
@@ -72,6 +75,15 @@ export default {
     this.emitter.off('updateButtons'); // 이벤트 핸들러를 제거합니다
   },
   methods: {
+     backFunction() {
+      this.$router.push('/reforme');
+      this.emitter.emit('backfunction', 0);
+      this.emitter.emit('updateButtons', { 
+      menuButton: true, 
+      searchButton: true, 
+      backButton: false 
+    });
+    },
     toggleMenu() {
       this.showMenu = !this.showMenu;
     },
@@ -84,8 +96,10 @@ export default {
 
 <style scoped>
 .navbox {
-  border: 2px solid black;
+  position: relative;
+  z-index: 2;
 }
+
 .navbar {
   background: #2e482d;
   padding: 9px 10px;
@@ -93,8 +107,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   color: white;
-  position: relative;
-  z-index: 2;
+  height: 50px;
 }
 
 .menu-button,
@@ -109,14 +122,25 @@ export default {
 .navbar-title {
   font-size: 24px;
   font-family: "YourFontFamily";
-  margin-left: auto;
-  margin-right: auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.menu-overlay {
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0);
+  z-index: 2;
+  display: flex;
+  align-items: flex-start;
+  overflow-y: auto;
 }
 
 .menu-container {
   position: fixed;
-  top: 0;
-  left: 0;
   width: 200px;
   height: 100%;
   background: white;
@@ -124,7 +148,8 @@ export default {
   padding: 20px;
   border: 1px solid rgba(0, 0, 0, 0.2);
   z-index: 3;
-  overflow-y: auto;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
 }
 
 .menu-item {
@@ -133,18 +158,8 @@ export default {
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
 }
 
-.menu-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 2;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  overflow-y: auto;
+.menu-overlay .menu-container {
+  transform: translateX(0);
 }
 
 .search-overlay {
@@ -176,7 +191,7 @@ export default {
   background: rgba(74, 118, 72, 1);
   border: none;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
-  margin-bottom: 10px;
+  margin-bottom: px;
   color: white;
   border-radius: 10px;
 }
@@ -185,7 +200,8 @@ export default {
   display: flex;
   justify-content: space-between;
 }
-.back-button{
+
+.back-button {
   background: none;
   border: none;
   color: white;
@@ -204,4 +220,5 @@ export default {
   border: none;
   margin: 0;
 }
+
 </style>
