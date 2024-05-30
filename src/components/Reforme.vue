@@ -65,7 +65,7 @@
     </div>
 
     <div v-if="step == 3">
-      <post-details :post="selectedPost" @back="step = 0"></post-details>
+      <postDetails :post="selectedPost" @back="step = 0"></postDetails>
     </div>
   </div>
 </template>
