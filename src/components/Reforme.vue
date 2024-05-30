@@ -32,7 +32,7 @@
     <!-- Footer Bar with Buttons -->
     <div class="footer-bar">
       <router-link
-        to="/reforme"
+        to="/reforme_page"
         class="footer-button"
         :class="{ active: selectedFooterButton === 'reforme' }"
         @click="selectFooterButton('reforme')"
@@ -40,7 +40,7 @@
         reforme
       </router-link>
       <router-link
-        to="/reforyou"
+        to="/reforyou_page"
         class="footer-button"
         :class="{ active: selectedFooterButton === 'reforyou' }"
         @click="selectFooterButton('reforyou')"
@@ -51,12 +51,17 @@
 
     <!-- Floating Action Buttons -->
     <div class="action-buttons">
+<<<<<<< HEAD
       <button @click="step = 1" class="create-button">
         <img src="../assets/images/generate1.png" alt="">
       </button>
       <router-link to="/chatbot" class="chat-button">
         <img src="../assets/images/chatbot.png" alt="">
       </router-link>
+=======
+      <button @click="step = 1" class="create-button">+</button>
+      <router-link to="/chatbot_page" class="chat-button">🗨️</router-link>
+>>>>>>> c61901fa32f0bf90a33220a0ade2f9f391414bcf
     </div>
     <!-- step == 2 삭제 -> link 이동으로 변경함 -->
     <div v-if="step == 1">
@@ -83,11 +88,19 @@ export default {
     });
   },
   created() {
+<<<<<<< HEAD
     this.emitter.emit('updateButtons', { 
       menuButton: true, 
       searchButton: true, 
       backButton: false 
     }); 
+=======
+    this.emitter.emit("updateButtons", {
+      menuButton: true,
+      searchButton: true,
+      backButton: false,
+    });
+>>>>>>> c61901fa32f0bf90a33220a0ade2f9f391414bcf
   },
   components: {
     writePost,

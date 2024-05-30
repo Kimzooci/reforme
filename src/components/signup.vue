@@ -68,6 +68,7 @@ export default {
         .then((response) => {
           if (response.data.statusCode === 200) {
             alert("회원가입 완료");
+            this.$router.push("/");
           } else {
             alert("회원가입 실패: " + response.data.statusCode);
           }

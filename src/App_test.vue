@@ -1,7 +1,11 @@
 <template>
   <div id="app-container">
     <div id="app">
-      <navigator :backButton="backButton" :searchButton="searchButton" :menuButton="menuButton"></navigator>
+      <navigator
+        :backButton="backButton"
+        :searchButton="searchButton"
+        :menuButton="menuButton"
+      ></navigator>
       <router-view></router-view>
     </div>
   </div>
@@ -12,40 +16,38 @@ import navigator from "./components/navigator.vue";
 
 export default {
   name: "App",
-  data(){
+  data() {
     return {
       menuButton: false,
       backButton: false,
       searchButton: false,
-    }
+    };
   },
   components: {
     navigator,
   },
   created() {
-      this.emitter.on('updateButtons', (data) => {
+    this.emitter.on("updateButtons", (data) => {
       this.menuButton = data.menuButton;
       this.searchButton = data.searchButton;
       this.backButton = data.backButton;
     });
     // 특정 경로에 대해 searchButton과 menuButton을 true로 변경
     console.log(this.$route.path);
-    console.log("App")
+    console.log("App");
     const currentPath = this.$route.path;
-    if (currentPath === '/reforyou' || currentPath === '/reforme') {
+    if (currentPath === "/reforyou" || currentPath === "/reforme") {
       this.menuButton = true;
       this.searchButton = true;
       this.backButton = false;
-      
     } else {
       this.backButton = false;
       this.menuButton = false;
       this.searchButton = false;
     }
-  }
+  },
 };
 </script>
-
 
 <style scoped>
 @import "./styles/main.css";
