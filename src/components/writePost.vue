@@ -105,7 +105,7 @@ export default {
     fire() {
       this.emitter.emit("updateButtons", {
         menuButton: true,
-        searchButton: true,
+        searchButton: false,
         backButton: false,
       });
     },

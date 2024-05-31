@@ -34,12 +34,14 @@
       <input v-model="newComment" class="input-comment" @keyup.enter="addComment" />
     </div>
 
-    <!-- Delete Confirmation Modal -->
     <div v-if="showDeleteConfirmation" class="delete-confirmation">
-      <p>게시글을 삭제하시겠습니까?</p>
-      <button class="delete-yes" @click="confirmDelete">확인</button>
-      <button class="delete-no" @click="showDeleteConfirmation = false">취소</button>
-    </div>
+  <p>게시글을 삭제하시겠습니까?</p>
+  <div class="button-group">
+    <button class="delete-yes" @click="confirmDelete">확인</button>
+    <button class="delete-no" @click="showDeleteConfirmation = false">취소</button>
+  </div>
+</div>
+
   </div>
 </template>
 
@@ -251,26 +253,34 @@ export default {
   position: absolute;
   width: 269px;
   height: 164px;
-  top: 397px;
   left: 80px;
-  padding: 24px 16px 14px 16px;
+  top: 397px;
   background: #4A7648;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   color: white;
+  padding: 24px 16px 14px 16px;
+  gap: 0px;
 }
 
 .delete-confirmation p {
-  margin: 0;
-  padding-bottom: 16px;
+  margin-bottom: 20px;
+  font-size: large;
 }
+
 
 .button-container {
   display: flex;
   gap: 10px;
+}
+
+.delete-confirmation .button-group {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
 }
 
 .delete-confirmation button {
@@ -281,7 +291,6 @@ export default {
   padding: 10px 20px;
   cursor: pointer;
   border-radius: 5px;
-  flex: 1;
 }
 
 .delete-confirmation button:focus {
