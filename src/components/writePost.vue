@@ -51,6 +51,13 @@
 import axios from "axios";
 
 export default {
+ mounted() {
+    this.emitter.emit("updateButtons", {
+      menuButton: false,
+      searchButton: false,
+      backButton: true,
+    });
+  },
   data() {
     return {
       categories: [
