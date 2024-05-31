@@ -1,8 +1,6 @@
 <template>
   <div class="main-container">
     <div class="content">
-      <!-- <h1 v-if="step == 0">Reforme 페이지</h1> -->
-      <!-- Post List -->
       <div class="post-list">
         <div
           v-for="post in 게시글"
@@ -30,7 +28,6 @@
       </div>
     </div>
 
-    <!-- Footer Bar with Buttons -->
     <div class="footer-bar">
       <router-link
         to="/reforme_page"
@@ -50,22 +47,21 @@
       </router-link>
     </div>
 
-    <!-- Floating Action Buttons -->
     <div class="action-buttons">
-      <button @click="step = 1" class="create-button">
+      <button @click="createPost" class="create-button">
         <img src="../assets/images/generate1.png" alt="" />
       </button>
       <router-link to="/chatbot_page" class="chat-button">
         <img src="../assets/images/chatbot.png" alt="" />
       </router-link>
     </div>
-    <!-- step == 2 삭제 -> link 이동으로 변경함 -->
+
     <div v-if="step == 1">
-      <writePost @back="step = 0" @submit-post="addPost"></writePost>
+      <writePost @back="step = 0" @submit-post="addPost" :post="selectedPost" />
     </div>
 
     <div v-if="step == 3">
-      <postDetails :post="selectedPost" @back="step = 0"></postDetails>
+      <postDetails :post="selectedPost" @back="step = 0" @edit-post="editPost" @delete-post="deletePost" />
     </div>
   </div>
 </template>
@@ -77,7 +73,6 @@ import postDetails from "./postDetails.vue";
 export default {
   name: "Reforme",
   mounted() {
-    // navigator.vue로부터 이벤트를 받아서 처리
     this.emitter.on("backfunction", (data) => {
       this.step = data;
     });
@@ -113,16 +108,29 @@ export default {
       this.selectedPost = post;
       this.step = 3;
     },
+    createPost() {
+      this.selectedPost = null;
+      this.step = 1;
+    },
+    editPost(post) {
+      this.게시글 = this.게시글.filter(p => p.id !== post.id);
+      this.selectedPost = post;
+      this.step = 1;
+    },
+    deletePost(postId) {
+      this.게시글 = this.게시글.filter(post => post.id !== postId);
+      this.step = 0;
+    },
     getFirstImage(images) {
       return images.find((image) => image !== null) || "";
     },
     getCategoryName(type) {
       const categoryMap = {
-        TOP: "상의",
-        OUTER: "외투",
-        BOTTOM: "하의",
-        BAG: "가방",
-        ETC: "기타",
+        1: "상의",
+        2: "외투",
+        3: "하의",
+        4: "가방",
+        5: "기타",
       };
       return categoryMap[type] || "";
     },

@@ -1,12 +1,9 @@
 <template>
   <div class="main-container">
     <div class="content">
-      <!-- <h1 v-if="step == 0">Reforyou 페이지</h1> -->
-
-      <!-- Post List -->
       <div class="post-list">
         <div
-          v-for="post in posts"
+          v-for="post in 게시글"
           :key="post.id"
           class="post-item"
           @click="openPostDetails(post)"
@@ -31,7 +28,6 @@
       </div>
     </div>
 
-    <!-- Footer Bar with Buttons -->
     <div class="footer-bar">
       <router-link
         to="/reforme_page"
@@ -51,22 +47,21 @@
       </router-link>
     </div>
 
-    <!-- Floating Action Buttons -->
     <div class="action-buttons">
-      <button @click="step = 1" class="create-button">
+      <button @click="createPost" class="create-button">
         <img src="../assets/images/generate1.png" alt="" />
       </button>
       <router-link to="/chatbot_page" class="chat-button">
         <img src="../assets/images/chatbot.png" alt="" />
       </router-link>
     </div>
-    <!-- step == 2 삭제 -> link 이동으로 변경함 -->
+
     <div v-if="step == 1">
-      <writePost @back="step = 0" @submit-post="addPost"></writePost>
+      <writePost @back="step = 0" @submit-post="addPost" :post="selectedPost" />
     </div>
 
     <div v-if="step == 3">
-      <post-details :post="selectedPost" @back="step = 0"></post-details>
+      <postDetails :post="selectedPost" @back="step = 0" @edit-post="editPost" @delete-post="deletePost" />
     </div>
   </div>
 </template>
@@ -77,6 +72,18 @@ import postDetails from "./postDetails.vue";
 
 export default {
   name: "Reforme",
+  mounted() {
+    this.emitter.on("backfunction", (data) => {
+      this.step = data;
+    });
+  },
+  created() {
+    this.emitter.emit("updateButtons", {
+      menuButton: true,
+      searchButton: true,
+      backButton: false,
+    });
+  },
   components: {
     writePost,
     postDetails,
@@ -85,14 +92,14 @@ export default {
     return {
       step: 0,
       selectedFooterButton: "리포미",
-      posts: [],
+      게시글: [],
       selectedPost: null,
     };
   },
   methods: {
     addPost(post) {
-      this.posts.push(post);
-      this.step = 0; // 돌아가기
+      this.게시글.push(post);
+      this.step = 0;
     },
     selectFooterButton(button) {
       this.selectedFooterButton = button;
@@ -100,6 +107,19 @@ export default {
     openPostDetails(post) {
       this.selectedPost = post;
       this.step = 3;
+    },
+    createPost() {
+      this.selectedPost = null;
+      this.step = 1;
+    },
+    editPost(post) {
+      this.게시글 = this.게시글.filter(p => p.id !== post.id);
+      this.selectedPost = post;
+      this.step = 1;
+    },
+    deletePost(postId) {
+      this.게시글 = this.게시글.filter(post => post.id !== postId);
+      this.step = 0;
     },
     getFirstImage(images) {
       return images.find((image) => image !== null) || "";
