@@ -181,13 +181,15 @@ export default {
 }
 
 .categories button {
+  height: 50px;
+  width: 60px;
   padding: 5px 10px;
   border-radius: 10px;
   border: none;
   background-color: #b1b1b1;
   color: black;
-  font-size: 16px;
-  transition: background-color 0.3s; /* 배경 색상 전환 애니메이션 */
+  font-size: 19px;
+  transition: background-color 0.5s; /* 배경 색상 전환 애니메이션 */
   flex: 1; /* 각 버튼의 크기를 균등하게 만듦 */
   max-width: 70px; /* 버튼 최대 너비를 설정 */
 }
@@ -200,24 +202,32 @@ export default {
 .categories .active {
   background-color: #4a7648;
   color: white;
+  transform: none; /* 크기 변화를 방지 */
+}
+
+
+.input-title{
+  font-size: x-large;
 }
 
 .input-title,
 .input-content {
   width: 412px;
-  height: 69px;
+  height: 50px;
   border: 1px solid #ccc;
   border-radius: 10px;
 }
 
 .input-content {
   width: 410px;
-  height: 378px;
+  height: 450px;
   gap: 0px;
-  border-radius: 10px 0px 0px 0px;
+  border-radius: 10px 10px 10px 10px;
   border: 1px 0px 0px 0px;
   opacity: 0px;
   resize: none;
+  font-size:large;
+  
 }
 
 .action-buttons {
@@ -228,13 +238,15 @@ export default {
 }
 
 .submit-button {
-  width: calc(100%); /* 수정: 양쪽 여백 포함 */
+  width: 400px; /* 수정: 양쪽 여백 포함 */
   height: 76px;
   padding: 10px 20px;
   background-color: #4a7648;
   color: white;
   border: none;
   border-radius: 10px;
+  position : absolute;
+  bottom : 0;
 }
 
 .submit-button:disabled {
@@ -248,7 +260,7 @@ export default {
   align-items: center;
   width: 410px;
   height: 74px;
-  padding: 0 10px;
+  padding: 10px 10px;
   background-color: #ffffffff;
 }
 
