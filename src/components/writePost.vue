@@ -92,13 +92,13 @@ export default {
     },
     readImage(file, index) {
       console.log("Reading image file:", file, "for index:", index);
-       this.images[index] = file
-      const reader = new FileReader();
+      this.images[index] = file;
+      //const reader = new FileReader();
       /*reader.onload = (e) => {
         this.images[index] = e.target.result; // Vue 3에서는 직접 배열 요소 수정
         console.log(`Image loaded at index ${index}:`, this.images[index]);
       };*/
-      reader.readAsDataURL(file);
+      //reader.readAsDataURL(file);
     },
     submitPost() {
   const formData = new FormData();
