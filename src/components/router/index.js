@@ -12,15 +12,15 @@ axios.defaults.withCredentials = true;
 
 const routes = [
     { path: '/', name: 'home', component: Home },
-    { path: '/error_page', name: 'error_page', component: Errorpage },
+    { path: '/error_page', name: 'error_page', component: Errorpage }, 
     { path: '/reforme_page', name: 'reforme_page', component: Reforme, meta: { requiresAuth: true } },
-    { path: '/reforme_page/:id', name: 'reforme_detail', component: Reforme, meta: { requiresAuth: true } },
+    { path: '/reforme_page/:id(\\d+)', name: 'reforme_detail', component: Reforme, meta: { requiresAuth: true } },
     { path: '/reforyou_page', name: 'reforyou_page', component: Reforyou, meta: { requiresAuth: true } },
-    { path: '/reforyou_page/:id', name: 'reforyou_detail', component: Reforyou, meta: { requiresAuth: true } },
+    { path: '/reforyou_page/:id(\\d+)', name: 'reforyou_detail', component: Reforyou, meta: { requiresAuth: true } },
     { path: '/signup_page', name: 'signup_page', component: Signup },
     { path: '/signin_page', name: 'signin_page', component: Signin },
     { path: '/chatbot_page', name: 'chatbot_page', component: Chatbot, meta: { requiresAuth: true } },
-    { path: '/:anything(.*)', name: 'catchAll', component: Errorpage }, // 추가된 catch-all 라우트
+    { path: '/:anything(.*)', name: 'catchAll', component: Errorpage }, // 추가된 catch-all 라우트, 404 page
 ];
 
 const router = createRouter({

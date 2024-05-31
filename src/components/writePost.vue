@@ -101,41 +101,41 @@ export default {
       reader.readAsDataURL(file);
     },
     submitPost() {
-      const formData = new FormData();
-      formData.append("title", this.title);
-      formData.append("body", this.content);
-      formData.append("category", this.selectedCategory);
-      this.images.forEach((image, index) => {
-        if (image) {
-          formData.append(
-            "images",
-            this.dataURLtoBlob(image),
-            `image${index}.png`
-          );
-          console.log(`Image ${index} added to form data:`, image);
-        }
-      });
+  const formData = new FormData();
+  const boardData = {
+    title: this.title,
+    body: this.content,
+    category: this.selectedCategory,
+  };
+  formData.append("board", new Blob([JSON.stringify(boardData)], { type: "application/json" }));
+  this.images.forEach((image, index) => {
+    if (image) {
+      formData.append("images", image, `image${index}.png`);
+      console.log(`Image ${index} added to form data:`, image);
+    }
+  });
 
-      axios
-        .post("/reforme/board", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          console.log("Response from server:", response);
-          if (response.data.statusCode === 200) {
-            alert("게시글 작성 성공");
-            this.$router.push("/reforme_page");
-          } else {
-            alert("게시글 작성 실패");
-          }
-        })
-        .catch((error) => {
-          console.log("Error posting data:", error);
-          alert("게시글 작성 실패: " + error.message);
-        });
-    },
+  axios
+    .post("/reforme/board", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    })
+    .then((response) => {
+      console.log("Response from server:", response);
+      if (response.data.statusCode === 200) {
+        alert("게시글 작성 성공");
+        this.$router.push("/reforme_page");
+      } else {
+        alert("게시글 작성 실패");
+      }
+    })
+    .catch((error) => {
+      console.log("Error posting data:", error);
+      alert("게시글 작성 실패: " + error.message);
+    });
+},
+
     dataURLtoBlob(dataurl) {
       const arr = dataurl.split(",");
       const mime = arr[0].match(/:(.*?);/)[1];
