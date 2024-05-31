@@ -25,12 +25,12 @@
       ></textarea>
       <div class="image-upload-buttons">
         <button
-          v-for="(image, index) in images"
+          v-for="(imagePreview, index) in imagePreviews"
           :key="index"
           class="image-upload-button"
           @click.prevent="triggerFileUpload(index)"
         >
-          <div v-if="image" class="image-preview" :style="{ backgroundImage: 'url(' + image + ')' }"></div>
+          <div v-if="imagePreview" class="image-preview" :style="{ backgroundImage: 'url(' + imagePreview + ')' }"></div>
           <div v-else>+</div>
         </button>
         <input
@@ -51,7 +51,7 @@
 import axios from "axios";
 
 export default {
- mounted() {
+  mounted() {
     this.emitter.emit("updateButtons", {
       menuButton: false,
       searchButton: false,
@@ -71,6 +71,7 @@ export default {
       title: "",
       content: "",
       images: [null, null, null, null, null], // 이미지 배열 초기화
+      imagePreviews: [null, null, null, null, null], // 이미지 미리보기 배열 초기화
       uploadIndex: null,
     };
   },
@@ -93,61 +94,48 @@ export default {
     readImage(file, index) {
       console.log("Reading image file:", file, "for index:", index);
       this.images[index] = file;
-      //const reader = new FileReader();
-      /*reader.onload = (e) => {
-        this.images[index] = e.target.result; // Vue 3에서는 직접 배열 요소 수정
-        console.log(`Image loaded at index ${index}:`, this.images[index]);
-      };*/
-      //reader.readAsDataURL(file);
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.imagePreviews[index] = e.target.result; // 이미지 미리보기 설정
+        console.log(`Image loaded at index ${index}:`, this.imagePreviews[index]);
+      };
+      reader.readAsDataURL(file);
     },
     submitPost() {
-  const formData = new FormData();
-  const boardData = {
-    title: this.title,
-    body: this.content,
-    category: this.selectedCategory,
-  };
-  formData.append("board", new Blob([JSON.stringify(boardData)], { type: "application/json" }));
-  this.images.forEach((image, index) => {
-    if (image) {
-      formData.append("images", image, `image${index}.png`);
-      console.log(`Image ${index} added to form data:`, image);
-    }
-  });
+      const formData = new FormData();
+      const boardData = {
+        title: this.title,
+        body: this.content,
+        category: this.selectedCategory,
+      };
+      formData.append("board", new Blob([JSON.stringify(boardData)], { type: "application/json" }));
+      this.images.forEach((image, index) => {
+        if (image) {
+          formData.append("images", image, `image${index}.png`);
+          console.log(`Image ${index} added to form data:`, image);
+        }
+      });
 
-  axios
-    .post("/reforme/board", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
-    .then((response) => {
-      console.log("Response from server:", response);
-      if (response.data.statusCode === 200) {
-        alert("게시글 작성 성공");
-        this.$router.push("/reforme_page");
-      } else {
-        alert("게시글 작성 실패");
-      }
-    })
-    .catch((error) => {
-      console.log("Error posting data:", error);
-      alert("게시글 작성 실패: " + error.message);
-    });
-},
-
-    dataURLtoBlob(dataurl) {
-      const arr = dataurl.split(",");
-      const mime = arr[0].match(/:(.*?);/)[1];
-      const bstr = atob(arr[1]);
-      let n = bstr.length;
-      const u8arr = new Uint8Array(n);
-      while (n--) {
-        u8arr[n] = bstr.charCodeAt(n);
-      }
-      const blob = new Blob([u8arr], { type: mime });
-      console.log("Converted data URL to blob:", blob);
-      return blob;
+      axios
+        .post("/reforme/board", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          console.log("Response from server:", response);
+          if (response.data.statusCode === 200) {
+            alert("게시글 작성 성공");
+            this.$router.push("/reforme_page");
+          } else {
+            alert("게시글 작성 실패");
+          }
+        })
+        .catch((error) => {
+          console.log("Error posting data:", error);
+          alert("게시글 작성 실패: " + error.message);
+        });
     },
   },
 };
