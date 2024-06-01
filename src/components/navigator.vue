@@ -4,30 +4,24 @@
       <button v-if="menu" class="menu-button" @click="toggleMenu">≡</button>
       <button v-if="back" class="back-button" @click="backFunction">＜</button>
       <span class="navbar-title">Reforme</span>
-      <button v-if="search" class="search-button" @click="toggleSearch">
-        🔍
-      </button>
+      <button v-if="search" class="search-button" @click="toggleSearch">🔍</button>
     </nav>
     <div v-if="showMenu" class="menu-overlay" @click="toggleMenu">
       <div class="menu-container" @click.stop>
         <div class="menu-content">
           <div class="menu-item">{{ userId }}</div>
           <div class="menu-item" @click="logout">로그아웃</div>
-          <div class="menu-item">전체</div>
-          <div class="menu-item">의류</div>
-          <div class="menu-item">가방</div>
-          <div class="menu-item">신발</div>
-          <div class="menu-item">기타</div>
+          <div class="menu-item" @click="filterCategory('TOP')">상의</div>
+          <div class="menu-item" @click="filterCategory('BOTTOM')">하의</div>
+          <div class="menu-item" @click="filterCategory('OUTER')">외투</div>
+          <div class="menu-item" @click="filterCategory('BAG')">가방</div>
+          <div class="menu-item" @click="filterCategory('ETC')">기타</div>
         </div>
       </div>
     </div>
     <div v-if="showSearch" class="search-overlay" @click="toggleSearch">
       <div class="search-container" @click.stop>
-        <input
-          type="text"
-          class="search-input"
-          placeholder="검색어를 입력하세요"
-        />
+        <input type="text" class="search-input" placeholder="검색어를 입력하세요" />
         <div class="search-divider"></div>
         <div class="search-buttons">
           <button class="small_cancel" @click="toggleSearch">취소</button>
@@ -125,6 +119,10 @@ export default {
         .catch((error) => {
           alert("로그아웃 실패: " + error.message);
         });
+    },
+    filterCategory(category) {
+      this.$emit("filter-category", category);
+      this.toggleMenu();
     },
   },
 };

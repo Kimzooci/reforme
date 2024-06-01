@@ -4,14 +4,14 @@
       <!-- Post List -->
       <div class="post-list">
         <div
-          v-for="post in 게시글"
-          :key="post.id"
-          class="post-item"
-          @click="openPostDetails(post)"
+            v-for="post in 게시글"
+            :key="post.id"
+            class="post-item"
+            @click="openPostDetails(post)"
         >
           <div
-            class="post-image"
-            :style="{
+              class="post-image"
+              :style="{
               backgroundImage: 'url(' + getFirstImage(post.images) + ')',
             }"
           ></div>
@@ -19,7 +19,7 @@
             <h3>{{ post.title }}</h3>
             <div class="post-details">
               <p>
-                {{ post.createdDateTime }} |
+                {{ post.timestamp }} |
                 <span>{{ getCategoryName(post.type) }}</span>
               </p>
               <span>{{ post.comments }} 댓글</span>
@@ -32,18 +32,18 @@
     <!-- Footer Bar with Buttons -->
     <div class="footer-bar">
       <router-link
-        to="/reforme_page"
-        class="footer-button"
-        :class="{ active: selectedFooterButton === '리포미' }"
-        @click="selectFooterButton('리포미')"
+          to="/reforme_page"
+          class="footer-button"
+          :class="{ active: selectedFooterButton === '리포미' }"
+          @click="selectFooterButton('리포미')"
       >
         리포미
       </router-link>
       <router-link
-        to="/reforyou_page"
-        class="footer-button"
-        :class="{ active: selectedFooterButton === '리포유' }"
-        @click="selectFooterButton('리포유')"
+          to="/reforyou_page"
+          class="footer-button"
+          :class="{ active: selectedFooterButton === '리포유' }"
+          @click="selectFooterButton('리포유')"
       >
         리포유
       </router-link>
@@ -64,10 +64,10 @@
 
     <div v-if="step == 3">
       <postDetails
-        :post="selectedPost"
-        @back="step = 0"
-        @edit-post="editPost"
-        @delete-post="deletePost"
+          :post="selectedPost"
+          @back="step = 0"
+          @edit-post="editPost"
+          @delete-post="deletePost"
       ></postDetails>
     </div>
   </div>
@@ -78,7 +78,14 @@ import writePost from "./writePost.vue";
 import postDetails from "./postDetails.vue";
 
 export default {
-  name: "Reforyou",
+  name: "Reforme",
+  created() {
+    this.emitter.emit("updateButtons", {
+      menuButton: true,
+      searchButton: true,
+      backButton: false,
+    });
+  },
   components: {
     writePost,
     postDetails,
@@ -118,13 +125,12 @@ export default {
     },
     getFirstImage(images) {
       const image = images.find((image) => image !== null);
-      const imageUrl = image ? `${image}` : "";
-      return imageUrl;
+      return image ? image : "";
     },
     getCategoryName(type) {
       const categoryMap = {
         TOP: "상의",
-        OUTWEAR: "외투",
+        OUTER: "외투",
         BOTTOM: "하의",
         BAG: "가방",
         ETC: "기타",
@@ -147,7 +153,7 @@ export default {
 .post-list {
   width: 100%;
   overflow-y: auto;
-  margin-top: 0; /* 공백 없애기 */
+  margin-top: 0;
   position: absolute;
   top: 0px;
   height: calc(100% - 174px);
@@ -179,7 +185,6 @@ export default {
   color: gray;
 }
 
-/* 스타일 조정 */
 .chat-button {
   display: flex;
   align-items: center;
@@ -191,7 +196,7 @@ export default {
   color: white;
   font-size: 36px;
   border: none;
-  text-decoration: none; /* 링크 스타일 제거 */
+  text-decoration: none;
   margin-bottom: 10px;
   cursor: pointer;
 }

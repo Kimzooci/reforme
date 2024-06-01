@@ -60,21 +60,29 @@ export default {
       default: null,
     },
   },
-  mounted() {
+  created() {
     this.emitter.emit("updateButtons", {
       menuButton: false,
-      searchButton: false,
+      searchButton: true,
       backButton: true,
     });
+
+    // Load post data if editing an existing post
+    if (this.post) {
+      this.selectedCategory = this.post.type;
+      this.title = this.post.title;
+      this.content = this.post.content;
+      this.images = this.post.images.length ? this.post.images : [null, null, null, null, null];
+    }
   },
   data() {
     return {
       categories: [
-        { id: 1, name: "상의" },
-        { id: 2, name: "외투" },
-        { id: 3, name: "하의" },
-        { id: 4, name: "가방" },
-        { id: 5, name: "기타" },
+        { id: 'TOP', name: "상의" },
+        { id: 'BOTTOM', name: "하의" },
+        { id: 'OUTER', name: "외투" },
+        { id: 'BAG', name: "가방" },
+        { id: 'ETC', name: "기타" },
       ],
       selectedCategory: null,
       title: "",
@@ -96,9 +104,9 @@ export default {
   methods: {
     fire() {
       this.emitter.emit("updateButtons", {
-        menuButton: false,
-        searchButton: true,
-        backButton: true,
+        menuButton: true,
+        searchButton: false,
+        backButton: false,
       });
     },
     selectCategory(id) {
@@ -127,7 +135,7 @@ export default {
         id: Date.now(),
         title: this.title,
         content: this.content,
-        createdDateTime: new Date().toLocaleString(),
+        timestamp: new Date().toLocaleString(),
         type: this.selectedCategory,
         comments: 0,
         images: this.images.filter((image) => image !== null).length > 0 ? this.images.filter((image) => image !== null) : [this.defaultImage], // 기본 이미지를 사용
