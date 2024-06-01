@@ -39,7 +39,6 @@
         type="file"
         ref="fileInput"
         style="display: none"
-        multiple
         @change="handleFiles"
       />
     </div>
@@ -52,6 +51,8 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   name: "WritePost",
   props: {
@@ -59,21 +60,6 @@ export default {
       type: Object,
       default: null,
     },
-  },
-  created() {
-    this.emitter.emit("updateButtons", {
-      menuButton: false,
-      searchButton: true,
-      backButton: true,
-    });
-
-    // Load post data if editing an existing post
-    if (this.post) {
-      this.selectedCategory = this.post.type;
-      this.title = this.post.title;
-      this.content = this.post.content;
-      this.images = this.post.images.length ? this.post.images : [null, null, null, null, null];
-    }
   },
   data() {
     return {
@@ -89,7 +75,23 @@ export default {
       content: "",
       images: [null, null, null, null, null], // 이미지 배열 초기화
       defaultImage: require("@/assets/images/default-image.png"), // 기본 이미지 경로 설정
+      uploadIndex: 0, // 업로드할 이미지 인덱스 초기화
     };
+  },
+  created() {
+    this.emitter.emit("updateButtons", {
+      menuButton: false,
+      searchButton: true,
+      backButton: true,
+    });
+
+    // 기존 게시글 편집 시 데이터 로드
+    if (this.post) {
+      this.selectedCategory = this.post.type;
+      this.title = this.post.title;
+      this.content = this.post.content;
+      this.images = this.post.images.length ? this.post.images : [null, null, null, null, null];
+    }
   },
   computed: {
     canSubmit() {
@@ -102,18 +104,11 @@ export default {
     },
   },
   methods: {
-    fire() {
-      this.emitter.emit("updateButtons", {
-        menuButton: true,
-        searchButton: false,
-        backButton: false,
-      });
-    },
     selectCategory(id) {
       this.selectedCategory = id;
     },
     triggerFileUpload(index) {
-      this.uploadIndex = index; // 업로드할 버튼 인덱스를 저장
+      this.uploadIndex = index; // 업로드할 이미지 인덱스 저장
       this.$refs.fileInput.click();
     },
     handleFiles(event) {
@@ -125,27 +120,44 @@ export default {
     readImage(file, index) {
       const reader = new FileReader();
       reader.onload = (e) => {
-        this.images[index] = e.target.result; // Vue 3에서는 직접 배열 요소 수정
+        this.images[index] = e.target.result; // 이미지 배열 요소 수정
       };
       reader.readAsDataURL(file);
     },
-    submitPost() {
-      this.fire();
+    async submitPost() {
+      this.emitter.emit("updateButtons", {
+        menuButton: true,
+        searchButton: false,
+        backButton: false,
+      });
+
       const newPost = {
-        id: Date.now(),
         title: this.title,
         content: this.content,
-        timestamp: new Date().toLocaleString(),
         type: this.selectedCategory,
-        comments: 0,
-        images: this.images.filter((image) => image !== null).length > 0 ? this.images.filter((image) => image !== null) : [this.defaultImage], // 기본 이미지를 사용
+        images: this.images.filter((image) => image !== null),
       };
-      this.$emit("submit-post", newPost);
-      this.$emit("back"); // 추가된 부분: 확인 버튼 클릭 시 app.vue로 돌아가기
+
+      try {
+        await axios.post("/api/reforme", newPost, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        });
+        this.$emit("submit-post", newPost);
+        this.$emit("back"); // 확인 버튼 클릭 시 이전 화면으로 돌아가기
+      } catch (error) {
+        console.error("게시글 전송 오류:", error);
+      }
     },
   },
 };
 </script>
+
+<style scoped>
+/* 스타일 코드 생략 */
+</style>
+
 
 <style scoped>
 .main-container {

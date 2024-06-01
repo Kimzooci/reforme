@@ -10,9 +10,7 @@
         >
           <div
             class="post-image"
-            :style="{
-              backgroundImage: 'url(' + getFirstImage(post.images) + ')',
-            }"
+            :style="{ backgroundImage: 'url(' + getFirstImage(post.images) + ')' }"
           ></div>
           <div class="post-info">
             <h3>{{ post.title }}</h3>
@@ -79,20 +77,6 @@ import axios from "axios";
 
 export default {
   name: "Reforme",
-  created() {
-    this.emitter.emit("updateButtons", {
-      menuButton: true,
-      searchButton: true,
-      backButton: false,
-    });
-
-    this.emitter.on("filter-category", this.filterPosts);
-    this.emitter.on("search-query", this.updateSearchQuery);
-  },
-  beforeUnmount() {
-    this.emitter.off("filter-category", this.filterPosts);
-    this.emitter.off("search-query", this.updateSearchQuery);
-  },
   components: {
     writePost,
     postDetails,
@@ -109,14 +93,22 @@ export default {
       selectedFooterButton: "리포미",
       게시글: [],
       selectedPost: null,
-      selectedCategory: null,
-      searchQuery: ""
+      selectedCategory: 'ALL',
+      searchQuery: "",
     };
+  },
+  created() {
+    this.fetchPosts(); // 초기 게시글 로드
+    this.emitter.emit("updateButtons", {
+      menuButton: true,
+      searchButton: true,
+      backButton: false,
+    });
   },
   computed: {
     filteredPosts() {
       let posts = this.게시글;
-      if (this.selectedCategory) {
+      if (this.selectedCategory && this.selectedCategory !== 'ALL') {
         posts = posts.filter(post => post.type === this.selectedCategory);
       }
       if (this.searchQuery) {
@@ -131,14 +123,28 @@ export default {
     }
   },
   methods: {
+    async fetchPosts() {
+      try {
+        let url = `/api/reforyou`;
+        if (this.selectedCategory && this.selectedCategory !== 'ALL') {
+          url += `/${this.selectedCategory}`;
+        }
+        if (this.searchQuery) {
+          url += `/search/${this.searchQuery}`;
+        }
+        const response = await axios.get(url, {
+          params: {
+            page: 0
+          }
+        });
+        this.게시글 = response.data.data;
+      } catch (error) {
+        console.error("게시글 로드 오류:", error);
+      }
+    },
     addPost(post) {
       this.게시글.push(post);
       this.step = 0;
-      this.emitter.emit("updateButtons", {
-        menuButton: true,
-        searchButton: true,
-        backButton: false,
-      });
     },
     selectFooterButton(button) {
       this.selectedFooterButton = button;
@@ -176,31 +182,11 @@ export default {
     },
     filterPosts(category) {
       this.selectedCategory = category;
+      this.fetchPosts();
     },
     updateSearchQuery(query) {
       this.searchQuery = query;
-    },
-    searchstart() {
-      if(this.searchkeyword == '') {
-        alert('키워드가 없습니다!');
-      } else {
-        axios.post("http://127.0.0.1:52273/content/search/", {
-          searchoption: this.searchoptionselected,
-          searchkeyword: this.searchkeyword,
-        }).then(res => {
-          this.contentlist = res.data;
-          this.searchcnt = this.contentlist[Object.keys(this.contentlist).length-1].cnt;
-          this.contentlist.pop();
-          alert('검색완료!');
-          this.searchfinish = true;
-          this.searchkeyword = '';
-        }).catch(err => {
-          alert(err);
-        });
-      }
-    },
-    movetocontent(boardnum, id) {
-      window.location.href = 'http://127.0.0.1:8080/board/' + boardnum + '/content?id=' + id;
+      this.fetchPosts();
     }
   },
 };
