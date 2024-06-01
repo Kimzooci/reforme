@@ -3,94 +3,114 @@
     <!-- Post Title and Author Section -->
     <div class="post-header">
       <h2 class="post-title">{{ post.title }}</h2>
-      <p class="post-author">{{ post.author }} 작성자</p>
+      <p class="post-author">{{ post.userId }} 님 </p>
       <div class="post-actions">
-        <button class="edit-button" @click="editPost">수정</button>
-        <button class="delete-button" @click="deletePost">삭제</button>
+        <button class="edit-button" @click="showEditConfirmation = true">수정</button>
+        <button class="delete-button" @click="showDeleteConfirmation = true">삭제</button>
       </div>
     </div>
 
     <!-- Post Images Section -->
     <div class="post-images-section" v-if="post.images && post.images.length">
-      <div
-        v-for="(image, index) in post.images"
-        :key="index"
-        class="post-image"
-        :style="{ backgroundImage: 'url(' + image + ')' }"
-      ></div>
+      <div v-for="(image, index) in post.images" :key="index" class="post-image" :style="{ backgroundImage: 'url(' + getFirstImage(image) + ')' }"></div>
     </div>
 
     <!-- Post Content Section -->
     <div class="post-content-section">
-      <div class="post-content">{{ post.content }}</div>
+      <div class="post-content">{{ post.body }}</div>
     </div>
 
     <!-- Comments Section -->
     <div class="comments-container">
       <div v-for="comment in comments" :key="comment.id" class="comment">
         <div class="comment-text">{{ comment.text }}</div>
-        <button class="comment-action" @click="editComment(comment)">
-          수정
-        </button>
-        <button class="comment-action" @click="deleteComment(comment.id)">
-          삭제
-        </button>
+        <button class="comment-action" @click="editComment(comment)">수정</button>
+        <button class="comment-action" @click="deleteComment(comment.id)">삭제</button>
       </div>
     </div>
 
     <!-- Footer Bar with Input -->
     <div class="footer-bar">
-      <input
-        v-model="newComment"
-        class="input-comment"
-        @keyup.enter="addComment"
-      />
+      <input v-model="newComment" class="input-comment" @keyup.enter="addComment" />
     </div>
+
+    <transition name="fade">
+      <div v-if="showDeleteConfirmation" class="delete-confirmation">
+        <p>게시글을 삭제하시겠습니까?</p>
+        <div class="button-container">
+          <button class="delete-yes" @click="confirmDelete">확인</button>
+          <button class="delete-no" @click="showDeleteConfirmation = false">취소</button>
+        </div>
+      </div>
+    </transition>
+
+    <transition name="fade">
+      <div v-if="showEditConfirmation" class="delete-confirmation">
+        <p>게시글을 수정하시겠습니까?</p>
+        <div class="button-container">
+          <button class="delete-yes" @click="confirmEdit">확인</button>
+          <button class="delete-no" @click="showEditConfirmation = false">취소</button>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script>
 export default {
-  name: "PostDetails",
-  /*mounted(){
-      console.log(this.post.id)
-  },*/
+  name: 'PostDetails',
   created() {
-    this.emitter.emit("updateButtons", {
+    this.emitter.emit('updateButtons', {
       menuButton: false,
       searchButton: false,
-      backButton: true,
+      backButton: true
     });
   },
   props: {
     post: {
       type: Object,
       required: false,
-      default: () => ({}),
-    },
+      //default: () => ({})
+    }
   },
   data() {
     return {
       comments: [],
-      newComment: "",
-    };
+      newComment: '',
+      showDeleteConfirmation: false,
+      showEditConfirmation: false,
+    }
   },
   methods: {
+    getFirstImage(image) {
+      // 이미지 경로 절대 경로로 변환
+      const imageUrl = image ? `${image.imagePath}` : "";
+      console.log("Image URL:", imageUrl); // 디버깅을 위한 콘솔 로그
+      return imageUrl;
+    },
     addComment() {
-      if (this.newComment.trim() !== "") {
+      if (this.newComment.trim() !== '') {
         this.comments.push({
           id: Date.now(),
-          author: "Designer",
-          text: this.newComment,
+          author: 'Designer',
+          text: this.newComment
         });
-        this.newComment = "";
+        this.newComment = '';
       }
     },
     editPost() {
-      this.$emit("edit-post", this.post);
+      this.showEditConfirmation = true;
+    },
+    confirmEdit() {
+      this.$emit('edit-post', this.post);
+      this.showEditConfirmation = false;
     },
     deletePost() {
-      this.$emit("delete-post", this.post.id);
+      this.showDeleteConfirmation = true;
+    },
+    confirmDelete() {
+      this.$emit('delete-post', this.post.id);
+      this.showDeleteConfirmation = false;
     },
     editComment(comment) {
       const updatedText = prompt("Enter new comment text:", comment.text);
@@ -99,22 +119,20 @@ export default {
       }
     },
     deleteComment(commentId) {
-      this.comments = this.comments.filter(
-        (comment) => comment.id !== commentId
-      );
-    },
-  },
-};
+      this.comments = this.comments.filter(comment => comment.id !== commentId);
+    }
+  }
+}
 </script>
 
-<style scoped>
+<style>
 .main-container {
   width: 430px;
-  height: 1485px;
+  height: 932px;
   display: flex;
   flex-direction: column;
-  background: #f8f8f8;
-  border: 1px solid #e1e1e1;
+  background: #F8F8F8;
+  border: 1px solid #E1E1E1;
   border-radius: 10px;
   overflow-y: auto;
 }
@@ -122,7 +140,7 @@ export default {
 .post-header {
   flex-grow: 1;
   padding: 10px 20px;
-  background: #ffffff;
+  background: #FFFFFF;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin: 0px;
   width: 350px;
@@ -145,13 +163,12 @@ export default {
   justify-content: flex-end;
   gap: 10px;
   margin-top: 10px;
-  margin-left: auto; /* Ensures that the buttons align to the right */
+  margin-left: auto;
   margin-right: 0;
 }
 
-.edit-button,
-.delete-button {
-  background: #2e482d;
+.edit-button, .delete-button {
+  background: #2E482D;
   color: white;
   border: none;
   border-radius: 5px;
@@ -162,7 +179,7 @@ export default {
 .post-images-section {
   flex-grow: 1;
   padding: 10px 20px;
-  background: #ffffff;
+  background: #FFFFFF;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin: 0px;
   width: 350px;
@@ -173,7 +190,7 @@ export default {
 .post-image {
   width: 100px;
   height: 100px;
-  background: #b1b1b1;
+  background: #B1B1B1;
   border-radius: 10px;
   background-size: cover;
   background-position: center;
@@ -182,7 +199,7 @@ export default {
 .post-content-section {
   flex-grow: 1;
   padding: 10px 20px;
-  background: #ffffff;
+  background: #FFFFFF;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin: 0px;
   width: 350px;
@@ -198,7 +215,7 @@ export default {
 .comments-container {
   flex-grow: 1;
   padding: 10px 20px;
-  background: #ffffff;
+  background: #FFFFFF;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin: 0px;
   width: 350px;
@@ -211,7 +228,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #e1e1e1;
+  border-bottom: 1px solid #E1E1E1;
 }
 
 .comment-text {
@@ -220,7 +237,7 @@ export default {
 }
 
 .comment-action {
-  background: #2e482d;
+  background: #2E482D;
   color: white;
   border: none;
   border-radius: 5px;
@@ -233,7 +250,7 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background: #2e482d;
+  background: #2E482D;
   border-radius: 0 0 10px 10px;
   width: 390px;
   box-sizing: border-box;
@@ -242,12 +259,68 @@ export default {
 .input-comment {
   margin-right: 10px;
   padding: 10px 10px;
-  border: 1px solid #e1e1e1;
+  border: 1px solid #E1E1E1;
   border-radius: 5px;
-  height: 40px;
+  height: 35px;
   width: 300px;
   box-sizing: border-box;
   display: flex;
   align-items: center;
+  font-size: 12px;
+}
+
+.delete-confirmation {
+  position: absolute;
+  width: 269px;
+  height: 164px;
+  left: 80px;
+  top: 397px;
+  background: #4A7648;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  padding: 24px 16px 14px 16px;
+  gap: 10px;
+}
+
+.delete-confirmation p {
+  margin-bottom: 10px;
+  font-size: large;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+}
+
+.delete-confirmation .button-group {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+}
+
+.delete-confirmation button {
+  background: #2E482D;
+  border: none;
+  color: white;
+  font-size: 18px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.delete-confirmation button:focus {
+  outline: none;
+}
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter, .fade-leave-to {
+  opacity: 0;
 }
 </style>
