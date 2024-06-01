@@ -60,20 +60,12 @@ export default {
       default: null,
     },
   },
-  created() {
+  mounted() {
     this.emitter.emit("updateButtons", {
       menuButton: false,
-      searchButton: true,
+      searchButton: false,
       backButton: true,
     });
-
-    // Load post data if editing an existing post
-    if (this.post) {
-      this.selectedCategory = this.post.type;
-      this.title = this.post.title;
-      this.content = this.post.content;
-      this.images = this.post.images.length ? this.post.images : [null, null, null, null, null];
-    }
   },
   data() {
     return {
@@ -104,9 +96,9 @@ export default {
   methods: {
     fire() {
       this.emitter.emit("updateButtons", {
-        menuButton: true,
-        searchButton: false,
-        backButton: false,
+        menuButton: false,
+        searchButton: true,
+        backButton: true,
       });
     },
     selectCategory(id) {
@@ -135,7 +127,7 @@ export default {
         id: Date.now(),
         title: this.title,
         content: this.content,
-        timestamp: new Date().toLocaleString(),
+        createdDateTime: new Date().toLocaleString(),
         type: this.selectedCategory,
         comments: 0,
         images: this.images.filter((image) => image !== null).length > 0 ? this.images.filter((image) => image !== null) : [this.defaultImage], // 기본 이미지를 사용
@@ -204,7 +196,6 @@ export default {
   color: white;
   transform: none; /* 크기 변화를 방지 */
 }
-
 
 .input-title{
   font-size: x-large;
