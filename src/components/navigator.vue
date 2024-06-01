@@ -21,11 +21,16 @@
     </div>
     <div v-if="showSearch" class="search-overlay" @click="toggleSearch">
       <div class="search-container" @click.stop>
-        <input type="text" class="search-input" placeholder="검색어를 입력하세요" />
+        <input
+          type="text"
+          class="search-input"
+          placeholder="검색어를 입력하세요"
+          v-model="searchQuery"
+        />
         <div class="search-divider"></div>
         <div class="search-buttons">
           <button class="small_cancel" @click="toggleSearch">취소</button>
-          <button class="small_complete">확인</button>
+          <button class="small_complete" @click="confirmSearch">확인</button>
         </div>
       </div>
     </div>
@@ -50,6 +55,7 @@ export default {
       back: this.backButton,
       menu: this.menuButton,
       search: this.searchButton,
+      searchQuery: ""
     };
   },
   watch: {
@@ -105,6 +111,10 @@ export default {
     toggleSearch() {
       this.showSearch = !this.showSearch;
     },
+    confirmSearch() {
+      this.$emit("search-query", this.searchQuery);
+      this.toggleSearch();
+    },
     logout() {
       axios
         .post("/logout", {}, { withCredentials: true })
@@ -123,7 +133,7 @@ export default {
     filterCategory(category) {
       this.$emit("filter-category", category);
       this.toggleMenu();
-    },
+    }
   },
 };
 </script>
@@ -132,6 +142,7 @@ export default {
 .navbox {
   border: 2px solid black;
 }
+
 .navbar {
   background: #2e482d;
   padding: 9px 10px;
@@ -179,6 +190,10 @@ export default {
   padding: 10px 0;
   cursor: pointer;
   border-bottom: 1px solid rgba(0, 0, 0, 0.2);
+}
+
+.menu-item:hover {
+  font-weight: bold;
 }
 
 .menu-overlay {
@@ -233,6 +248,7 @@ export default {
   display: flex;
   justify-content: space-between;
 }
+
 .back-button {
   background: none;
   border: none;

@@ -1,17 +1,16 @@
 <template>
   <div class="main-container">
     <div class="content">
-      <!-- Post List -->
       <div class="post-list">
         <div
-            v-for="post in 게시글"
-            :key="post.id"
-            class="post-item"
-            @click="openPostDetails(post)"
+          v-for="post in sortedPosts"
+          :key="post.id"
+          class="post-item"
+          @click="openPostDetails(post)"
         >
           <div
-              class="post-image"
-              :style="{
+            class="post-image"
+            :style="{
               backgroundImage: 'url(' + getFirstImage(post.images) + ')',
             }"
           ></div>
@@ -32,18 +31,18 @@
     <!-- Footer Bar with Buttons -->
     <div class="footer-bar">
       <router-link
-          to="/reforme_page"
-          class="footer-button"
-          :class="{ active: selectedFooterButton === '리포미' }"
-          @click="selectFooterButton('리포미')"
+        to="/reforme_page"
+        class="footer-button"
+        :class="{ active: selectedFooterButton === '리포미' }"
+        @click="selectFooterButton('리포미')"
       >
         리포미
       </router-link>
       <router-link
-          to="/reforyou_page"
-          class="footer-button"
-          :class="{ active: selectedFooterButton === '리포유' }"
-          @click="selectFooterButton('리포유')"
+        to="/reforyou_page"
+        class="footer-button"
+        :class="{ active: selectedFooterButton === '리포유' }"
+        @click="selectFooterButton('리포유')"
       >
         리포유
       </router-link>
@@ -64,10 +63,10 @@
 
     <div v-if="step == 3">
       <postDetails
-          :post="selectedPost"
-          @back="step = 0"
-          @edit-post="editPost"
-          @delete-post="deletePost"
+        :post="selectedPost"
+        @back="step = 0"
+        @edit-post="editPost"
+        @delete-post="deletePost"
       ></postDetails>
     </div>
   </div>
@@ -76,6 +75,7 @@
 <script>
 import writePost from "./writePost.vue";
 import postDetails from "./postDetails.vue";
+import axios from "axios";
 
 export default {
   name: "Reforme",
@@ -85,6 +85,13 @@ export default {
       searchButton: true,
       backButton: false,
     });
+
+    this.emitter.on("filter-category", this.filterPosts);
+    this.emitter.on("search-query", this.updateSearchQuery);
+  },
+  beforeUnmount() {
+    this.emitter.off("filter-category", this.filterPosts);
+    this.emitter.off("search-query", this.updateSearchQuery);
   },
   components: {
     writePost,
@@ -92,16 +99,46 @@ export default {
   },
   data() {
     return {
+      searchkeyword: '',
+      searchfinish: false,
+      searchoption: ['제목', '작성자'],
+      searchoptionselected: '제목',
+      searchcnt: 0,
+      contentlist: [],
       step: 0,
       selectedFooterButton: "리포미",
       게시글: [],
       selectedPost: null,
+      selectedCategory: null,
+      searchQuery: ""
     };
+  },
+  computed: {
+    filteredPosts() {
+      let posts = this.게시글;
+      if (this.selectedCategory) {
+        posts = posts.filter(post => post.type === this.selectedCategory);
+      }
+      if (this.searchQuery) {
+        posts = posts.filter(post => post.title.includes(this.searchQuery));
+      }
+      return posts;
+    },
+    sortedPosts() {
+      const posts = this.filteredPosts.slice();
+      posts.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      return posts;
+    }
   },
   methods: {
     addPost(post) {
       this.게시글.push(post);
       this.step = 0;
+      this.emitter.emit("updateButtons", {
+        menuButton: true,
+        searchButton: true,
+        backButton: false,
+      });
     },
     selectFooterButton(button) {
       this.selectedFooterButton = button;
@@ -137,6 +174,34 @@ export default {
       };
       return categoryMap[type] || "";
     },
+    filterPosts(category) {
+      this.selectedCategory = category;
+    },
+    updateSearchQuery(query) {
+      this.searchQuery = query;
+    },
+    searchstart() {
+      if(this.searchkeyword == '') {
+        alert('키워드가 없습니다!');
+      } else {
+        axios.post("http://127.0.0.1:52273/content/search/", {
+          searchoption: this.searchoptionselected,
+          searchkeyword: this.searchkeyword,
+        }).then(res => {
+          this.contentlist = res.data;
+          this.searchcnt = this.contentlist[Object.keys(this.contentlist).length-1].cnt;
+          this.contentlist.pop();
+          alert('검색완료!');
+          this.searchfinish = true;
+          this.searchkeyword = '';
+        }).catch(err => {
+          alert(err);
+        });
+      }
+    },
+    movetocontent(boardnum, id) {
+      window.location.href = 'http://127.0.0.1:8080/board/' + boardnum + '/content?id=' + id;
+    }
   },
 };
 </script>

@@ -78,7 +78,7 @@ import writePost from "./writePost.vue";
 import postDetails from "./postDetails.vue";
 
 export default {
-  name: "Reforme",
+  name: "Reforyou",
   created() {
     this.emitter.emit("updateButtons", {
       menuButton: true,
