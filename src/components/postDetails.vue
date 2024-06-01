@@ -3,7 +3,7 @@
     <!-- Post Title and Author Section -->
     <div class="post-header">
       <h2 class="post-title">{{ post.title }}</h2>
-      <p class="post-author">{{ post.author }} 작성자 </p>
+      <p class="post-author">{{ post.userId }} 님 </p>
       <div class="post-actions">
         <button class="edit-button" @click="showEditConfirmation = true">수정</button>
         <button class="delete-button" @click="showDeleteConfirmation = true">삭제</button>
@@ -12,12 +12,12 @@
 
     <!-- Post Images Section -->
     <div class="post-images-section" v-if="post.images && post.images.length">
-      <div v-for="(image, index) in post.images" :key="index" class="post-image" :style="{ backgroundImage: 'url(' + image + ')' }"></div>
+      <div v-for="(image, index) in post.images" :key="index" class="post-image" :style="{ backgroundImage: 'url(' + getFirstImage(image) + ')' }"></div>
     </div>
 
     <!-- Post Content Section -->
     <div class="post-content-section">
-      <div class="post-content">{{ post.content }}</div>
+      <div class="post-content">{{ post.body }}</div>
     </div>
 
     <!-- Comments Section -->
@@ -70,7 +70,7 @@ export default {
     post: {
       type: Object,
       required: false,
-      default: () => ({})
+      //default: () => ({})
     }
   },
   data() {
@@ -82,6 +82,12 @@ export default {
     }
   },
   methods: {
+    getFirstImage(image) {
+      // 이미지 경로 절대 경로로 변환
+      const imageUrl = image ? `${image.imagePath}` : "";
+      console.log("Image URL:", imageUrl); // 디버깅을 위한 콘솔 로그
+      return imageUrl;
+    },
     addComment() {
       if (this.newComment.trim() !== '') {
         this.comments.push({
@@ -317,5 +323,4 @@ export default {
 .fade-enter, .fade-leave-to {
   opacity: 0;
 }
-
 </style>
