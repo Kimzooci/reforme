@@ -30,7 +30,11 @@
           class="image-upload-button"
           @click.prevent="triggerFileUpload(index)"
         >
-          <div v-if="imagePreview" class="image-preview" :style="{ backgroundImage: 'url(' + imagePreview + ')' }"></div>
+          <div
+            v-if="imagePreview"
+            class="image-preview"
+            :style="{ backgroundImage: 'url(' + imagePreview + ')' }"
+          ></div>
           <div v-else>+</div>
         </button>
         <input
@@ -41,7 +45,7 @@
         />
       </div>
       <div class="action-buttons">
-        <button type="submit" class="submit-button">확인</button>
+        <button type="submit" class="submit-button" :disabled="!canSubmit">확인</button>
       </div>
     </form>
   </div>
@@ -51,6 +55,30 @@
 import axios from "axios";
 
 export default {
+  name: "WritePost",
+  props: {
+    post: {
+      type: Object,
+      default: null,
+    },
+  },
+  created() {
+    this.emitter.emit("updateButtons", {
+      menuButton: false,
+      searchButton: false,
+      backButton: true,
+    });
+
+    // Load post data if editing an existing post
+    if (this.post) {
+      this.selectedCategory = this.post.type;
+      this.title = this.post.title;
+      this.content = this.post.content;
+      this.images = this.post.images.length
+        ? this.post.images
+        : [null, null, null, null, null];
+    }
+  },
   mounted() {
     this.emitter.emit("updateButtons", {
       menuButton: false,
@@ -73,9 +101,27 @@ export default {
       images: [null, null, null, null, null], // 이미지 배열 초기화
       imagePreviews: [null, null, null, null, null], // 이미지 미리보기 배열 초기화
       uploadIndex: null,
+      defaultImage: require("@/assets/images/default-image.png"), // 기본 이미지 경로 설정
     };
   },
+  computed: {
+    canSubmit() {
+      return (
+        this.selectedCategory !== null &&
+        this.title.trim() !== "" &&
+        this.content.trim() !== "" &&
+        this.images.some((image) => image !== null)
+      );
+    },
+  },
   methods: {
+    fire() {
+      this.emitter.emit("updateButtons", {
+        menuButton: true,
+        searchButton: false,
+        backButton: false,
+      });
+    },
     selectCategory(id) {
       this.selectedCategory = id;
     },
@@ -98,7 +144,10 @@ export default {
       const reader = new FileReader();
       reader.onload = (e) => {
         this.imagePreviews[index] = e.target.result; // 이미지 미리보기 설정
-        console.log(`Image loaded at index ${index}:`, this.imagePreviews[index]);
+        console.log(
+          `Image loaded at index ${index}:`,
+          this.imagePreviews[index]
+        );
       };
       reader.readAsDataURL(file);
     },
@@ -109,7 +158,10 @@ export default {
         body: this.content,
         category: this.selectedCategory,
       };
-      formData.append("board", new Blob([JSON.stringify(boardData)], { type: "application/json" }));
+      formData.append(
+        "board",
+        new Blob([JSON.stringify(boardData)], { type: "application/json" })
+      );
       this.images.forEach((image, index) => {
         if (image) {
           formData.append("images", image, `image${index}.png`);
@@ -150,74 +202,110 @@ export default {
   background: #ffffff;
 }
 
-.categories {
-  padding: 10px 0;
+.navbar {
   display: flex;
   justify-content: space-between;
+  align-items: center;
+  color: white;
+}
+
+.menu-button,
+.search-button {
+  background: none;
+  border: none;
+  color: white;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.navbar-title {
+  font-size: 24px;
+}
+
+.categories {
+  padding: 10px 0;
 }
 
 .categories button {
+  height: 50px;
+  width: 60px;
   padding: 5px 10px;
   border-radius: 10px;
   border: none;
   background-color: #b1b1b1;
   color: black;
-  font-size: 16px;
-  transition: background-color 0.3s;
-  flex: 1;
-  max-width: 70px;
+  font-size: 19px;
+  transition: background-color 0.5s; /* 배경 색상 전환 애니메이션 */
+  flex: 1; /* 각 버튼의 크기를 균등하게 만듦 */
+  max-width: 70px; /* 버튼 최대 너비를 설정 */
 }
 
 .categories button:focus {
-  outline: none;
-  box-shadow: none;
+  outline: none; /* 버튼 포커스 시 테두리 제거 */
+  box-shadow: none; /* 버튼 포커스 시 그림자 제거 */
 }
 
 .categories .active {
   background-color: #4a7648;
   color: white;
+  transform: none; /* 크기 변화를 방지 */
+}
+
+.input-title {
+  font-size: x-large;
 }
 
 .input-title,
 .input-content {
-  width: 90%;
-  margin: 10px auto;
+  width: 412px;
+  height: 50px;
   border: 1px solid #ccc;
   border-radius: 10px;
-  padding: 10px;
 }
 
 .input-content {
-  height: 200px;
+  width: 410px;
+  height: 450px;
+  gap: 0px;
+  border-radius: 10px 10px 10px 10px;
+  border: 1px solid #ccc; /* 변경 */
   resize: none;
+  font-size: large;
+  opacity: 1; /* 변경 */
 }
 
 .action-buttons {
   display: flex;
   justify-content: center;
   padding: 20px 0;
-  width: 90%;
+  width: 90%; /* 수정 */
 }
 
 .submit-button {
-  width: 100%;
+  width: 400px; /* 수정: 양쪽 여백 포함 */
   height: 76px;
   padding: 10px 20px;
   background-color: #4a7648;
   color: white;
   border: none;
   border-radius: 10px;
+  position: absolute;
+  bottom: 0;
+}
+
+.submit-button:disabled {
+  background-color: grey;
+  cursor: not-allowed;
 }
 
 .image-upload-buttons {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 90%;
+  width: 410px;
   height: 74px;
-  padding: 0 10px;
-  margin: 0 auto;
-  background-color: #ffffff;
+  padding: 10px 10px;
+  background-color: #ffffffff;
 }
 
 .image-upload-button {

@@ -1,12 +1,11 @@
 <template>
   <div class="main-container">
     <div class="content">
-      <!-- <h1 v-if="step == 0">Reforme 페이지</h1> -->
       <!-- Post List -->
       <div class="post-list">
         <div
           v-for="post in 게시글"
-          :key="post.id"
+          :key="post.boardId"
           class="post-item"
           @click="openPostDetails(post)"
         >
@@ -20,10 +19,10 @@
             <h3>{{ post.title }}</h3>
             <div class="post-details">
               <p>
-                {{ post.timestamp }} |
-                <span>{{ getCategoryName(post.type) }}</span>
+                {{ post.createdDateTime }} |
+                <span>{{ getCategoryName(post.category) }}</span>
               </p>
-              <span>{{ post.comments }} 댓글</span>
+              <span>{{ post.comments.length }} 댓글</span>
             </div>
           </div>
         </div>
@@ -52,20 +51,24 @@
 
     <!-- Floating Action Buttons -->
     <div class="action-buttons">
-      <button @click="step = 1" class="create-button">
+      <button @click="createPost" class="create-button">
         <img src="../assets/images/generate1.png" alt="" />
       </button>
       <router-link to="/chatbot_page" class="chat-button">
         <img src="../assets/images/chatbot.png" alt="" />
       </router-link>
     </div>
-    <!-- step == 2 삭제 -> link 이동으로 변경함 -->
     <div v-if="step == 1">
       <writePost @back="step = 0" @submit-post="addPost"></writePost>
     </div>
 
     <div v-if="step == 3">
-      <postDetails :post="selectedPost" @back="step = 0"></postDetails>
+      <postDetails
+        :post="selectedPost"
+        @back="step = 0"
+        @edit-post="editPost"
+        @delete-post="deletePost"
+      ></postDetails>
     </div>
   </div>
 </template>
@@ -73,11 +76,25 @@
 <script>
 import writePost from "./writePost.vue";
 import postDetails from "./postDetails.vue";
+import axios from "axios";
 
 export default {
   name: "Reforme",
   mounted() {
-    // navigator.vue로부터 이벤트를 받아서 처리
+    axios
+      .get("/reforme")
+      .then((response) => {
+        if (response.data.statusCode === 200) {
+          alert("데이터 불러오기 성공");
+          this.게시글 = response.data.data;
+        } else {
+          alert("데이터 불러오기 실패");
+        }
+      })
+      .catch((error) => {
+        alert("데이터 불러오기 실패: " + error.message);
+      });
+
     this.emitter.on("backfunction", (data) => {
       this.step = data;
     });
@@ -113,18 +130,37 @@ export default {
       this.selectedPost = post;
       this.step = 3;
     },
-    getFirstImage(images) {
-      return images.find((image) => image !== null) || "";
+    createPost() {
+      this.selectedPost = null;
+      this.step = 1;
     },
-    getCategoryName(type) {
+    editPost(post) {
+      this.게시글 = this.게시글.filter((p) => p.id !== post.id);
+      this.selectedPost = post;
+      this.step = 1;
+    },
+    deletePost(postId) {
+      this.게시글 = this.게시글.filter((post) => post.id !== postId);
+      this.step = 0;
+    },
+
+    getFirstImage(images) {
+      // 이미지 경로 절대 경로로 변환
+
+      const image = images.find((image) => image.imagePath !== null);
+      const imageUrl = image ? `${image.imagePath}` : "";
+      console.log("Image URL:", imageUrl); // 디버깅을 위한 콘솔 로그
+      return imageUrl;
+    },
+    getCategoryName(category) {
       const categoryMap = {
         TOP: "상의",
-        OUTER: "외투",
+        OUTWEAR: "외투",
         BOTTOM: "하의",
         BAG: "가방",
         ETC: "기타",
       };
-      return categoryMap[type] || "";
+      return categoryMap[category] || "";
     },
   },
 };
@@ -191,3 +227,4 @@ export default {
   cursor: pointer;
 }
 </style>
+
