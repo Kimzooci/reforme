@@ -61,16 +61,29 @@
       />
       <input
         type="file"
-        ref="fileInput"
+        ref="imageInput"
         style="display: none"
-        @change="uploadImage"
+        @change="uploadImage('image')"
+      />
+      <input
+        type="file"
+        ref="maskInput"
+        style="display: none"
+        @change="uploadImage('mask')"
       />
       <button
         class="ai_submit_button"
-        @click="triggerFileInput"
+        @click="triggerFileInput('image')"
         v-if="inputType === 'edit'"
       >
         <img src="../assets/images/imagelogo.png" alt="image" />
+      </button>
+      <button
+        class="ai_submit_button"
+        @click="triggerFileInput('mask')"
+        v-if="inputType === 'edit'"
+      >
+        <img src="../assets/images/masklogo.png" alt="mask" />
       </button>
       <button class="ai_submit_button" @click="sendMessage">
         <img src="../assets/images/submitlogo.png" alt="submit" />
@@ -105,6 +118,8 @@ export default {
         },
         { image: require("../assets/images/cat.png"), user: false },
       ],
+      imageFile: null,
+      maskFile: null,
     };
   },
   methods: {
@@ -147,6 +162,41 @@ export default {
 
           this.messages.push(botMessage);
           this.messages.push(generatedImageMessage);
+        } else if (this.inputType === "edit") {
+          // 수정할 이미지를 처리합니다.
+          if (!this.imageFile) {
+            this.messages.push({
+              text: "수정할 이미지를 업로드해주세요.",
+              user: false,
+            });
+            return;
+          }
+
+          const formData = new FormData();
+          formData.append("image", this.imageFile);
+          if (this.maskFile) {
+            formData.append("mask", this.maskFile);
+          }
+          formData.append("prompt", userMessage.text);
+
+          const response = await axios.post("/aichat/chat_modify", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          });
+
+          const textMessage = {
+            text: "수정된 이미지입니다😊",
+            user: false,
+          };
+
+          const editedImageMessage = {
+            image: `data:image/png;base64,${response.data}`,
+            user: false,
+          };
+
+          this.messages.push(textMessage);
+          this.messages.push(editedImageMessage);
         }
         this.scrollToBottom();
       } catch (error) {
@@ -154,15 +204,17 @@ export default {
         this.messages.push({ text: "Error generating response", user: false });
       }
     },
-    async uploadImage(event) {
-      const file = event.target.files[0];
+    async uploadImage(type) {
+      const file = this.$refs[`${type}Input`].files[0];
       if (!file) return;
 
-      const formData = new FormData();
-      formData.append("image", file);
-      formData.append("prompt", this.userInput);
+      if (type === "image") {
+        this.imageFile = file;
+      } else if (type === "mask") {
+        this.maskFile = file;
+      }
 
-      const userMessage = { text: this.userInput, user: true };
+      const userMessage = { text: `Uploaded ${type} image`, user: true };
       this.messages.push(userMessage);
 
       const imageMessage = {
@@ -170,36 +222,10 @@ export default {
         user: true,
       };
       this.messages.push(imageMessage);
-      this.userInput = "";
       this.scrollToBottom();
-
-      try {
-        const response = await axios.post("/aichat/chat_modify", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        });
-
-        const textMessage = {
-          text: "수정된 이미지 입니다😊",
-          user: false,
-        };
-
-        const editedImageMessage = {
-          image: `data:image/png;base64,${response.data}`,
-          user: false,
-        };
-
-        this.messages.push(textMessage);
-        this.messages.push(editedImageMessage);
-        this.scrollToBottom();
-      } catch (error) {
-        console.error("Error uploading image:", error);
-        this.messages.push({ text: "Error uploading image", user: false });
-      }
     },
-    triggerFileInput() {
-      this.$refs.fileInput.click();
+    triggerFileInput(type) {
+      this.$refs[`${type}Input`].click();
     },
     scrollToBottom() {
       this.$nextTick(() => {
