@@ -48,6 +48,7 @@
       <div v-if="showEditConfirmation" class="delete-confirmation">
         <p>게시글을 수정하시겠습니까?</p>
         <div class="button-container">
+          console.log("postDetails 수정버튼")
           <button class="delete-yes" @click="confirmEdit">확인</button>
           <button class="delete-no" @click="showEditConfirmation = false">취소</button>
         </div>
@@ -70,7 +71,7 @@ export default {
     post: {
       type: Object,
       required: false,
-      //default: () => ({})
+      default: () => ({})
     }
   },
   data() {
@@ -102,6 +103,7 @@ export default {
       this.showEditConfirmation = true;
     },
     confirmEdit() {
+      console.log("postDetils.vue 수정 함수")
       this.$emit('edit-post', this.post);
       this.showEditConfirmation = false;
     },

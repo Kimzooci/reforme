@@ -81,6 +81,10 @@ import axios from "axios";
 export default {
   name: "Reforme",
   mounted() {
+    /*this.emitter.on("editPost", {
+      this.editPost(post),
+
+    });*/
     axios
       .get("/reforme")
       .then((response) => {
@@ -115,6 +119,7 @@ export default {
       step: 0,
       selectedFooterButton: "리포미",
       게시글: [],
+      
       selectedPost: null,
     };
   },
