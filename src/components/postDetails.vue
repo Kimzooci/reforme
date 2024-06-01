@@ -5,7 +5,7 @@
       <h2 class="post-title">{{ post.title }}</h2>
       <p class="post-author">{{ post.author }} 작성자 </p>
       <div class="post-actions">
-        <button class="edit-button" @click="editPost">수정</button>
+        <button class="edit-button" @click="showEditConfirmation = true">수정</button>
         <button class="delete-button" @click="showDeleteConfirmation = true">삭제</button>
       </div>
     </div>
@@ -34,26 +34,36 @@
       <input v-model="newComment" class="input-comment" @keyup.enter="addComment" />
     </div>
 
-    <div v-if="showDeleteConfirmation" class="delete-confirmation">
-  <p>게시글을 삭제하시겠습니까?</p>
-  <div class="button-group">
-    <button class="delete-yes" @click="confirmDelete">확인</button>
-    <button class="delete-no" @click="showDeleteConfirmation = false">취소</button>
-  </div>
-</div>
+    <transition name="fade">
+      <div v-if="showDeleteConfirmation" class="delete-confirmation">
+        <p>게시글을 삭제하시겠습니까?</p>
+        <div class="button-container">
+          <button class="delete-yes" @click="confirmDelete">확인</button>
+          <button class="delete-no" @click="showDeleteConfirmation = false">취소</button>
+        </div>
+      </div>
+    </transition>
 
+    <transition name="fade">
+      <div v-if="showEditConfirmation" class="delete-confirmation">
+        <p>게시글을 수정하시겠습니까?</p>
+        <div class="button-container">
+          <button class="delete-yes" @click="confirmEdit">확인</button>
+          <button class="delete-no" @click="showEditConfirmation = false">취소</button>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
-
 
 <script>
 export default {
   name: 'PostDetails',
   created() {
-    this.emitter.emit('updateButtons', { 
-      menuButton: false, 
-      searchButton: false, 
-      backButton: true 
+    this.emitter.emit('updateButtons', {
+      menuButton: false,
+      searchButton: false,
+      backButton: true
     });
   },
   props: {
@@ -68,6 +78,7 @@ export default {
       comments: [],
       newComment: '',
       showDeleteConfirmation: false,
+      showEditConfirmation: false,
     }
   },
   methods: {
@@ -82,13 +93,17 @@ export default {
       }
     },
     editPost() {
+      this.showEditConfirmation = true;
+    },
+    confirmEdit() {
       this.$emit('edit-post', this.post);
+      this.showEditConfirmation = false;
     },
     deletePost() {
-      this.$emit('delete-post', this.post.id);
+      this.showDeleteConfirmation = true;
     },
     confirmDelete() {
-      this.deletePost();
+      this.$emit('delete-post', this.post.id);
       this.showDeleteConfirmation = false;
     },
     editComment(comment) {
@@ -103,7 +118,6 @@ export default {
   }
 }
 </script>
-
 
 <style scoped>
 .main-container {
@@ -143,7 +157,7 @@ export default {
   justify-content: flex-end;
   gap: 10px;
   margin-top: 10px;
-  margin-left: auto; /* Ensures that the buttons align to the right */
+  margin-left: auto;
   margin-right: 0;
 }
 
@@ -246,7 +260,7 @@ export default {
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  font-size: 12px; 
+  font-size: 12px;
 }
 
 .delete-confirmation {
@@ -263,14 +277,13 @@ export default {
   justify-content: center;
   color: white;
   padding: 24px 16px 14px 16px;
-  gap: 0px;
+  gap: 10px;
 }
 
 .delete-confirmation p {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   font-size: large;
 }
-
 
 .button-container {
   display: flex;
@@ -297,5 +310,11 @@ export default {
   outline: none;
 }
 
+.fade-enter-active, .fade-leave-active {
+  transition: opacity 0.5s;
+}
 
+.fade-enter, .fade-leave-to {
+  opacity: 0;
+}
 </style>

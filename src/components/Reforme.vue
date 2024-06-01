@@ -113,7 +113,7 @@ export default {
       this.step = 1;
     },
     editPost(post) {
-      this.게시글 = this.게시글.filter(p => p.id !== post.id);
+      this.게시글 = this.게시글.filter(p => p.id !== post.id); //기존 게시글 삭제
       this.selectedPost = post;
       this.step = 1;
     },
