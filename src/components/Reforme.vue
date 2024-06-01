@@ -1,230 +1,352 @@
 <template>
   <div class="main-container">
-    <div class="content">
-      <!-- Post List -->
-      <div class="post-list">
-        <div
-          v-for="post in 게시글"
-          :key="post.boardId"
-          class="post-item"
-          @click="openPostDetails(post)"
-        >
-          <div
-            class="post-image"
-            :style="{
-              backgroundImage: 'url(' + getFirstImage(post.images) + ')',
-            }"
-          ></div>
-          <div class="post-info">
-            <h3>{{ post.title }}</h3>
-            <div class="post-details">
-              <p>
-                {{ post.createdDateTime }} |
-                <span>{{ getCategoryName(post.category) }}</span>
-              </p>
-              <span>{{ post.comments.length }} 댓글</span>
-            </div>
-          </div>
-        </div>
+    <!-- Post Title and Author Section -->
+    <div class="post-header">
+      <h2 class="post-title">{{ post.title }}</h2>
+      <p class="post-author">{{ post.userId }} 님</p>
+      <div class="post-actions">
+        <button class="edit-button" @click="showEditConfirmation = true">
+          수정
+        </button>
+        <button class="delete-button" @click="showDeleteConfirmation = true">
+          삭제
+        </button>
       </div>
     </div>
 
-    <!-- Footer Bar with Buttons -->
+    <!-- Post Images Section -->
+    <div class="post-images-section" v-if="post.images && post.images.length">
+      <div
+        v-for="(image, index) in post.images"
+        :key="index"
+        class="post-image"
+        :style="{ backgroundImage: 'url(' + getFirstImage(image) + ')' }"
+      ></div>
+    </div>
+
+    <!-- Post Content Section -->
+    <div class="post-content-section">
+      <div class="post-content">{{ post.body }}</div>
+    </div>
+
+    <!-- Comments Section -->
+    <div class="comments-container">
+      <div v-for="comment in comments" :key="comment.id" class="comment">
+        <div class="comment-text">{{ comment.text }}</div>
+        <button class="comment-action" @click="editComment(comment)">
+          수정
+        </button>
+        <button class="comment-action" @click="deleteComment(comment.id)">
+          삭제
+        </button>
+      </div>
+    </div>
+
+    <!-- Footer Bar with Input -->
     <div class="footer-bar">
-      <router-link
-        to="/reforme_page"
-        class="footer-button"
-        :class="{ active: selectedFooterButton === '리포미' }"
-        @click="selectFooterButton('리포미')"
-      >
-        리포미
-      </router-link>
-      <router-link
-        to="/reforyou_page"
-        class="footer-button"
-        :class="{ active: selectedFooterButton === '리포유' }"
-        @click="selectFooterButton('리포유')"
-      >
-        리포유
-      </router-link>
+      <input
+        v-model="newComment"
+        class="input-comment"
+        @keyup.enter="addComment"
+      />
     </div>
 
-    <!-- Floating Action Buttons -->
-    <div class="action-buttons">
-      <button @click="createPost" class="create-button">
-        <img src="../assets/images/generate1.png" alt="" />
-      </button>
-      <router-link to="/chatbot_page" class="chat-button">
-        <img src="../assets/images/chatbot.png" alt="" />
-      </router-link>
-    </div>
-    <div v-if="step == 1">
-      <writePost @back="step = 0" @submit-post="addPost"></writePost>
-    </div>
+    <transition name="fade">
+      <div v-if="showDeleteConfirmation" class="delete-confirmation">
+        <p>게시글을 삭제하시겠습니까?</p>
+        <div class="button-container">
+          <button class="delete-yes" @click="confirmDelete">확인</button>
+          <button class="delete-no" @click="showDeleteConfirmation = false">
+            취소
+          </button>
+        </div>
+      </div>
+    </transition>
 
-    <div v-if="step == 3">
-      <postDetails
-        :post="selectedPost"
-        @back="step = 0"
-        @edit-post="editPost"
-        @delete-post="deletePost"
-      ></postDetails>
-    </div>
+    <transition name="fade">
+      <div v-if="showEditConfirmation" class="delete-confirmation">
+        <p>게시글을 수정하시겠습니까?</p>
+        <div class="button-container">
+          <button class="delete-yes" @click="confirmEdit">확인</button>
+          <button class="delete-no" @click="showEditConfirmation = false">
+            취소
+          </button>
+        </div>
+      </div>
+    </transition>
   </div>
 </template>
 
 <script>
-import writePost from "./writePost.vue";
-import postDetails from "./postDetails.vue";
-import axios from "axios";
-
 export default {
-  name: "Reforme",
-  mounted() {
-    axios
-      .get("/reforme")
-      .then((response) => {
-        if (response.data.statusCode === 200) {
-          alert("데이터 불러오기 성공");
-          this.게시글 = response.data.data;
-        } else {
-          alert("데이터 불러오기 실패");
-        }
-      })
-      .catch((error) => {
-        alert("데이터 불러오기 실패: " + error.message);
-      });
-
-    this.emitter.on("backfunction", (data) => {
-      this.step = data;
-    });
-  },
+  name: "PostDetails",
   created() {
     this.emitter.emit("updateButtons", {
-      menuButton: true,
-      searchButton: true,
-      backButton: false,
+      menuButton: false,
+      searchButton: false,
+      backButton: true,
     });
   },
-  components: {
-    writePost,
-    postDetails,
+  props: {
+    post: {
+      type: Object,
+      required: false,
+      //default: () => ({})
+    },
   },
   data() {
     return {
-      step: 0,
-      selectedFooterButton: "리포미",
-      게시글: [],
-      selectedPost: null,
+      comments: [],
+      newComment: "",
+      showDeleteConfirmation: false,
+      showEditConfirmation: false,
     };
   },
   methods: {
-    addPost(post) {
-      this.게시글.push(post);
-      this.step = 0;
-    },
-    selectFooterButton(button) {
-      this.selectedFooterButton = button;
-    },
-    openPostDetails(post) {
-      this.selectedPost = post;
-      this.step = 3;
-    },
-    createPost() {
-      this.selectedPost = null;
-      this.step = 1;
-    },
-    editPost(post) {
-      this.게시글 = this.게시글.filter((p) => p.id !== post.id);
-      this.selectedPost = post;
-      this.step = 1;
-    },
-    deletePost(postId) {
-      this.게시글 = this.게시글.filter((post) => post.id !== postId);
-      this.step = 0;
-    },
-
-    getFirstImage(images) {
+    getFirstImage(image) {
       // 이미지 경로 절대 경로로 변환
-
-      const image = images.find((image) => image.imagePath !== null);
       const imageUrl = image ? `${image.imagePath}` : "";
       console.log("Image URL:", imageUrl); // 디버깅을 위한 콘솔 로그
       return imageUrl;
     },
-    getCategoryName(category) {
-      const categoryMap = {
-        TOP: "상의",
-        OUTWEAR: "외투",
-        BOTTOM: "하의",
-        BAG: "가방",
-        ETC: "기타",
-      };
-      return categoryMap[category] || "";
+    addComment() {
+      if (this.newComment.trim() !== "") {
+        this.comments.push({
+          id: Date.now(),
+          author: "Designer",
+          text: this.newComment,
+        });
+        this.newComment = "";
+      }
+    },
+    editPost() {
+      this.showEditConfirmation = true;
+    },
+    confirmEdit() {
+      this.$emit("edit-post", this.post);
+      this.showEditConfirmation = false;
+    },
+    deletePost() {
+      this.showDeleteConfirmation = true;
+    },
+    confirmDelete() {
+      this.$emit("delete-post", this.post.id);
+      this.showDeleteConfirmation = false;
+    },
+    editComment(comment) {
+      const updatedText = prompt("Enter new comment text:", comment.text);
+      if (updatedText) {
+        comment.text = updatedText;
+      }
+    },
+    deleteComment(commentId) {
+      this.comments = this.comments.filter(
+        (comment) => comment.id !== commentId
+      );
     },
   },
 };
 </script>
 
-<style scoped>
-@import "../styles/main.css";
-
-.content {
-  flex-grow: 1;
-  overflow-y: auto;
-  width: 100%;
-}
-
-.post-list {
-  width: 100%;
-  overflow-y: auto;
-  margin-top: 0; /* 공백 없애기 */
-  position: absolute;
-  top: 0px;
-  height: calc(100% - 174px);
-}
-
-.post-item {
+<style>
+.main-container {
+  width: 430px;
+  height: 932px;
   display: flex;
-  align-items: center;
-  padding: 10px;
-  border-bottom: 1px solid #e0e0e0;
+  flex-direction: column;
+  background: #f8f8f8;
+  border: 1px solid #e1e1e1;
+  border-radius: 10px;
+  overflow-y: auto;
+}
+
+.post-header {
+  flex-grow: 1;
+  padding: 10px 20px;
+  background: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 0px;
+  width: 350px;
+  height: 120px;
+  overflow-y: auto;
+}
+
+.post-title {
+  font-size: 22px;
+  margin: 0;
+}
+
+.post-author {
+  color: #888;
+  margin: 0;
+}
+
+.post-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 10px;
+  margin-left: auto;
+  margin-right: 0;
+}
+
+.edit-button,
+.delete-button {
+  background: #2e482d;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  padding: 5px 10px;
   cursor: pointer;
+}
+
+.post-images-section {
+  flex-grow: 1;
+  padding: 10px 20px;
+  background: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 0px;
+  width: 350px;
+  height: 300px;
+  overflow-y: auto;
 }
 
 .post-image {
-  width: 60px;
-  height: 60px;
+  width: 100px;
+  height: 100px;
+  background: #b1b1b1;
+  border-radius: 10px;
   background-size: cover;
   background-position: center;
-  margin-right: 20px;
-  border-radius: 10px;
 }
 
-.post-info {
+.post-content-section {
+  flex-grow: 1;
+  padding: 10px 20px;
+  background: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 0px;
+  width: 350px;
+  height: 150px;
+  overflow-y: auto;
+}
+
+.post-content {
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.comments-container {
+  flex-grow: 1;
+  padding: 10px 20px;
+  background: #ffffff;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin: 0px;
+  width: 350px;
+  height: 300px;
+  overflow-y: auto;
+}
+
+.comment {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #e1e1e1;
+}
+
+.comment-text {
+  font-size: 14px;
   flex-grow: 1;
 }
 
-.post-details {
-  font-size: 14px;
-  color: gray;
-}
-
-/* 스타일 조정 */
-.chat-button {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
+.comment-action {
   background: #2e482d;
   color: white;
-  font-size: 36px;
   border: none;
-  text-decoration: none; /* 링크 스타일 제거 */
-  margin-bottom: 10px;
+  border-radius: 5px;
+  padding: 5px 10px;
   cursor: pointer;
 }
-</style>
 
+.footer-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  background: #2e482d;
+  border-radius: 0 0 10px 10px;
+  width: 390px;
+  box-sizing: border-box;
+}
+
+.input-comment {
+  margin-right: 10px;
+  padding: 10px 10px;
+  border: 1px solid #e1e1e1;
+  border-radius: 5px;
+  height: 35px;
+  width: 300px;
+  box-sizing: border-box;
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+}
+
+.delete-confirmation {
+  position: absolute;
+  width: 269px;
+  height: 164px;
+  left: 80px;
+  top: 397px;
+  background: #4a7648;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  padding: 24px 16px 14px 16px;
+  gap: 10px;
+}
+
+.delete-confirmation p {
+  margin-bottom: 10px;
+  font-size: large;
+}
+
+.button-container {
+  display: flex;
+  gap: 10px;
+}
+
+.delete-confirmation .button-group {
+  display: flex;
+  width: 100%;
+  justify-content: space-around;
+}
+
+.delete-confirmation button {
+  background: #2e482d;
+  border: none;
+  color: white;
+  font-size: 18px;
+  padding: 10px 20px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.delete-confirmation button:focus {
+  outline: none;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>

@@ -5,7 +5,7 @@ import Signup from '@/components/signup.vue';
 import Signin from '@/components/signin.vue';
 import Chatbot from '@/components/chatbot.vue';
 import Home from '@/components/home.vue';
-//import Errorpage from '@/components/errorpage.vue';
+import Errorpage from '@/components/errorpage.vue';
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
