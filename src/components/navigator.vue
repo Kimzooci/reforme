@@ -112,10 +112,20 @@ export default {
       this.showSearch = !this.showSearch;
     },
     logout() {
+      const formData = new FormData();
       axios
-        .post("/logout", {}, { withCredentials: true })
+        .post(
+          "/signout",
+          formData,
+          {
+            header: {
+              "Content-Type": "multipart/form-data",
+            },
+          },
+          { withCredentials: true }
+        )
         .then((response) => {
-          if (response.status === 200) {
+          if (response.data.statusCode === 200) {
             alert("로그아웃 성공");
             this.$router.push("/");
           } else {

@@ -12,17 +12,16 @@ axios.defaults.withCredentials = true;
 
 const routes = [
     { path: '/', name: 'home', component: Home },
-    //{ path: '/error_page', name: 'error_page', component: Errorpage }, 
+    { path: '/error_page', name: 'error_page', component: Errorpage },
     { path: '/reforme_page', name: 'reforme_page', component: Reforme, meta: { requiresAuth: true } },
-    { path: '/reforme_page/:id(\\d+)', name: 'reforme_detail', component: Reforme, meta: { requiresAuth: true } },
+    { path: '/reforme_page/:id', name: 'reforme_detail', component: Reforme, meta: { requiresAuth: true } },
     { path: '/reforyou_page', name: 'reforyou_page', component: Reforyou, meta: { requiresAuth: true } },
-    { path: '/reforyou_page/:id(\\d+)', name: 'reforyou_detail', component: Reforyou, meta: { requiresAuth: true } },
+    { path: '/reforyou_page/:id', name: 'reforyou_detail', component: Reforyou, meta: { requiresAuth: true } },
     { path: '/signup_page', name: 'signup_page', component: Signup },
     { path: '/signin_page', name: 'signin_page', component: Signin },
     { path: '/chatbot_page', name: 'chatbot_page', component: Chatbot, meta: { requiresAuth: true } },
-    // { path: '/:anything(.*)', name: 'catchAll', component: Errorpage }, // 추가된 catch-all 라우트, 404 page
+    { path: '/:anything(.*)', name: 'catchAll', component: Errorpage },
 ];
-
 const router = createRouter({
     history: createWebHistory(),
     routes,
@@ -38,8 +37,7 @@ const router = createRouter({
 //                 next({ name: 'signin_page' }); // 세션이 유효하지 않은 경우 로그인 페이지로 이동
 //             }
 //         } catch (error) {
-//             console.error('Error checking session:', error); // 오류 로그 출력
-//             next({ name: 'error_page' }); // 오류 발생 시 오류 페이지로 이동
+//             next({ name: 'signin_page' }); // 오류 발생 시 로그인 페이지로 이동
 //         }
 //     } else {
 //         next(); // requiresAuth가 없는 경우 이동 허용
