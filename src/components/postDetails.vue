@@ -114,8 +114,7 @@ export default {
       this.showDeleteConfirmation = true;
     },
    confirmDelete() {
-    console.log(`${this.post.boardId}`)
-    console.log("아이디 나옴?")
+    
       axios.delete(`/reforme/board/${this.post.boardId}`)
     .then((response) => {
       console.log("Response from server:", response);
