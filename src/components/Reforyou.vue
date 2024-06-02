@@ -1,13 +1,11 @@
 <template>
   <div class="main-container">
     <div class="content">
-      <!-- <h1 v-if="step == 0">Reforyou 페이지</h1> -->
-
       <!-- Post List -->
       <div class="post-list">
         <div
-          v-for="post in posts"
-          :key="post.id"
+          v-for="post in 게시글"
+          :key="post.boardId"
           class="post-item"
           @click="openPostDetails(post)"
         >
@@ -21,10 +19,10 @@
             <h3>{{ post.title }}</h3>
             <div class="post-details">
               <p>
-                {{ post.timestamp }} |
-                <span>{{ getCategoryName(post.type) }}</span>
+                {{ post.createdDateTime }} |
+                <span>{{ getCategoryName(post.category) }}</span>
               </p>
-              <span>{{ post.comments }} 댓글</span>
+              <span>{{ post.comments.length }} 댓글</span>
             </div>
           </div>
         </div>
@@ -53,20 +51,24 @@
 
     <!-- Floating Action Buttons -->
     <div class="action-buttons">
-      <button @click="step = 1" class="create-button">
+      <button @click="createPost" class="create-button">
         <img src="../assets/images/generate1.png" alt="" />
       </button>
       <router-link to="/chatbot_page" class="chat-button">
         <img src="../assets/images/chatbot.png" alt="" />
       </router-link>
     </div>
-    <!-- step == 2 삭제 -> link 이동으로 변경함 -->
     <div v-if="step == 1">
-      <writePost @back="step = 0" @submit-post="addPost"></writePost>
+      <writePost ref="writePostComponent" @back="step = 0" @submit-post="addPost"></writePost>
+
     </div>
 
     <div v-if="step == 3">
-      <post-details :post="selectedPost" @back="step = 0"></post-details>
+      <postDetails
+        :post="selectedPost"
+        @back="step = 0"
+        @delete-post="deletePost"
+      ></postDetails>
     </div>
   </div>
 </template>
@@ -74,9 +76,10 @@
 <script>
 import writePost from "./writePost.vue";
 import postDetails from "./postDetails.vue";
+import axios from "axios";
 
 export default {
-  name: "Reforme",
+  name: "Reforyou",
   components: {
     writePost,
     postDetails,
@@ -85,14 +88,14 @@ export default {
     return {
       step: 0,
       selectedFooterButton: "리포미",
-      posts: [],
+      게시글: [],
       selectedPost: null,
     };
   },
   methods: {
     addPost(post) {
-      this.posts.push(post);
-      this.step = 0; // 돌아가기
+      this.게시글.push(post);
+      this.step = 0;
     },
     selectFooterButton(button) {
       this.selectedFooterButton = button;
@@ -101,19 +104,61 @@ export default {
       this.selectedPost = post;
       this.step = 3;
     },
+    createPost() {
+      this.selectedPost = null;
+      this.step = 1;
+      if (this.$refs.writePost) {
+        this.$refs.writePost.reforme = false;
+      } else {
+        console.error("writePost component not found");
+      }
+    },
+    deletePost(postId) {
+      this.게시글 = this.게시글.filter((post) => post.id !== postId);
+      this.step = 0;
+    },
     getFirstImage(images) {
-      return images.find((image) => image !== null) || "";
+      const image = images.find((image) => image.imagePath !== null);
+      const imageUrl = image ? `${image.imagePath}` : "";
+      console.log("Image URL:", imageUrl);
+      return imageUrl;
     },
-    getCategoryName(type) {
+    getCategoryName(category) {
       const categoryMap = {
-        1: "상의",
-        2: "외투",
-        3: "하의",
-        4: "가방",
-        5: "기타",
+        TOP: "상의",
+        OUTWEAR: "외투",
+        BOTTOM: "하의",
+        BAG: "가방",
+        ETC: "기타",
       };
-      return categoryMap[type] || "";
+      return categoryMap[category] || "";
     },
+  },
+  mounted() {
+    axios
+      .get("/reforyou")
+      .then((response) => {
+        if (response.data.statusCode === 200) {
+          alert("reforU 데이터 불러오기 성공");
+          this.게시글 = response.data.data;
+        } else {
+          alert("reforU 데이터 불러오기 실패");
+        }
+      })
+      .catch((error) => {
+        alert("reforU 데이터 불러오기 실패: " + error.message);
+      });
+
+    this.emitter.on("backfunction", (data) => {
+      this.step = data;
+    });
+  },
+  created() {
+    this.emitter.emit("updateButtons", {
+      menuButton: true,
+      searchButton: true,
+      backButton: false,
+    });
   },
 };
 </script>

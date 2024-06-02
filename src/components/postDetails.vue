@@ -103,7 +103,7 @@ export default {
       console.log("postDetails.vue 수정 함수");
       console.log(this.post);
       this.showEditConfirmation = false;
-      this.emitter.emit('editPost', this.post);
+      
       console.log(this.post);
       console.log("push 됐남?")
       console.log("됐어??")

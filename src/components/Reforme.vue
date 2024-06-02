@@ -66,30 +66,29 @@
       <postDetails
         :post="selectedPost"
         @back="step = 0"
-        @edit-post="goEditPost"
+        
         @delete-post="deletePost"
       ></postDetails>
     </div>
 
-      <div v-if="step == 4">
-      <editPost >
-        
-      </editPost>
-      </div>
+      
   </div>
 </template>
 
 <script>
 import writePost from "./writePost.vue";
 import postDetails from "./postDetails.vue";
-import editPost from "./editPost.vue";
 import axios from "axios";
 
 export default {
   name: "Reforme",
   
   updated(){
-  
+    this.emitter.emit("reforme_or_reforyou", {
+      menuButton: true,
+      searchButton: true,
+      backButton: false,
+    });
    
     console.log("reforme updated")
     },
@@ -123,7 +122,7 @@ export default {
   components: {
     writePost,
     postDetails,
-    editPost,
+    
   },
   data() {
     return {
@@ -149,11 +148,7 @@ export default {
       this.selectedPost = null;
       this.step = 1;
     },
-    goEditPost() {
-      console.log("reforme.vue에서 goEditPost를 이용한 step을 4로 변경.")
-     // this.게시글 = this.게시글.filter((p) => p.id !== post.id);
-      this.step = 4;
-    },
+    
     deletePost(postId) {
       this.게시글 = this.게시글.filter((post) => post.id !== postId);
       this.step = 0;

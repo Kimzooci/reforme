@@ -1,8 +1,9 @@
 <template>
   <div class="main-container">
+    
     <div class="categories">
-      <button
-        v-for="category in categories"
+      <button 
+        v-for="category in (reforme ? categories : categories2)"
         :key="category.id"
         :class="{ active: selectedCategory === category.id }"
         @click="selectCategory(category.id)"
@@ -58,8 +59,16 @@ import axios from "axios";
 
 export default {
   name: "WritePost",
+  props: {
+    post: {
+      type: Object,
+      default: null,
+    },
+  },
+
   data() {
     return {
+      reforme: null,
       postData: null,
       boardId: null,
       categories: [
@@ -68,6 +77,12 @@ export default {
         { id: "BOTTOM", name: "하의" },
         { id: "BAG", name: "가방" },
         { id: "ETC", name: "기타" },
+      ],
+      categories2:[
+       {id: "CLOTHES",name : '옷'},
+       {id:  "BAG", name : "가방"} ,
+       {id: "SHOES", name : "신발"} ,
+       {id: "ETC", name : "기타"},
       ],
       selectedCategory: null,
       title: "",
@@ -78,28 +93,28 @@ export default {
       defaultImage: require("@/assets/images/default-image.png"), // 기본 이미지 경로 설정
     };
   },
-  props: {
-    post: {
-      type: Object,
-      default: null,
-    },
-  },
+
   created() {
     this.emitter.emit("updateButtons", {
       menuButton: false,
       searchButton: false,
       backButton: true,
     });
-  },
-  mounted() {
-    this.emitter.on("editPost", (data) => {
-      this.postData = data;
-      this.boardId = this.$route.params.id;
-      this.populatePostData();
-    });
 
+    // URL 경로를 확인하여 reforme 값을 설정
+    const path = this.$route.path;
+    if (path.includes("/reforyou_page")) {
+      this.reforme = false;
+    } else if (path.includes("/reforme_page")) {
+      this.reforme = true;
+    }
+
+    console.log("reforme:", this.reforme);
+  },
+
+  mounted() {
     this.boardId = this.$route.params.id;
-    if (this.postData) {
+    if (this.boardId) {
       this.populatePostData();
     }
 
@@ -109,6 +124,7 @@ export default {
       backButton: true,
     });
   },
+
   computed: {
     canSubmit() {
       return (
@@ -119,6 +135,7 @@ export default {
       );
     },
   },
+
   methods: {
     fire() {
       this.emitter.emit("updateButtons", {
@@ -127,14 +144,17 @@ export default {
         backButton: false,
       });
     },
+
     selectCategory(id) {
       this.selectedCategory = id;
     },
+
     triggerFileUpload(index) {
       this.uploadIndex = index; // 업로드할 버튼 인덱스를 저장
       this.$refs.fileInput.click();
       console.log(`Trigger file upload for index: ${this.uploadIndex}`);
     },
+
     handleFiles(event) {
       const files = event.target.files;
       console.log("Files selected:", files);
@@ -142,6 +162,7 @@ export default {
         this.readImage(files[i], this.uploadIndex + i);
       }
     },
+
     readImage(file, index) {
       console.log("Reading image file:", file, "for index:", index);
       this.images[index] = file;
@@ -156,13 +177,17 @@ export default {
       };
       reader.readAsDataURL(file);
     },
+
     submitOrEditPost() {
-      if (this.boardId) {
+      if (this.boardId ) {
         this.edit();
       } else {
-        this.submitPost();
+        if (this.reforme == true) 
+        this.reformeSubmit();
+        else this.reforyouSubmit();
       }
     },
+
     edit() {
       const formData = new FormData();
       const boardData = {
@@ -201,7 +226,8 @@ export default {
           alert("게시글 수정 실패: " + error.message);
         });
     },
-    submitPost() {
+
+    reformeSubmit() {
       const formData = new FormData();
       const boardData = {
         title: this.title,
@@ -237,6 +263,44 @@ export default {
         .catch((error) => {
           console.log("Error posting data:", error);
           alert("게시글 작성 실패: " + error.message);
+        });
+    },
+    reforyouSubmit() {
+      const formData = new FormData();
+      const boardData = {
+        title: this.title,
+        body: this.content,
+        category: this.selectedCategory,
+      };
+      formData.append(
+        "board",
+        new Blob([JSON.stringify(boardData)], { type: "application/json" })
+      );
+      this.images.forEach((image, index) => {
+        if (image) {
+          formData.append("images", image, `image${index}.png`);
+          console.log(`Image ${index} added to form data:`, image);
+        }
+      });
+
+      axios
+        .post("/reforyou/board", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          console.log("Response from server:", response);
+          if (response.data.statusCode === 200) {
+            alert("refor U 게시글 작성 성공");
+            this.$router.push("/reforyou_page");
+          } else {
+            alert(" refor U 게시글 작성 실패");
+          }
+        })
+        .catch((error) => {
+          console.log("Error posting data:", error);
+          alert(" refor U 게시글 작성 실패: " + error.message);
         });
     },
     populatePostData() {
