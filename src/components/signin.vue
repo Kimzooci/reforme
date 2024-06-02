@@ -67,7 +67,7 @@ export default {
         })
         .catch((error) => {
           alert("유효하지 않은 로그인입니다.");
-          console.log(error.messaget);
+          console.log(error.message);
           this.$router.push("/reforme_page");
         });
     },
