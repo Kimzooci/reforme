@@ -5,5 +5,6 @@ module.exports = defineConfig({
   //outputDir: "../spring_test/reforme/src/main/resources/static",
   //C:\Users\rlaal\Desktop\temp\reforme (GPTapi)\reforme\src\main\resources\static
   //outputDir: "../dalle-image-generator/src/main/resources/static",
-  outputDir: "../reforme(masking_ver)/reforme/src/main/resources/static",
+  //outputDir: "../reforme(masking_ver)/reforme/src/main/resources/static",
+  outputDir: "../reforme_db연결/reforme/src/main/resources/static",
 })

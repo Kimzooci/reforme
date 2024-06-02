@@ -94,7 +94,7 @@ export default {
     console.log("reforme updated")
     },
   mounted() {
-    console.log("reforme mounted")
+
     axios
       .get("/reforme")
       .then((response) => {
@@ -130,7 +130,6 @@ export default {
       step: 0,
       selectedFooterButton: "리포미",
       게시글: [],
-      
       selectedPost: null,
     };
   },
@@ -243,4 +242,3 @@ export default {
   cursor: pointer;
 }
 </style>
-
