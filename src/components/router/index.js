@@ -18,12 +18,12 @@ const routes = [
     { path: '/', name: 'home', component: Home },
     { path: '/error_page', name: 'error_page', component: Errorpage },
     { path: '/reforme_page', name: 'reforme_page', component: Reforme, meta: { requiresAuth: true } },
-    { path: '/reforme_page/:id', name: 'reforme_detail', component: Reforme, meta: { requiresAuth: true } },
+    { path: '/reforme_page/:id(\\d+)', name: 'reforme_detail', component: Reforme, meta: { requiresAuth: true } },
     { path: '/reforyou_page', name: 'reforyou_page', component: Reforyou, meta: { requiresAuth: true } },
-    { path: '/reforyou_page/:id', name: 'reforyou_detail', component: Reforyou, meta: { requiresAuth: true } },
+    { path: '/reforyou_page/:id(\\d+)', name: 'reforyou_detail', component: Reforyou, meta: { requiresAuth: true } },
     {
-        path: '/editPost',
-        name: 'EditPost',
+        path: '/editpost/:id',
+        name: 'WritePost',
         component: WritePost
         , meta: { requiresAuth: true }
     },

@@ -11,7 +11,7 @@
       </button>
     </div>
 
-    <form @submit.prevent="submitPost">
+    <form @submit.prevent="submitOrEditPost">
       <input
         type="text"
         placeholder="제목을 입력해주세요"
@@ -58,44 +58,10 @@ import axios from "axios";
 
 export default {
   name: "WritePost",
-  props: {
-    post: {
-      type: Object,
-      default: null,
-    },
-  },
-  created() {
-    this.emitter.emit("updateButtons", {
-      menuButton: false,
-      searchButton: false,
-      backButton: true,
-    });
-
-    // Load post data if editing an existing post
-  },
-  updated() {
-    console.log("updated");
-  },
-  mounted() {
-    console.log("mounted");
-    console.log(this.post)
-    /*if (this.post) {
-      this.selectedCategory = this.post.type;
-      this.title = this.post.title;
-      this.content = this.post.content;
-      this.images = this.post.images.length
-        ? this.post.images
-        : [null, null, null, null, null];
-    }*/
-
-    this.emitter.emit("updateButtons", {
-      menuButton: false,
-      searchButton: false,
-      backButton: true,
-    });
-  },
   data() {
     return {
+      postData: null,
+      boardId: null,
       categories: [
         { id: "TOP", name: "상의" },
         { id: "OUTER", name: "외투" },
@@ -111,6 +77,37 @@ export default {
       uploadIndex: null,
       defaultImage: require("@/assets/images/default-image.png"), // 기본 이미지 경로 설정
     };
+  },
+  props: {
+    post: {
+      type: Object,
+      default: null,
+    },
+  },
+  created() {
+    this.emitter.emit("updateButtons", {
+      menuButton: false,
+      searchButton: false,
+      backButton: true,
+    });
+  },
+  mounted() {
+    this.emitter.on("editPost", (data) => {
+      this.postData = data;
+      this.boardId = this.$route.params.id;
+      this.populatePostData();
+    });
+
+    this.boardId = this.$route.params.id;
+    if (this.postData) {
+      this.populatePostData();
+    }
+
+    this.emitter.emit("updateButtons", {
+      menuButton: false,
+      searchButton: false,
+      backButton: true,
+    });
   },
   computed: {
     canSubmit() {
@@ -159,6 +156,51 @@ export default {
       };
       reader.readAsDataURL(file);
     },
+    submitOrEditPost() {
+      if (this.boardId) {
+        this.edit();
+      } else {
+        this.submitPost();
+      }
+    },
+    edit() {
+      const formData = new FormData();
+      const boardData = {
+        title: this.title,
+        body: this.content,
+        category: this.selectedCategory,
+      };
+      formData.append(
+        "board",
+        new Blob([JSON.stringify(boardData)], { type: "application/json" })
+      );
+      this.images.forEach((image, index) => {
+        if (image) {
+          formData.append("images", image, `image${index}.png`);
+          console.log(`Image ${index} added to form data:`, image);
+        }
+      });
+
+      axios
+        .patch(`/reforme/board/${this.boardId}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          console.log("Response from server:", response);
+          if (response.data.statusCode === 200) {
+            alert("게시글 수정 성공");
+            this.$router.push("/reforme_page");
+          } else {
+            alert("게시글 수정 실패");
+          }
+        })
+        .catch((error) => {
+          console.log("Error posting data:", error);
+          alert("게시글 수정 실패: " + error.message);
+        });
+    },
     submitPost() {
       const formData = new FormData();
       const boardData = {
@@ -196,6 +238,16 @@ export default {
           console.log("Error posting data:", error);
           alert("게시글 작성 실패: " + error.message);
         });
+    },
+    populatePostData() {
+      if (this.postData) {
+        this.selectedCategory = this.postData.type;
+        this.title = this.postData.title;
+        this.content = this.postData.body;
+        this.images = this.postData.images.length
+          ? this.postData.images
+          : [null, null, null, null, null];
+      }
     },
   },
 };

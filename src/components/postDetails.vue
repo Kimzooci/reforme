@@ -5,7 +5,7 @@
       <p class="post-author">{{ post.userId }} 님 </p>
       <div class="post-actions">
         <button class="edit-button" @click="showEditConfirmation = true">수정</button>
-        <button class="delete-button" @click="showDeleteConfirmation = true">삭제</button>
+        <button class="delete-button" @click="showDeleteConfirmation = true" >삭제</button>
       </div>
     </div>
 
@@ -98,9 +98,15 @@ export default {
     confirmEdit() {
       console.log("postDetails.vue 수정 함수");
       console.log(this.post);
-      this.$router.push({ name: 'EditPost' });
-      this.emitter.emit('editPost', this.post);
       this.showEditConfirmation = false;
+      this.emitter.emit('editPost', this.post);
+      console.log(this.post);
+      console.log("push 됐남?")
+      console.log("됐어??")
+      this.$router.push({ name: 'WritePost', params: { id: this.post.boardId } });
+      
+     
+      
       
     },
     deletePost() {
