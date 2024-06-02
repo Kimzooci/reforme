@@ -79,6 +79,30 @@
 
 <script>
 export default {
+  name: "Reforme",
+  mounted() {
+    /*this.emitter.on("editPost", {
+      this.editPost(post),
+
+    });*/
+    axios
+      .get("/reforme")
+      .then((response) => {
+        if (response.data.statusCode === 200) {
+          alert("데이터 불러오기 성공");
+          this.게시글 = response.data.data;
+        } else {
+          alert("데이터 불러오기 실패");
+        }
+      })
+      .catch((error) => {
+        alert("데이터 불러오기 실패: " + error.message);
+      });
+
+    this.emitter.on("backfunction", (data) => {
+      this.step = data;
+    });
+  },
   name: "PostDetails",
   created() {
     this.emitter.emit("updateButtons", {
@@ -96,10 +120,11 @@ export default {
   },
   data() {
     return {
-      comments: [],
-      newComment: "",
-      showDeleteConfirmation: false,
-      showEditConfirmation: false,
+      step: 0,
+      selectedFooterButton: "리포미",
+      게시글: [],
+
+      selectedPost: null,
     };
   },
   methods: {
