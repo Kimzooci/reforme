@@ -1,3 +1,4 @@
+
 import { createRouter, createWebHistory } from 'vue-router';
 import Reforme from '@/components/Reforme.vue';
 import Reforyou from '@/components/Reforyou.vue';
@@ -5,8 +6,11 @@ import Signup from '@/components/signup.vue';
 import Signin from '@/components/signin.vue';
 import Chatbot from '@/components/chatbot.vue';
 import Home from '@/components/home.vue';
-//import Errorpage from '@/components/errorpage.vue';
+import WritePost from '@/components/writePost.vue';
+import Errorpage from '@/components/errorpage.vue';
 import axios from 'axios';
+
+
 
 axios.defaults.withCredentials = true;
 
@@ -17,6 +21,11 @@ const routes = [
     { path: '/reforme_page/:id', name: 'reforme_detail', component: Reforme, meta: { requiresAuth: true } },
     { path: '/reforyou_page', name: 'reforyou_page', component: Reforyou, meta: { requiresAuth: true } },
     { path: '/reforyou_page/:id', name: 'reforyou_detail', component: Reforyou, meta: { requiresAuth: true } },
+    {
+        path: '/editPost',
+        name: 'EditPost',
+        component: WritePost
+       ,meta : { requiresAuth: true }},
     { path: '/signup_page', name: 'signup_page', component: Signup },
     { path: '/signin_page', name: 'signin_page', component: Signin },
     { path: '/chatbot_page', name: 'chatbot_page', component: Chatbot, meta: { requiresAuth: true } },

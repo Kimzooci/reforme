@@ -1,6 +1,5 @@
 <template>
   <div class="main-container">
-    <!-- Post Title and Author Section -->
     <div class="post-header">
       <h2 class="post-title">{{ post.title }}</h2>
       <p class="post-author">{{ post.userId }} 님 </p>
@@ -10,17 +9,14 @@
       </div>
     </div>
 
-    <!-- Post Images Section -->
     <div class="post-images-section" v-if="post.images && post.images.length">
       <div v-for="(image, index) in post.images" :key="index" class="post-image" :style="{ backgroundImage: 'url(' + getFirstImage(image) + ')' }"></div>
     </div>
 
-    <!-- Post Content Section -->
     <div class="post-content-section">
       <div class="post-content">{{ post.body }}</div>
     </div>
 
-    <!-- Comments Section -->
     <div class="comments-container">
       <div v-for="comment in comments" :key="comment.id" class="comment">
         <div class="comment-text">{{ comment.text }}</div>
@@ -29,7 +25,6 @@
       </div>
     </div>
 
-    <!-- Footer Bar with Input -->
     <div class="footer-bar">
       <input v-model="newComment" class="input-comment" @keyup.enter="addComment" />
     </div>
@@ -48,7 +43,6 @@
       <div v-if="showEditConfirmation" class="delete-confirmation">
         <p>게시글을 수정하시겠습니까?</p>
         <div class="button-container">
-          console.log("postDetails 수정버튼")
           <button class="delete-yes" @click="confirmEdit">확인</button>
           <button class="delete-no" @click="showEditConfirmation = false">취소</button>
         </div>
@@ -84,9 +78,8 @@ export default {
   },
   methods: {
     getFirstImage(image) {
-      // 이미지 경로 절대 경로로 변환
       const imageUrl = image ? `${image.imagePath}` : "";
-      console.log("Image URL:", imageUrl); // 디버깅을 위한 콘솔 로그
+      console.log("Image URL:", imageUrl);
       return imageUrl;
     },
     addComment() {
@@ -103,9 +96,12 @@ export default {
       this.showEditConfirmation = true;
     },
     confirmEdit() {
-      console.log("postDetils.vue 수정 함수")
-      this.$emit('edit-post', this.post);
+      console.log("postDetails.vue 수정 함수");
+      console.log(this.post);
+      this.$router.push({ name: 'EditPost' });
+      this.emitter.emit('editPost', this.post);
       this.showEditConfirmation = false;
+      
     },
     deletePost() {
       this.showDeleteConfirmation = true;

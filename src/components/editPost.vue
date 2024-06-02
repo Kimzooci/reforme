@@ -58,43 +58,7 @@ import axios from "axios";
 
 export default {
   name: "WritePost",
-  props: {
-    post: {
-      type: Object,
-      default: null,
-    },
-  },
-  created() {
-    this.emitter.emit("updateButtons", {
-      menuButton: false,
-      searchButton: false,
-      backButton: true,
-    });
-
-    // Load post data if editing an existing post
-  },
-  updated() {
-    console.log("updated");
-  },
-  mounted() {
-    console.log("mounted");
-    console.log(this.post)
-    /*if (this.post) {
-      this.selectedCategory = this.post.type;
-      this.title = this.post.title;
-      this.content = this.post.content;
-      this.images = this.post.images.length
-        ? this.post.images
-        : [null, null, null, null, null];
-    }*/
-
-    this.emitter.emit("updateButtons", {
-      menuButton: false,
-      searchButton: false,
-      backButton: true,
-    });
-  },
-  data() {
+    data() {
     return {
       categories: [
         { id: "TOP", name: "상의" },
@@ -112,6 +76,46 @@ export default {
       defaultImage: require("@/assets/images/default-image.png"), // 기본 이미지 경로 설정
     };
   },
+  created() {
+    this.emitter.emit("updateButtons", {
+      menuButton: false,
+      searchButton: false,
+      backButton: true,
+    });
+
+    // Load post data if editing an existing post
+  },
+  updated() {
+    console.log("updated");
+  },
+  mounted() {
+    console.log("mounted");
+    this.emitter.on("editPost", (post) => {
+      console.log(post)
+      this.selectedCategory = post.type;
+      this.title = post.title;
+      this.content = post.content;
+      this.images = post.images.length
+        ? post.images
+        : [null, null, null, null, null];
+    });
+    console.log()
+    /*if (this.post) {
+      this.selectedCategory = this.post.type;
+      this.title = this.post.title;
+      this.content = this.post.content;
+      this.images = this.post.images.length
+        ? this.post.images
+        : [null, null, null, null, null];
+    }*/
+
+    this.emitter.emit("updateButtons", {
+      menuButton: false,
+      searchButton: false,
+      backButton: true,
+    });
+  },
+  
   computed: {
     canSubmit() {
       return (
@@ -123,6 +127,10 @@ export default {
     },
   },
   methods: {
+    /*editPost(post) {
+      //this.게시글 = this.게시글.filter((p) => p.id !== post.id);
+      
+    },*/
     fire() {
       this.emitter.emit("updateButtons", {
         menuButton: true,
