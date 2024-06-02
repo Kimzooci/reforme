@@ -52,7 +52,11 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
+  
+
   name: 'PostDetails',
   created() {
     this.emitter.emit('updateButtons', {
@@ -104,18 +108,30 @@ export default {
       console.log("push 됐남?")
       console.log("됐어??")
       this.$router.push({ name: 'WritePost', params: { id: this.post.boardId } });
-      
-     
-      
-      
+
     },
     deletePost() {
       this.showDeleteConfirmation = true;
     },
-    confirmDelete() {
-      this.$emit('delete-post', this.post.id);
-      this.showDeleteConfirmation = false;
-    },
+   confirmDelete() {
+    console.log(`${this.post.boardId}`)
+    console.log("아이디 나옴?")
+      axios.delete(`/reforme/board/${this.post.boardId}`)
+    .then((response) => {
+      console.log("Response from server:", response);
+      if (response.data.statusCode === 200) {
+        alert("게시글 삭제 성공");
+        this.$router.push("/reforme_page");
+      } else {
+        alert("게시글 삭제 실패");
+      }
+    })
+    .catch((error) => {
+      console.log("Error deleting data:", error);
+      alert("게시글 삭제 실패: " + error.message);
+    });
+  this.showDeleteConfirmation = false;
+},
     editComment(comment) {
       const updatedText = prompt("Enter new comment text:", comment.text);
       if (updatedText) {
