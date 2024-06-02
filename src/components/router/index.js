@@ -25,7 +25,8 @@ const routes = [
         path: '/editPost',
         name: 'EditPost',
         component: WritePost
-       ,meta : { requiresAuth: true }},
+        , meta: { requiresAuth: true }
+    },
     { path: '/signup_page', name: 'signup_page', component: Signup },
     { path: '/signin_page', name: 'signin_page', component: Signin },
     { path: '/chatbot_page', name: 'chatbot_page', component: Chatbot, meta: { requiresAuth: true } },
@@ -54,3 +55,4 @@ router.beforeEach(async (to, from, next) => {
 });
 
 export default router;
+//내는 모르겠다
