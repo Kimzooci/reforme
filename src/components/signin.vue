@@ -62,11 +62,12 @@ export default {
             //localStorage.setItem("token", response.data.data); // JWT 토큰 저장
             this.$router.push("/reforme_page");
           } else {
-            alert("로그인 실패: Invalid credentials");
+            alert("유효하지 않은 로그인입니다");
           }
         })
         .catch((error) => {
-          alert("로그인 실패: " + error.message);
+          alert("유효하지 않은 로그인입니다.");
+          this.$router.push("/reforme_page");
         });
     },
   },
