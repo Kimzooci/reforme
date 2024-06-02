@@ -1,4 +1,5 @@
 <template>
+<!--김동윤 개잘생김 김민성 개개잘생김.-->
   <div class="main-container">
     <div class="categories">
       <button
