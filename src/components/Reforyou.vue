@@ -2,7 +2,7 @@
   <div class="main-container">
     <div class="content">
       
-      <!-- Post List -->
+      <!-- Post List ..-->
       <div class="post-list">
         <div
           v-for="post in filteredPosts"
