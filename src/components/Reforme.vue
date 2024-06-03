@@ -143,20 +143,10 @@ export default {
       backButton: false,
     });
   },
-  components: {
-    writePost,
-    postDetails,
-  },
-  data() {
-    return {
-      step: 0,
-      selectedFooterButton: "리포미",
-      게시글: [],
-      selectedPost: null,
-    };
+  
 
-    console.log("reforme updated");
-  },
+   
+  
   methods: {
     async fetchBoards() {
       try {
