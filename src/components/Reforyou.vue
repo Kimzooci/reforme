@@ -135,6 +135,7 @@ export default {
     },
   },
   mounted() {
+    this.$store.dispatch('updateReforme', false);
     const path = this.$route.path;
       let reformeValue;
       if (path.includes('/reforyou_page')) {
@@ -164,22 +165,19 @@ export default {
     });
   },
   created() {
-    const path = this.$route.path;
-      let reformeValue;
-      if (path.includes('/reforyou_page')) {
-        reformeValue = false;
-      } else if (path.includes('/reforme_page')) {
-        reformeValue = true;
-      }
+    
 
       // Vuex 상태 업데이트
-      this.$store.dispatch('updateReforme', reformeValue);
+      this.$store.dispatch('updateReforme', false);
     this.emitter.emit("updateButtons", {
       menuButton: true,
       searchButton: true,
       backButton: false,
     });
   },
+  updated(){
+    this.$store.dispatch('updateReforme', false);
+  }
 };
 </script>
 

@@ -85,6 +85,10 @@ export default {
   
   updated(){
     
+
+      // Vuex 상태 업데이트
+      this.$store.dispatch('updateReforme', true);
+    
     this.emitter.emit("reforme_or_reforyou", {
       menuButton: true,
       searchButton: true,

@@ -2,7 +2,7 @@ import { createStore } from 'vuex';
 
 const store = createStore({
   state: {
-    reforme: false,  // 기본값을 설정
+    reforme: true,  // 기본값을 설정
   },
   mutations: {
     setReforme(state, value) {

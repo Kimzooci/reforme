@@ -53,6 +53,7 @@
 
 <script>
 import axios from 'axios';
+import { mapGetters } from 'vuex';
 
 export default {
   name: 'PostDetails',
@@ -77,6 +78,9 @@ export default {
       showDeleteConfirmation: false,
       showEditConfirmation: false,
     };
+  },
+  computed: {
+    ...mapGetters(['getReforme']),
   },
   methods: {
     getFirstImage(image) {
@@ -122,12 +126,19 @@ export default {
       this.showDeleteConfirmation = true;
     },
     confirmDelete() {
+      const url = this.getReforme
+        ? `/reforme/board/${this.post.boardId}`
+        : `/reforyou/board/${this.post.boardId}`;
+
       axios
-        .delete(`/reforme/board/${this.post.boardId}`)
+        .delete(url)
         .then((response) => {
           if (response.data.statusCode === 200) {
             alert('게시글 삭제 성공');
-            this.$router.push('/reforme_page');
+            const redirectPage = this.getReforme
+              ? '/reforme_page'
+              : '/reforyou_page';
+            this.$router.push(redirectPage);
           } else {
             alert('게시글 삭제 실패');
           }
