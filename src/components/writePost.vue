@@ -72,7 +72,7 @@ export default {
       boardId: null,
       categories: [
         { id: "TOP", name: "상의" },
-        { id: "OUTER", name: "외투" },
+        { id: "OUTWEAR", name: "외투" },
         { id: "BOTTOM", name: "하의" },
         { id: "BAG", name: "가방" },
         { id: "ETC", name: "기타" },
