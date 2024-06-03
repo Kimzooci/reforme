@@ -2,15 +2,24 @@
   <div class="main-container">
     <div class="post-header">
       <h2 class="post-title">{{ post.title }}</h2>
-      <p class="post-author">{{ post.userId }} 님 </p>
+      <p class="post-author">{{ post.userId }} 님</p>
       <div class="post-actions">
-        <button class="edit-button" @click="showEditConfirmation = true">수정</button>
-        <button class="delete-button" @click="showDeleteConfirmation = true">삭제</button>
+        <button class="edit-button" @click="showEditConfirmation = true">
+          수정
+        </button>
+        <button class="delete-button" @click="showDeleteConfirmation = true">
+          삭제
+        </button>
       </div>
     </div>
 
     <div class="post-images-section" v-if="post.images && post.images.length">
-      <div v-for="(image, index) in post.images" :key="index" class="post-image" :style="{ backgroundImage: 'url(' + getFirstImage(image) + ')' }"></div>
+      <div
+        v-for="(image, index) in post.images"
+        :key="index"
+        class="post-image"
+        :style="{ backgroundImage: 'url(' + getFirstImage(image) + ')' }"
+      ></div>
     </div>
 
     <div class="post-content-section">
@@ -20,13 +29,21 @@
     <div class="comments-container">
       <div v-for="comment in comments" :key="comment.id" class="comment">
         <div class="comment-text">{{ comment.content }}</div>
-        <button class="comment-action" @click="editComment(comment)">수정</button>
-        <button class="comment-action" @click="deleteComment(comment.id)">삭제</button>
+        <button class="comment-action" @click="editComment(comment)">
+          수정
+        </button>
+        <button class="comment-action" @click="deleteComment(comment)">
+          삭제
+        </button>
       </div>
     </div>
 
     <div class="footer-bar">
-      <input v-model="newComment" class="input-comment" @keyup.enter="addComment" />
+      <input
+        v-model="newComment"
+        class="input-comment"
+        @keyup.enter="addComment"
+      />
     </div>
 
     <transition name="fade">
@@ -34,7 +51,9 @@
         <p>게시글을 삭제하시겠습니까?</p>
         <div class="button-container">
           <button class="delete-yes" @click="confirmDelete">확인</button>
-          <button class="delete-no" @click="showDeleteConfirmation = false">취소</button>
+          <button class="delete-no" @click="showDeleteConfirmation = false">
+            취소
+          </button>
         </div>
       </div>
     </transition>
@@ -44,7 +63,9 @@
         <p>게시글을 수정하시겠습니까?</p>
         <div class="button-container">
           <button class="delete-yes" @click="confirmEdit">확인</button>
-          <button class="delete-no" @click="showEditConfirmation = false">취소</button>
+          <button class="delete-no" @click="showEditConfirmation = false">
+            취소
+          </button>
         </div>
       </div>
     </transition>
@@ -52,15 +73,15 @@
 </template>
 
 <script>
-import axios from 'axios';
-import { mapGetters } from 'vuex';
+import axios from "axios";
+import { mapGetters } from "vuex";
 
 export default {
-  name: 'PostDetails',
+  name: "PostDetails",
   created() {
     console.log("created");
     this.fetchPostData();
-    this.emitter.emit('updateButtons', {
+    this.emitter.emit("updateButtons", {
       menuButton: false,
       searchButton: false,
       backButton: true,
@@ -77,13 +98,13 @@ export default {
     return {
       게시글: [],
       comments: [],
-      newComment: '',
+      newComment: "",
       showDeleteConfirmation: false,
       showEditConfirmation: false,
     };
   },
   computed: {
-    ...mapGetters(['getReforme']),
+    ...mapGetters(["getReforme"]),
   },
   methods: {
     fetchPostData() {
@@ -104,8 +125,8 @@ export default {
         });
     },
     getFirstImage(image) {
-      const imageUrl = image ? `${image.imagePath}` : '';
-      console.log('Image URL:', imageUrl);
+      const imageUrl = image ? `${image.imagePath}` : "";
+      console.log("Image URL:", imageUrl);
       return imageUrl;
     },
     addComment() {
@@ -121,23 +142,22 @@ export default {
       axios
         .post(url, commentDto, {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         })
         .then((response) => {
           if (response.data.statusCode === 200) {
-            alert('댓글 작성 성공');
+            alert("댓글 작성 성공");
             this.comments.push({
-             
               content: this.newComment,
             });
-            this.newComment = '';
+            this.newComment = "";
           } else {
-            alert('댓글 작성 실패');
+            alert("댓글 작성 실패");
           }
         })
         .catch((error) => {
-          alert('댓글 작성 실패: ' + error.message);
+          alert("댓글 작성 실패: " + error.message);
         });
     },
     editPost() {
@@ -149,18 +169,18 @@ export default {
       // 현재 경로에 따라 reforme 값을 설정
       const path = this.$route.path;
       let reformeValue;
-      if (path.includes('/reforyou_page')) {
+      if (path.includes("/reforyou_page")) {
         reformeValue = false;
-      } else if (path.includes('/reforme_page')) {
+      } else if (path.includes("/reforme_page")) {
         reformeValue = true;
       }
 
       // Vuex 상태 업데이트
-      this.$store.dispatch('updateReforme', reformeValue);
+      this.$store.dispatch("updateReforme", reformeValue);
 
       // WritePost 컴포넌트로 이동
       this.$router.push({
-        name: 'WritePost',
+        name: "WritePost",
         params: { id: this.post.boardId },
       });
     },
@@ -175,28 +195,46 @@ export default {
         .delete(url)
         .then((response) => {
           if (response.data.statusCode === 200) {
-            alert('게시글 삭제 성공');
+            alert("게시글 삭제 성공");
             const redirectPage = this.getReforme
-              ? '/reforme_page'
-              : '/reforyou_page';
+              ? "/reforme_page"
+              : "/reforyou_page";
             this.$router.push(redirectPage);
           } else {
-            alert('게시글 삭제 실패');
+            alert("게시글 삭제 실패");
           }
         })
         .catch((error) => {
-          alert('게시글 삭제 실패: ' + error.message);
+          alert("게시글 삭제 실패: " + error.message);
         });
       this.showDeleteConfirmation = false;
     },
     editComment(comment) {
-      const updatedText = prompt('새 댓글 내용을 입력하세요:', comment.content);
+      const updatedText = prompt("새 댓글 내용을 입력하세요:", comment.content);
       if (updatedText) {
         comment.content = updatedText;
       }
     },
     deleteComment(commentId) {
-      this.comments = this.comments.filter((comment) => comment.id !== commentId);
+      const url = this.getReforme
+        ? `/reforme/board/${this.post.boardId}/comment?id=${commentId.id}`
+        : `/reforyou/board/${this.post.boardId}/comment?id=${commentId.id}`;
+      this.comments = this.comments.filter(
+        (comment) => comment.id !== commentId
+      );
+      axios
+        .delete(url)
+        .then((response) => {
+          if (response.data.statusCode === 200) {
+            alert("댓글 삭제 성공");
+            //localStorage.setItem("token", response.data.data); // JWT 토큰 저장
+          } else {
+            alert("댓글 삭제 실패");
+          }
+        })
+        .catch((error) => {
+          alert("댓글 삭제 실패: " + error.message);
+        });
     },
   },
 };
@@ -208,8 +246,8 @@ export default {
   height: 932px;
   display: flex;
   flex-direction: column;
-  background: #F8F8F8;
-  border: 1px solid #E1E1E1;
+  background: #f8f8f8;
+  border: 1px solid #e1e1e1;
   border-radius: 10px;
   overflow-y: auto;
 }
@@ -217,7 +255,7 @@ export default {
 .post-header {
   flex-grow: 1;
   padding: 10px 20px;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin: 0px;
   width: 350px;
@@ -244,8 +282,9 @@ export default {
   margin-right: 0;
 }
 
-.edit-button, .delete-button {
-  background: #2E482D;
+.edit-button,
+.delete-button {
+  background: #2e482d;
   color: white;
   border: none;
   border-radius: 5px;
@@ -256,7 +295,7 @@ export default {
 .post-images-section {
   flex-grow: 1;
   padding: 10px 20px;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin: 0px;
   width: 350px;
@@ -267,7 +306,7 @@ export default {
 .post-image {
   width: 100px;
   height: 100px;
-  background: #B1B1B1;
+  background: #b1b1b1;
   border-radius: 10px;
   background-size: cover;
   background-position: center;
@@ -276,7 +315,7 @@ export default {
 .post-content-section {
   flex-grow: 1;
   padding: 10px 20px;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin: 0px;
   width: 350px;
@@ -292,7 +331,7 @@ export default {
 .comments-container {
   flex-grow: 1;
   padding: 10px 20px;
-  background: #FFFFFF;
+  background: #ffffff;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin: 0px;
   width: 350px;
@@ -305,7 +344,7 @@ export default {
   justify-content: space-between;
   align-items: center;
   padding: 10px 0;
-  border-bottom: 1px solid #E1E1E1;
+  border-bottom: 1px solid #e1e1e1;
 }
 
 .comment-text {
@@ -314,7 +353,7 @@ export default {
 }
 
 .comment-action {
-  background: #2E482D;
+  background: #2e482d;
   color: white;
   border: none;
   border-radius: 5px;
@@ -327,7 +366,7 @@ export default {
   justify-content: center;
   align-items: center;
   padding: 10px;
-  background: #2E482D;
+  background: #2e482d;
   border-radius: 0 0 10px 10px;
   width: 390px;
   box-sizing: border-box;
@@ -336,7 +375,7 @@ export default {
 .input-comment {
   margin-right: 10px;
   padding: 10px 10px;
-  border: 1px solid #E1E1E1;
+  border: 1px solid #e1e1e1;
   border-radius: 5px;
   height: 35px;
   width: 300px;
@@ -352,7 +391,7 @@ export default {
   height: 164px;
   left: 80px;
   top: 397px;
-  background: #4A7648;
+  background: #4a7648;
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -380,7 +419,7 @@ export default {
 }
 
 .delete-confirmation button {
-  background: #2E482D;
+  background: #2e482d;
   border: none;
   color: white;
   font-size: 18px;
@@ -393,11 +432,13 @@ export default {
   outline: none;
 }
 
-.fade-enter-active, .fade-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.5s;
 }
 
-.fade-enter, .fade-leave-to {
+.fade-enter,
+.fade-leave-to {
   opacity: 0;
 }
 </style>
