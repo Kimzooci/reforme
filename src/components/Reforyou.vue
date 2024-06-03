@@ -138,19 +138,19 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch("updateReforme", false);
-    const path = this.$route.path;
-    let reformeValue;
-    if (path.includes("/reforyou_page")) {
-      reformeValue = false;
-    } else if (path.includes("/reforme_page")) {
-      reformeValue = true;
-    }
+    
+    // const path = this.$route.path;
+    // let reformeValue;
+    // if (path.includes("/reforyou_page")) {
+    //   reformeValue = false;
+    // } else if (path.includes("/reforme_page")) {
+    //   reformeValue = true;
+    // }
 
     // Vuex 상태 업데이트
-    this.$store.dispatch("updateReforme", reformeValue);
+    this.$store.dispatch("updateReforme", false);
     axios
-      .get("/reforyou")
+      .get("/reforyou/ALL")
       .then((response) => {
         if (response.data.statusCode === 200) {
           alert("reforU 데이터 불러오기 성공");

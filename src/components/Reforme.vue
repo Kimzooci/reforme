@@ -118,11 +118,12 @@ export default {
     // Vuex 상태 업데이트
     this.$store.dispatch('updateReforme', reformeValue);
     axios
-      .get("/reforme")
+      .get("/reforme/ALL")
       .then((response) => {
         if (response.data.statusCode === 200) {
           alert("데이터 불러오기 성공");
           this.게시글 = response.data.data;
+          console.log(response.data.statusCode)
         } else {
           alert("데이터 불러오기 실패");
         }
