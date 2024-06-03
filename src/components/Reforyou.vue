@@ -135,6 +135,16 @@ export default {
     },
   },
   mounted() {
+    const path = this.$route.path;
+      let reformeValue;
+      if (path.includes('/reforyou_page')) {
+        reformeValue = false;
+      } else if (path.includes('/reforme_page')) {
+        reformeValue = true;
+      }
+
+      // Vuex 상태 업데이트
+      this.$store.dispatch('updateReforme', reformeValue);
     axios
       .get("/reforyou")
       .then((response) => {
@@ -154,6 +164,16 @@ export default {
     });
   },
   created() {
+    const path = this.$route.path;
+      let reformeValue;
+      if (path.includes('/reforyou_page')) {
+        reformeValue = false;
+      } else if (path.includes('/reforme_page')) {
+        reformeValue = true;
+      }
+
+      // Vuex 상태 업데이트
+      this.$store.dispatch('updateReforme', reformeValue);
     this.emitter.emit("updateButtons", {
       menuButton: true,
       searchButton: true,

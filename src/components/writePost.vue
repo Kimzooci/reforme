@@ -1,9 +1,8 @@
 <template>
   <div class="main-container">
-    
     <div class="categories">
-      <button 
-        v-for="category in (reforme ? categories : categories2)"
+      <button
+        v-for="category in isReforme ? categories : categories2"
         :key="category.id"
         :class="{ active: selectedCategory === category.id }"
         @click="selectCategory(category.id)"
@@ -56,6 +55,7 @@
 
 <script>
 import axios from "axios";
+import { mapGetters, mapActions } from 'vuex';
 
 export default {
   name: "WritePost",
@@ -68,7 +68,6 @@ export default {
 
   data() {
     return {
-      reforme: null,
       postData: null,
       boardId: null,
       categories: [
@@ -78,11 +77,11 @@ export default {
         { id: "BAG", name: "가방" },
         { id: "ETC", name: "기타" },
       ],
-      categories2:[
-       {id: "CLOTHES",name : '옷'},
-       {id:  "BAG", name : "가방"} ,
-       {id: "SHOES", name : "신발"} ,
-       {id: "ETC", name : "기타"},
+      categories2: [
+        { id: "CLOTHES", name: "옷" },
+        { id: "BAG", name: "가방" },
+        { id: "SHOES", name: "신발" },
+        { id: "ETC", name: "기타" },
       ],
       selectedCategory: null,
       title: "",
@@ -93,8 +92,7 @@ export default {
       defaultImage: require("@/assets/images/default-image.png"), // 기본 이미지 경로 설정
     };
   },
-
-  created() {
+created() {
     this.emitter.emit("updateButtons", {
       menuButton: false,
       searchButton: false,
@@ -102,6 +100,7 @@ export default {
     });
 
     // URL 경로를 확인하여 reforme 값을 설정
+
     const path = this.$route.path;
     if (path.includes("/reforyou_page")) {
       this.reforme = false;
@@ -113,6 +112,7 @@ export default {
   },
 
   mounted() {
+    
     this.boardId = this.$route.params.id;
     if (this.boardId) {
       this.populatePostData();
@@ -124,8 +124,8 @@ export default {
       backButton: true,
     });
   },
-
   computed: {
+    ...mapGetters(['getReforme']),
     canSubmit() {
       return (
         this.selectedCategory !== null &&
@@ -134,9 +134,13 @@ export default {
         this.images.some((image) => image !== null)
       );
     },
+    isReforme() {
+      return this.getReforme;
+    }
   },
 
   methods: {
+    ...mapActions(['updateReforme']),
     fire() {
       this.emitter.emit("updateButtons", {
         menuButton: true,
@@ -179,16 +183,18 @@ export default {
     },
 
     submitOrEditPost() {
-      if (this.boardId ) {
-        this.edit();
+      console.log("리포미 or 리포유 데이터" + this.isReforme);
+      if (this.boardId) {
+        if (this.isReforme) this.reformeEdit();
+        else this.reforyouEdit();
       } else {
-        if (this.reforme == true) 
-        this.reformeSubmit();
+        if (this.isReforme) this.reformeSubmit();
         else this.reforyouSubmit();
       }
     },
 
-    edit() {
+    reformeEdit() {
+      console.log(this.isReforme);
       const formData = new FormData();
       const boardData = {
         title: this.title,
@@ -226,7 +232,45 @@ export default {
           alert("게시글 수정 실패: " + error.message);
         });
     },
+    reforyouEdit() {
+      console.log(this.isReforme);
+      const formData = new FormData();
+      const boardData = {
+        title: this.title,
+        body: this.content,
+        category: this.selectedCategory,
+      };
+      formData.append(
+        "board",
+        new Blob([JSON.stringify(boardData)], { type: "application/json" })
+      );
+      this.images.forEach((image, index) => {
+        if (image) {
+          formData.append("images", image, `image${index}.png`);
+          console.log(`Image ${index} added to form data:`, image);
+        }
+      });
 
+      axios
+        .patch(`/reforyou/board/${this.boardId}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        })
+        .then((response) => {
+          console.log("Response from server:", response);
+          if (response.data.statusCode === 200) {
+            alert("게시글 수정 성공");
+            this.$router.push("/reforyou_page");
+          } else {
+            alert("게시글 수정 실패");
+          }
+        })
+        .catch((error) => {
+          console.log("Error posting data:", error);
+          alert("게시글 수정 실패: " + error.message);
+        });
+    },
     reformeSubmit() {
       const formData = new FormData();
       const boardData = {

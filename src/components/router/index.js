@@ -10,8 +10,6 @@ import WritePost from '@/components/writePost.vue';
 import Errorpage from '@/components/errorpage.vue';
 import axios from 'axios';
 
-
-
 axios.defaults.withCredentials = true;
 
 const routes = [

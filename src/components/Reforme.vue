@@ -84,6 +84,7 @@ export default {
   name: "Reforme",
   
   updated(){
+    
     this.emitter.emit("reforme_or_reforyou", {
       menuButton: true,
       searchButton: true,
@@ -93,7 +94,16 @@ export default {
     console.log("reforme updated")
     },
   mounted() {
+    const path = this.$route.path;
+      let reformeValue;
+      if (path.includes('/reforyou_page')) {
+        reformeValue = false;
+      } else if (path.includes('/reforme_page')) {
+        reformeValue = true;
+      }
 
+      // Vuex 상태 업데이트
+      this.$store.dispatch('updateReforme', reformeValue);
     axios
       .get("/reforme")
       .then((response) => {
@@ -113,6 +123,16 @@ export default {
     });
   },
   created() {
+    const path = this.$route.path;
+      let reformeValue;
+      if (path.includes('/reforyou_page')) {
+        reformeValue = false;
+      } else if (path.includes('/reforme_page')) {
+        reformeValue = true;
+      }
+
+      // Vuex 상태 업데이트
+      this.$store.dispatch('updateReforme', reformeValue);
     this.emitter.emit("updateButtons", {
       menuButton: true,
       searchButton: true,

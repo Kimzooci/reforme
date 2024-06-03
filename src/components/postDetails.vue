@@ -52,25 +52,23 @@
 </template>
 
 <script>
-import axios from "axios";
+import axios from 'axios';
 
 export default {
-  
-
   name: 'PostDetails',
   created() {
     this.emitter.emit('updateButtons', {
       menuButton: false,
       searchButton: false,
-      backButton: true
+      backButton: true,
     });
   },
   props: {
     post: {
       type: Object,
       required: false,
-      default: () => ({})
-    }
+      default: () => ({}),
+    },
   },
   data() {
     return {
@@ -78,12 +76,12 @@ export default {
       newComment: '',
       showDeleteConfirmation: false,
       showEditConfirmation: false,
-    }
+    };
   },
   methods: {
     getFirstImage(image) {
-      const imageUrl = image ? `${image.imagePath}` : "";
-      console.log("Image URL:", imageUrl);
+      const imageUrl = image ? `${image.imagePath}` : '';
+      console.log('Image URL:', imageUrl);
       return imageUrl;
     },
     addComment() {
@@ -91,7 +89,7 @@ export default {
         this.comments.push({
           id: Date.now(),
           author: 'Designer',
-          text: this.newComment
+          text: this.newComment,
         });
         this.newComment = '';
       }
@@ -100,48 +98,56 @@ export default {
       this.showEditConfirmation = true;
     },
     confirmEdit() {
-      console.log("postDetails.vue 수정 함수");
-      console.log(this.post);
       this.showEditConfirmation = false;
-      
-      console.log(this.post);
-      console.log("push 됐남?")
-      console.log("됐어??")
-      this.$router.push({ name: 'WritePost', params: { id: this.post.boardId } });
 
+      // 현재 경로에 따라 reforme 값을 설정
+      const path = this.$route.path;
+      let reformeValue;
+      if (path.includes('/reforyou_page')) {
+        reformeValue = false;
+      } else if (path.includes('/reforme_page')) {
+        reformeValue = true;
+      }
+
+      // Vuex 상태 업데이트
+      this.$store.dispatch('updateReforme', reformeValue);
+
+      // WritePost 컴포넌트로 이동
+      this.$router.push({
+        name: 'WritePost',
+        params: { id: this.post.boardId },
+      });
     },
     deletePost() {
       this.showDeleteConfirmation = true;
     },
-   confirmDelete() {
-    
-      axios.delete(`/reforme/board/${this.post.boardId}`)
-    .then((response) => {
-      console.log("Response from server:", response);
-      if (response.data.statusCode === 200) {
-        alert("게시글 삭제 성공");
-        this.$router.push("/reforme_page");
-      } else {
-        alert("게시글 삭제 실패");
-      }
-    })
-    .catch((error) => {
-      console.log("Error deleting data:", error);
-      alert("게시글 삭제 실패: " + error.message);
-    });
-  this.showDeleteConfirmation = false;
-},
+    confirmDelete() {
+      axios
+        .delete(`/reforme/board/${this.post.boardId}`)
+        .then((response) => {
+          if (response.data.statusCode === 200) {
+            alert('게시글 삭제 성공');
+            this.$router.push('/reforme_page');
+          } else {
+            alert('게시글 삭제 실패');
+          }
+        })
+        .catch((error) => {
+          alert('게시글 삭제 실패: ' + error.message);
+        });
+      this.showDeleteConfirmation = false;
+    },
     editComment(comment) {
-      const updatedText = prompt("Enter new comment text:", comment.text);
+      const updatedText = prompt('새 댓글 내용을 입력하세요:', comment.text);
       if (updatedText) {
         comment.text = updatedText;
       }
     },
     deleteComment(commentId) {
-      this.comments = this.comments.filter(comment => comment.id !== commentId);
-    }
-  }
-}
+      this.comments = this.comments.filter((comment) => comment.id !== commentId);
+    },
+  },
+};
 </script>
 
 <style>
