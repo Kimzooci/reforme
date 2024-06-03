@@ -4,22 +4,13 @@
       <h2 class="post-title">{{ post.title }}</h2>
       <p class="post-author">{{ post.userId }} 님</p>
       <div class="post-actions">
-        <button class="edit-button" @click="showEditConfirmation = true">
-          수정
-        </button>
-        <button class="delete-button" @click="showDeleteConfirmation = true">
-          삭제
-        </button>
+        <button class="edit-button" @click="showEditConfirmation = true">수정</button>
+        <button class="delete-button" @click="showDeleteConfirmation = true">삭제</button>
       </div>
     </div>
 
     <div class="post-images-section" v-if="post.images && post.images.length">
-      <div
-        v-for="(image, index) in post.images"
-        :key="index"
-        class="post-image"
-        :style="{ backgroundImage: 'url(' + getFirstImage(image) + ')' }"
-      ></div>
+      <div v-for="(image, index) in post.images" :key="index" class="post-image" :style="{ backgroundImage: 'url(' + getFirstImage(image) + ')' }"></div>
     </div>
 
     <div class="post-content-section">
@@ -29,21 +20,13 @@
     <div class="comments-container">
       <div v-for="comment in comments" :key="comment.id" class="comment">
         <div class="comment-text">{{ comment.content }}</div>
-        <button class="comment-action" @click="editComment(comment)">
-          수정
-        </button>
-        <button class="comment-action" @click="deleteComment(comment)">
-          삭제
-        </button>
+        <button class="comment-action" @click="editComment(comment)">수정</button>
+        <button class="comment-action" @click="deleteComment(comment.id)">삭제</button>
       </div>
     </div>
 
     <div class="footer-bar">
-      <input
-        v-model="newComment"
-        class="input-comment"
-        @keyup.enter="addComment"
-      />
+      <input v-model="newComment" class="input-comment" @keyup.enter="addComment" placeholder="댓글을 입력하세요" />
     </div>
 
     <transition name="fade">
@@ -51,9 +34,7 @@
         <p>게시글을 삭제하시겠습니까?</p>
         <div class="button-container">
           <button class="delete-yes" @click="confirmDelete">확인</button>
-          <button class="delete-no" @click="showDeleteConfirmation = false">
-            취소
-          </button>
+          <button class="delete-no" @click="showDeleteConfirmation = false">취소</button>
         </div>
       </div>
     </transition>
@@ -63,12 +44,35 @@
         <p>게시글을 수정하시겠습니까?</p>
         <div class="button-container">
           <button class="delete-yes" @click="confirmEdit">확인</button>
-          <button class="delete-no" @click="showEditConfirmation = false">
-            취소
-          </button>
+          <button class="delete-no" @click="showEditConfirmation = false">취소</button>
         </div>
       </div>
     </transition>
+
+    <!-- 댓글 수정 모달 -->
+    <div class="modal fade" id="comment-edit-modal" tabindex="-1">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title">댓글 수정</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <form>
+              <div class="mb-3">
+                <label class="form-label">닉네임</label>
+                <input type="text" class="form-control form-control-sm" v-model="editCommentData.nickname">
+              </div>
+              <div class="mb-3">
+                <label class="form-label">댓글 내용</label>
+                <textarea class="form-control form-control-sm" rows="3" v-model="editCommentData.content"></textarea>
+              </div>
+              <button type="button" class="btn btn-outline-primary btn-sm" @click="updateComment">수정 완료</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -101,6 +105,11 @@ export default {
       newComment: "",
       showDeleteConfirmation: false,
       showEditConfirmation: false,
+      editCommentData: {
+        id: null,
+        nickname: "",
+        content: ""
+      },
     };
   },
   computed: {
@@ -149,6 +158,7 @@ export default {
           if (response.data.statusCode === 200) {
             alert("댓글 작성 성공");
             this.comments.push({
+              id: response.data.data.id,
               content: this.newComment,
             });
             this.newComment = "";
@@ -210,24 +220,51 @@ export default {
       this.showDeleteConfirmation = false;
     },
     editComment(comment) {
-      const updatedText = prompt("새 댓글 내용을 입력하세요:", comment.content);
-      if (updatedText) {
-        comment.content = updatedText;
-      }
+      this.editCommentData = { ...comment };
+      const commentEditModal = new bootstrap.Modal(document.getElementById('comment-edit-modal'));
+      commentEditModal.show();
+    },
+    updateComment() {
+      const url = this.getReforme
+        ? `/reforme/board/${this.post.boardId}/comment?id=${this.editCommentData.id}`
+        : `/reforyou/board/${this.post.boardId}/comment?id=${this.editCommentData.id}`;
+
+      axios
+        .patch(url, this.editCommentData, {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        })
+        .then((response) => {
+          if (response.data.statusCode === 200) {
+            alert("댓글 수정 성공");
+            this.comments = this.comments.map((comment) =>
+              comment.id === this.editCommentData.id
+                ? { ...comment, content: this.editCommentData.content }
+                : comment
+            );
+            const commentEditModal = bootstrap.Modal.getInstance(document.getElementById('comment-edit-modal'));
+            commentEditModal.hide();
+          } else {
+            alert("댓글 수정 실패");
+          }
+        })
+        .catch((error) => {
+          alert("댓글 수정 실패: " + error.message);
+        });
     },
     deleteComment(commentId) {
       const url = this.getReforme
-        ? `/reforme/board/${this.post.boardId}/comment?id=${commentId.id}`
-        : `/reforyou/board/${this.post.boardId}/comment?id=${commentId.id}`;
-      this.comments = this.comments.filter(
-        (comment) => comment.id !== commentId
-      );
+        ? `/reforme/board/${this.post.boardId}/comment?id=${commentId}`
+        : `/reforyou/board/${this.post.boardId}/comment?id=${commentId}`;
       axios
         .delete(url)
         .then((response) => {
           if (response.data.statusCode === 200) {
             alert("댓글 삭제 성공");
-            //localStorage.setItem("token", response.data.data); // JWT 토큰 저장
+            this.comments = this.comments.filter(
+              (comment) => comment.id !== commentId
+            );
           } else {
             alert("댓글 삭제 실패");
           }
