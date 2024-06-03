@@ -96,6 +96,7 @@ export default {
   },
   created() {
     emitter.on('filterByCategory', this.filterBoards);  // 이벤트 리스너 추가
+    emitter.on('search', this.searchBoards);  // 검색 이벤트 리스너 추가
     this.fetchBoards();
     const path = this.$route.path;
     let reformeValue = path.includes('/reforme_page');
@@ -144,10 +145,6 @@ export default {
       backButton: false,
     });
   },
-  
-
-   
-  
   methods: {
     async fetchBoards() {
       try {
@@ -164,6 +161,18 @@ export default {
     async filterBoards(category) {
       this.category = category;
       await this.fetchBoards();
+    },
+    async searchBoards(searchWord) {
+      try {
+        const response = await axios.get(`/reforme/search/${searchWord}`);
+        if (response.data.statusCode === 200) {
+          this.게시글 = response.data.data;
+        } else {
+          alert("검색 결과 불러오기 실패");
+        }
+      } catch (error) {
+        alert("검색 결과 불러오기 실패: " + error.message);
+      }
     },
     addPost(post) {
       this.게시글.push(post);
@@ -203,6 +212,7 @@ export default {
   },
   beforeUnmount() {
     emitter.off('filterByCategory', this.filterBoards);  // 이벤트 리스너 해제
+    emitter.off('search', this.searchBoards);  // 검색 이벤트 리스너 해제
   }
 };
 </script>

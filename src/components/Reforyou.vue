@@ -1,10 +1,11 @@
 <template>
   <div class="main-container">
     <div class="content">
+      
       <!-- Post List -->
       <div class="post-list">
         <div
-          v-for="post in 게시글"
+          v-for="post in filteredPosts"
           :key="post.boardId"
           class="post-item"
           @click="openPostDetails(post)"
@@ -58,12 +59,9 @@
         <img src="../assets/images/chatbot.png" alt="" />
       </router-link>
     </div>
+
     <div v-if="step == 1">
-      <writePost
-        ref="writePostComponent"
-        @back="step = 0"
-        @submit-post="addPost"
-      ></writePost>
+      <writePost @back="step = 0" @submit-post="addPost"></writePost>
     </div>
 
     <div v-if="step == 3">
@@ -76,10 +74,12 @@
   </div>
 </template>
 
+
 <script>
 import writePost from "./writePost.vue";
 import postDetails from "./postDetails.vue";
 import axios from "axios";
+import emitter from "../store/eventBus";  // eventBus import 추가
 
 export default {
   name: "Reforyou",
@@ -93,9 +93,105 @@ export default {
       selectedFooterButton: "리포미",
       게시글: [],
       selectedPost: null,
+      searchQuery: "", // 추가된 검색어 데이터
     };
   },
+  created() {
+    emitter.on('filterByCategory', this.filterBoards);  // 이벤트 리스너 추가
+    emitter.on('search', this.searchBoards);  // 검색 이벤트 리스너 추가
+    this.fetchBoards();
+    const path = this.$route.path;
+    let reformeValue = path.includes('/reforme_page');
+    this.$store.dispatch('updateReforme', reformeValue);
+    this.emitter.emit("updateButtons", {
+      menuButton: true,
+      searchButton: true,
+      backButton: false,
+    });
+  },
+  mounted() {
+    const path = this.$route.path;
+    let reformeValue;
+    if (path.includes('/reforyou_page')) {
+      reformeValue = false;
+    } else if (path.includes('/reforme_page')) {
+      reformeValue = true;
+    }
+
+    // Vuex 상태 업데이트
+    this.$store.dispatch('updateReforme', reformeValue);
+    axios
+      .get("/reforyou/ALL")
+      .then((response) => {
+        if (response.data.statusCode === 200) {
+          alert("reforU 데이터 불러오기 성공");
+          this.게시글 = response.data.data;
+          console.log(response.data.statusCode)
+        } else {
+          alert("reforU 데이터 불러오기 실패");
+        }
+      })
+      .catch((error) => {
+        alert("reforU 데이터 불러오기 실패: " + error.message);
+      });
+
+    this.emitter.on("backfunction", (data) => {
+      this.step = data;
+    });
+  },
+  updated() {
+    this.$store.dispatch('updateReforme', true);
+    this.emitter.emit("reforme_or_reforyou", {
+      menuButton: true,
+      searchButton: true,
+      backButton: false,
+    });
+  },
+  computed: {
+    filteredPosts() {
+      if (this.searchQuery) {
+        const lowerCaseQuery = this.searchQuery.toLowerCase();
+        return this.게시글.filter(post => 
+          post.title.toLowerCase().includes(lowerCaseQuery) ||
+          this.getCategoryName(post.category).toLowerCase().includes(lowerCaseQuery)
+        );
+      }
+      return this.게시글;
+    },
+  },
   methods: {
+    async fetchBoards() {
+      try {
+        const response = await axios.get(`/reforyou/ALL`);
+        if (response.data.statusCode === 200) {
+          this.게시글 = response.data.data;
+        } else {
+          alert("데이터 불러오기 실패");
+        }
+      } catch (error) {
+        alert("데이터 불러오기 실패: " + error.message);
+      }
+    },
+    async filterBoards(category) {
+      this.category = category;
+      await this.fetchBoards();
+    },
+    async searchBoards(searchWord) {
+      try {
+        const response = await axios.get(`/reforyou/search/${searchWord}`);
+        if (response.data.statusCode === 200) {
+          this.게시글 = response.data.data;
+        } else {
+          alert("검색 결과 불러오기 실패");
+        }
+      } catch (error) {
+        alert("검색 결과 불러오기 실패: " + error.message);
+      }
+    },
+    searchPosts() {
+      // 검색을 트리거하는 메서드
+      console.log("Searching for:", this.searchQuery);
+    },
     addPost(post) {
       this.게시글.push(post);
       this.step = 0;
@@ -123,64 +219,26 @@ export default {
     getFirstImage(images) {
       const image = images.find((image) => image.imagePath !== null);
       const imageUrl = image ? `${image.imagePath}` : "";
-      console.log("Image URL:", imageUrl);
+      console.log("Image URL:", imageUrl); // 디버깅을 위한 콘솔 로그
       return imageUrl;
     },
     getCategoryName(category) {
       const categoryMap = {
-        TOP: "상의",
-        OUTWEAR: "외투",
-        BOTTOM: "하의",
+        CLOTHES: "옷",
         BAG: "가방",
+        SHOES: "신발",
         ETC: "기타",
       };
       return categoryMap[category] || "";
     },
   },
-  mounted() {
-    
-    // const path = this.$route.path;
-    // let reformeValue;
-    // if (path.includes("/reforyou_page")) {
-    //   reformeValue = false;
-    // } else if (path.includes("/reforme_page")) {
-    //   reformeValue = true;
-    // }
-
-    // Vuex 상태 업데이트
-    this.$store.dispatch("updateReforme", false);
-    axios
-      .get("/reforyou/ALL")
-      .then((response) => {
-        if (response.data.statusCode === 200) {
-          alert("reforU 데이터 불러오기 성공");
-          this.게시글 = response.data.data;
-        } else {
-          alert("reforU 데이터 불러오기 실패");
-        }
-      })
-      .catch((error) => {
-        alert("reforU 데이터 불러오기 실패: " + error.message);
-      });
-
-    this.emitter.on("backfunction", (data) => {
-      this.step = data;
-    });
-  },
-  created() {
-    // Vuex 상태 업데이트
-    this.$store.dispatch("updateReforme", false);
-    this.emitter.emit("updateButtons", {
-      menuButton: true,
-      searchButton: true,
-      backButton: false,
-    });
-  },
-  updated() {
-    this.$store.dispatch("updateReforme", false);
-  },
+  beforeUnmount() {
+    emitter.off('filterByCategory', this.filterBoards);  // 이벤트 리스너 해제
+    emitter.off('search', this.searchBoards);  // 검색 이벤트 리스너 해제
+  }
 };
 </script>
+
 
 <style scoped>
 @import "../styles/main.css";
@@ -194,10 +252,10 @@ export default {
 .post-list {
   width: 100%;
   overflow-y: auto;
-  margin-top: 0; /* 공백 없애기 */
+  margin-top: 0;
   position: absolute;
-  top: 0px;
-  height: calc(100% - 174px);
+  top: 50px; /* Adjusted for search bar height */
+  height: calc(100% - 224px); /* Adjusted for footer and search bar */
 }
 
 .post-item {
@@ -226,7 +284,6 @@ export default {
   color: gray;
 }
 
-/* 스타일 조정 */
 .chat-button {
   display: flex;
   align-items: center;
@@ -238,7 +295,7 @@ export default {
   color: white;
   font-size: 36px;
   border: none;
-  text-decoration: none; /* 링크 스타일 제거 */
+  text-decoration: none;
   margin-bottom: 10px;
   cursor: pointer;
 }

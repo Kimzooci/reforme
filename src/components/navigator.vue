@@ -4,7 +4,7 @@
       <button v-if="menu" class="menu-button" @click="toggleMenu">≡</button>
       <button v-if="back" class="back-button" @click="backFunction">＜</button>
       <span class="navbar-title">Reforme</span>
-      <button v-if="search" class="search-button" @click="toggleSearch">🔍</button>
+      <button v-if="searchButtonVisible" class="search-button" @click="toggleSearch">🔍</button>
     </nav>
     <div v-if="showMenu" class="menu-overlay" @click="toggleMenu">
       <div class="menu-container" @click.stop>
@@ -16,6 +16,8 @@
           <div class="menu-item" @click="filterByCategory('BOTTOM')">하의</div>
           <div class="menu-item" @click="filterByCategory('BAG')">가방</div>
           <div class="menu-item" @click="filterByCategory('ETC')">기타</div>
+          
+          
         </div>
       </div>
     </div>
@@ -25,11 +27,12 @@
           type="text"
           class="search-input"
           placeholder="검색어를 입력하세요"
+          v-model="searchWord"
         />
         <div class="search-divider"></div>
         <div class="search-buttons">
           <button class="small_cancel" @click="toggleSearch">취소</button>
-          <button class="small_complete">확인</button>
+          <button class="small_complete" @click="emitSearch">확인</button>
         </div>
       </div>
     </div>
@@ -52,9 +55,10 @@ export default {
       userId: null,
       showMenu: false,
       showSearch: false,
+      searchWord: '', // 검색어 추가
       back: this.backButton,
       menu: this.menuButton,
-      search: this.searchButton,
+      searchButtonVisible: this.searchButton,
     };
   },
   watch: {
@@ -65,13 +69,13 @@ export default {
       this.menu = newVal;
     },
     searchButton(newVal) {
-      this.search = newVal;
+      this.searchButtonVisible = newVal;
     },
   },
   created() {
-    this.emitter.on("updateButtons", (data) => {
+    emitter.on("updateButtons", (data) => {
       this.menu = data.menuButton;
-      this.search = data.searchButton;
+      this.searchButtonVisible = data.searchButton;
       this.back = data.backButton;
     });
 
@@ -92,13 +96,13 @@ export default {
       });
   },
   beforeUnmount() {
-    this.emitter.off("updateButtons");
+    emitter.off("updateButtons");
   },
   methods: {
     backFunction() {
       this.$router.push("/reforme_page");
-      this.emitter.emit("backfunction", 0);
-      this.emitter.emit("updateButtons", {
+      emitter.emit("backfunction", 0);
+      emitter.emit("updateButtons", {
         menuButton: true,
         searchButton: true,
         backButton: false,
@@ -137,6 +141,10 @@ export default {
     },
     filterByCategory(category) {
       emitter.emit('filterByCategory', category);
+    },
+    emitSearch() {
+      emitter.emit('search', this.searchWord);
+      this.toggleSearch();
     }
   },
 };
