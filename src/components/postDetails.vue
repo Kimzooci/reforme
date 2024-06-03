@@ -5,7 +5,7 @@
       <p class="post-author">{{ post.userId }} 님 </p>
       <div class="post-actions">
         <button class="edit-button" @click="showEditConfirmation = true">수정</button>
-        <button class="delete-button" @click="showDeleteConfirmation = true" >삭제</button>
+        <button class="delete-button" @click="showDeleteConfirmation = true">삭제</button>
       </div>
     </div>
 
@@ -19,7 +19,7 @@
 
     <div class="comments-container">
       <div v-for="comment in comments" :key="comment.id" class="comment">
-        <div class="comment-text">{{ comment.text }}</div>
+        <div class="comment-text">{{ comment.content }}</div>
         <button class="comment-action" @click="editComment(comment)">수정</button>
         <button class="comment-action" @click="deleteComment(comment.id)">삭제</button>
       </div>
@@ -57,28 +57,9 @@ import { mapGetters } from 'vuex';
 
 export default {
   name: 'PostDetails',
-  mounted(){
-    console.log("mounted")
-    const url = this.getReforme
-        ? `/reforme/board/${this.post.boardId}`
-        : `/reforyou/board/${this.post.boardId}`;
-    axios
-      .get(url)
-      .then((response) => {
-        if (response.data.statusCode === 200) {
-          alert("수정해야될 데이터 불러오기 성공");
-          this.게시글 = response.data.data;
-        } else {
-          alert("수정해야될 데이터 불러오기 실패");
-        }
-      })
-      .catch((error) => {
-        alert("수정해야될 데이터 불러오기 실패: " + error.message);
-      });
-    
-    },
-  updated(){console.log("updated")},
   created() {
+    console.log("created");
+    this.fetchPostData();
     this.emitter.emit('updateButtons', {
       menuButton: false,
       searchButton: false,
@@ -105,54 +86,66 @@ export default {
     ...mapGetters(['getReforme']),
   },
   methods: {
+    fetchPostData() {
+      const url = this.getReforme
+        ? `/reforme/board/${this.post.boardId}`
+        : `/reforyou/board/${this.post.boardId}`;
+      axios
+        .get(url)
+        .then((response) => {
+          if (response.data.statusCode === 200) {
+            this.comments = response.data.data.comments;
+          } else {
+            alert("수정해야될 데이터 불러오기 실패");
+          }
+        })
+        .catch((error) => {
+          alert("수정해야될 데이터 불러오기 실패: " + error.message);
+        });
+    },
     getFirstImage(image) {
       const imageUrl = image ? `${image.imagePath}` : '';
       console.log('Image URL:', imageUrl);
       return imageUrl;
     },
-    // addComment() {
-    //   if (this.newComment.trim() !== '') {
-    //     this.comments.push({
-    //       id: Date.now(),
-    //       author: 'Designer',
-    //       text: this.newComment,
-    //     });
-    //     this.newComment = '';
-    //   }
-    // },
     addComment() {
-      
-      const formData = new FormData();
-      formData.append("content", this.comment);
-      formData.append("secret", this.secret,);
-      
+      const url = this.getReforme
+        ? `/reforme/board/${this.post.boardId}/comment`
+        : `/reforyou/board/${this.post.boardId}/comment`;
+
+      const commentDto = {
+        content: this.newComment,
+        secret: false, // 혹은 필요한 값으로 설정
+      };
 
       axios
-        .post("/reforme/board/{{$this.boardId}}/comment", formData, {
+        .post(url, commentDto, {
           headers: {
-            "Content-Type": "multipart/form-data",
+            'Content-Type': 'application/json',
           },
         })
         .then((response) => {
           if (response.data.statusCode === 200) {
-            alert("댓글 작성 성공");
-            //localStorage.setItem("token", response.data.data); // JWT 토큰 저장
-            
+            alert('댓글 작성 성공');
+            this.comments.push({
+             
+              content: this.newComment,
+            });
+            this.newComment = '';
           } else {
-            alert("댓글 작성 실패");
-            
+            alert('댓글 작성 실패');
           }
         })
         .catch((error) => {
-          alert("댓글 작성 실패: " + error.message);
+          alert('댓글 작성 실패: ' + error.message);
         });
     },
-
     editPost() {
       this.showEditConfirmation = true;
     },
     confirmEdit() {
       this.showEditConfirmation = false;
+
       // 현재 경로에 따라 reforme 값을 설정
       const path = this.$route.path;
       let reformeValue;
@@ -178,7 +171,6 @@ export default {
       const url = this.getReforme
         ? `/reforme/board/${this.post.boardId}`
         : `/reforyou/board/${this.post.boardId}`;
-
       axios
         .delete(url)
         .then((response) => {
@@ -198,9 +190,9 @@ export default {
       this.showDeleteConfirmation = false;
     },
     editComment(comment) {
-      const updatedText = prompt('새 댓글 내용을 입력하세요:', comment.text);
+      const updatedText = prompt('새 댓글 내용을 입력하세요:', comment.content);
       if (updatedText) {
-        comment.text = updatedText;
+        comment.content = updatedText;
       }
     },
     deleteComment(commentId) {

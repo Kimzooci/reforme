@@ -59,8 +59,11 @@
       </router-link>
     </div>
     <div v-if="step == 1">
-      <writePost ref="writePostComponent" @back="step = 0" @submit-post="addPost"></writePost>
-
+      <writePost
+        ref="writePostComponent"
+        @back="step = 0"
+        @submit-post="addPost"
+      ></writePost>
     </div>
 
     <div v-if="step == 3">
@@ -135,17 +138,17 @@ export default {
     },
   },
   mounted() {
-    this.$store.dispatch('updateReforme', false);
+    this.$store.dispatch("updateReforme", false);
     const path = this.$route.path;
-      let reformeValue;
-      if (path.includes('/reforyou_page')) {
-        reformeValue = false;
-      } else if (path.includes('/reforme_page')) {
-        reformeValue = true;
-      }
+    let reformeValue;
+    if (path.includes("/reforyou_page")) {
+      reformeValue = false;
+    } else if (path.includes("/reforme_page")) {
+      reformeValue = true;
+    }
 
-      // Vuex 상태 업데이트
-      this.$store.dispatch('updateReforme', reformeValue);
+    // Vuex 상태 업데이트
+    this.$store.dispatch("updateReforme", reformeValue);
     axios
       .get("/reforyou")
       .then((response) => {
@@ -165,19 +168,17 @@ export default {
     });
   },
   created() {
-    
-
-      // Vuex 상태 업데이트
-      this.$store.dispatch('updateReforme', false);
+    // Vuex 상태 업데이트
+    this.$store.dispatch("updateReforme", false);
     this.emitter.emit("updateButtons", {
       menuButton: true,
       searchButton: true,
       backButton: false,
     });
   },
-  updated(){
-    this.$store.dispatch('updateReforme', false);
-  }
+  updated() {
+    this.$store.dispatch("updateReforme", false);
+  },
 };
 </script>
 

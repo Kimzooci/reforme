@@ -58,6 +58,7 @@
         <img src="../assets/images/chatbot.png" alt="" />
       </router-link>
     </div>
+
     <div v-if="step == 1">
       <writePost @back="step = 0" @submit-post="addPost"></writePost>
     </div>
@@ -66,12 +67,9 @@
       <postDetails
         :post="selectedPost"
         @back="step = 0"
-        
         @delete-post="deletePost"
       ></postDetails>
     </div>
-
-      
   </div>
 </template>
 
@@ -82,32 +80,30 @@ import axios from "axios";
 
 export default {
   name: "Reforme",
-  
-  updated(){
-    
 
-      // Vuex 상태 업데이트
-      this.$store.dispatch('updateReforme', true);
-    
+  updated() {
+    // Vuex 상태 업데이트
+    this.$store.dispatch("updateReforme", true);
+
     this.emitter.emit("reforme_or_reforyou", {
       menuButton: true,
       searchButton: true,
       backButton: false,
     });
-   
-    console.log("reforme updated")
-    },
+
+    console.log("reforme updated");
+  },
   mounted() {
     const path = this.$route.path;
-      let reformeValue;
-      if (path.includes('/reforyou_page')) {
-        reformeValue = false;
-      } else if (path.includes('/reforme_page')) {
-        reformeValue = true;
-      }
+    let reformeValue;
+    if (path.includes("/reforyou_page")) {
+      reformeValue = false;
+    } else if (path.includes("/reforme_page")) {
+      reformeValue = true;
+    }
 
-      // Vuex 상태 업데이트
-      this.$store.dispatch('updateReforme', reformeValue);
+    // Vuex 상태 업데이트
+    this.$store.dispatch("updateReforme", reformeValue);
     axios
       .get("/reforme")
       .then((response) => {
@@ -128,15 +124,15 @@ export default {
   },
   created() {
     const path = this.$route.path;
-      let reformeValue;
-      if (path.includes('/reforyou_page')) {
-        reformeValue = false;
-      } else if (path.includes('/reforme_page')) {
-        reformeValue = true;
-      }
+    let reformeValue;
+    if (path.includes("/reforyou_page")) {
+      reformeValue = false;
+    } else if (path.includes("/reforme_page")) {
+      reformeValue = true;
+    }
 
-      // Vuex 상태 업데이트
-      this.$store.dispatch('updateReforme', reformeValue);
+    // Vuex 상태 업데이트
+    this.$store.dispatch("updateReforme", reformeValue);
     this.emitter.emit("updateButtons", {
       menuButton: true,
       searchButton: true,
@@ -146,7 +142,6 @@ export default {
   components: {
     writePost,
     postDetails,
-    
   },
   data() {
     return {
@@ -172,7 +167,7 @@ export default {
       this.selectedPost = null;
       this.step = 1;
     },
-    
+
     deletePost(postId) {
       this.게시글 = this.게시글.filter((post) => post.id !== postId);
       this.step = 0;
