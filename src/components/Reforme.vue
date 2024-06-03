@@ -66,12 +66,9 @@
       <postDetails
         :post="selectedPost"
         @back="step = 0"
-        
         @delete-post="deletePost"
       ></postDetails>
     </div>
-
-      
   </div>
 </template>
 
@@ -79,35 +76,46 @@
 import writePost from "./writePost.vue";
 import postDetails from "./postDetails.vue";
 import axios from "axios";
+import emitter from "../store/eventBus";  // eventBus import 추가
 
 export default {
   name: "Reforme",
-  
-  updated(){
-    
-
-      // Vuex 상태 업데이트
-      this.$store.dispatch('updateReforme', true);
-    
-    this.emitter.emit("reforme_or_reforyou", {
+  components: {
+    writePost,
+    postDetails,
+  },
+  data() {
+    return {
+      step: 0,
+      selectedFooterButton: "리포미",
+      게시글: [],
+      selectedPost: null,
+      category: 'ALL', // 기본 카테고리 설정
+    };
+  },
+  created() {
+    emitter.on('filterByCategory', this.filterBoards);  // 이벤트 리스너 추가
+    this.fetchBoards();
+    const path = this.$route.path;
+    let reformeValue = path.includes('/reforme_page');
+    this.$store.dispatch('updateReforme', reformeValue);
+    this.emitter.emit("updateButtons", {
       menuButton: true,
       searchButton: true,
       backButton: false,
     });
-   
-    console.log("reforme updated")
-    },
+  },
   mounted() {
     const path = this.$route.path;
-      let reformeValue;
-      if (path.includes('/reforyou_page')) {
-        reformeValue = false;
-      } else if (path.includes('/reforme_page')) {
-        reformeValue = true;
-      }
+    let reformeValue;
+    if (path.includes('/reforyou_page')) {
+      reformeValue = false;
+    } else if (path.includes('/reforme_page')) {
+      reformeValue = true;
+    }
 
-      // Vuex 상태 업데이트
-      this.$store.dispatch('updateReforme', reformeValue);
+    // Vuex 상태 업데이트
+    this.$store.dispatch('updateReforme', reformeValue);
     axios
       .get("/reforme")
       .then((response) => {
@@ -126,37 +134,33 @@ export default {
       this.step = data;
     });
   },
-  created() {
-    const path = this.$route.path;
-      let reformeValue;
-      if (path.includes('/reforyou_page')) {
-        reformeValue = false;
-      } else if (path.includes('/reforme_page')) {
-        reformeValue = true;
-      }
-
-      // Vuex 상태 업데이트
-      this.$store.dispatch('updateReforme', reformeValue);
-    this.emitter.emit("updateButtons", {
+  updated() {
+    this.$store.dispatch('updateReforme', true);
+    this.emitter.emit("reforme_or_reforyou", {
       menuButton: true,
       searchButton: true,
       backButton: false,
     });
-  },
-  components: {
-    writePost,
-    postDetails,
-    
-  },
-  data() {
-    return {
-      step: 0,
-      selectedFooterButton: "리포미",
-      게시글: [],
-      selectedPost: null,
-    };
+
+    console.log("reforme updated");
   },
   methods: {
+    async fetchBoards() {
+      try {
+        const response = await axios.get(`/reforme/${this.category}`);
+        if (response.data.statusCode === 200) {
+          this.게시글 = response.data.data;
+        } else {
+          alert("데이터 불러오기 실패");
+        }
+      } catch (error) {
+        alert("데이터 불러오기 실패: " + error.message);
+      }
+    },
+    async filterBoards(category) {
+      this.category = category;
+      await this.fetchBoards();
+    },
     addPost(post) {
       this.게시글.push(post);
       this.step = 0;
@@ -172,15 +176,11 @@ export default {
       this.selectedPost = null;
       this.step = 1;
     },
-    
     deletePost(postId) {
       this.게시글 = this.게시글.filter((post) => post.id !== postId);
       this.step = 0;
     },
-
     getFirstImage(images) {
-      // 이미지 경로 절대 경로로 변환
-
       const image = images.find((image) => image.imagePath !== null);
       const imageUrl = image ? `${image.imagePath}` : "";
       console.log("Image URL:", imageUrl); // 디버깅을 위한 콘솔 로그
@@ -197,6 +197,9 @@ export default {
       return categoryMap[category] || "";
     },
   },
+  beforeUnmount() {
+    emitter.off('filterByCategory', this.filterBoards);  // 이벤트 리스너 해제
+  }
 };
 </script>
 

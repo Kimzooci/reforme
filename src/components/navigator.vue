@@ -4,20 +4,18 @@
       <button v-if="menu" class="menu-button" @click="toggleMenu">≡</button>
       <button v-if="back" class="back-button" @click="backFunction">＜</button>
       <span class="navbar-title">Reforme</span>
-      <button v-if="search" class="search-button" @click="toggleSearch">
-        🔍
-      </button>
+      <button v-if="search" class="search-button" @click="toggleSearch">🔍</button>
     </nav>
     <div v-if="showMenu" class="menu-overlay" @click="toggleMenu">
       <div class="menu-container" @click.stop>
         <div class="menu-content">
           <div class="menu-item">{{ userId }}</div>
           <div class="menu-item" @click="logout">로그아웃</div>
-          <div class="menu-item">전체</div>
-          <div class="menu-item">의류</div>
-          <div class="menu-item">가방</div>
-          <div class="menu-item">신발</div>
-          <div class="menu-item">기타</div>
+          <div class="menu-item" @click="filterByCategory('TOP')">상의</div>
+          <div class="menu-item" @click="filterByCategory('OUTER')">외투</div>
+          <div class="menu-item" @click="filterByCategory('BOTTOM')">하의</div>
+          <div class="menu-item" @click="filterByCategory('BAG')">가방</div>
+          <div class="menu-item" @click="filterByCategory('ETC')">기타</div>
         </div>
       </div>
     </div>
@@ -40,6 +38,7 @@
 
 <script>
 import axios from "axios";
+import emitter from "../store/eventBus";
 
 export default {
   name: "NavigationBar",
@@ -136,6 +135,9 @@ export default {
           alert("로그아웃 실패: " + error.message);
         });
     },
+    filterByCategory(category) {
+      emitter.emit('filterByCategory', category);
+    }
   },
 };
 </script>
@@ -263,5 +265,9 @@ export default {
   border-radius: 10px;
   border: none;
   margin: 0;
+}
+
+.menu-item:hover {
+  font-weight: bold;
 }
 </style>
