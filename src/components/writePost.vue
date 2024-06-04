@@ -135,14 +135,7 @@ created() {
       );
     },
     isReforme() {
-      const path = this.$route.path;
-      let reformeValue;
-      if (path.includes("/reforyou")) {
-      reformeValue = false;
-      } else if (path.includes("/reforme")) {
-      reformeValue = true;
-      }
-      return reformeValue
+      return this.getReforme;
     }
   },
 
@@ -444,7 +437,7 @@ created() {
 
 .input-content {
   width: 410px;
-  height: 450px;
+  height: 500px;
   gap: 0px;
   border-radius: 10px 10px 10px 10px;
   border: 1px solid #ccc; /* 변경 */
@@ -469,8 +462,8 @@ created() {
   color: white;
   border: none;
   border-radius: 10px;
-  position: absolute;
-  bottom: 0;
+  position : fixed;
+  bottom : 0;
 }
 
 .submit-button:disabled {
@@ -500,6 +493,7 @@ created() {
   background-color: #4a7648;
   cursor: pointer;
   position: relative;
+  margin-top: 10px;
 }
 
 .image-preview {
