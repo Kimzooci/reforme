@@ -97,6 +97,7 @@ export default {
     };
   },
   created() {
+    this.$store.commit('setReforme', false);
     emitter.on('filterByCategory', this.filterBoards);
     emitter.on('search', this.searchBoards);
     this.fetchBoards();
@@ -252,8 +253,8 @@ export default {
   overflow-y: auto;
   margin-top: 0;
   position: absolute;
-  top: 50px;
-  height: calc(100% - 224px);
+  top: 50px; /* Adjusted for search bar height */
+  height: calc(100% - 224px); /* Adjusted for footer and search bar */
 }
 
 .post-item {

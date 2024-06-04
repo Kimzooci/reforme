@@ -95,6 +95,7 @@ export default {
     };
   },
   created() {
+    this.$store.commit('setReforme', true);
     emitter.on('filterByCategory', this.filterBoards);  // 이벤트 리스너 추가
     emitter.on('search', this.searchBoards);  // 검색 이벤트 리스너 추가
     this.fetchBoards();
@@ -278,3 +279,4 @@ export default {
   cursor: pointer;
 }
 </style>
+
