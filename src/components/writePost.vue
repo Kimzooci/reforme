@@ -391,7 +391,7 @@ created() {
 }
 
 .categories {
-  padding: 10px 0;
+  padding: 10px 0px;
 }
 
 .categories button {
@@ -406,6 +406,9 @@ created() {
   transition: background-color 0.5s; /* 배경 색상 전환 애니메이션 */
   flex: 1; /* 각 버튼의 크기를 균등하게 만듦 */
   max-width: 70px; /* 버튼 최대 너비를 설정 */
+  margin: 0 15px;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .categories button:focus {
@@ -429,6 +432,7 @@ created() {
   height: 50px;
   border: 1px solid #ccc;
   border-radius: 10px;
+  margin-bottom: 15px;
 }
 
 .input-content {
@@ -440,6 +444,7 @@ created() {
   resize: none;
   font-size: large;
   opacity: 1; /* 변경 */
+  margin-bottom: 30px;
 }
 
 .action-buttons {
@@ -450,7 +455,7 @@ created() {
 }
 
 .submit-button {
-  width: 400px; /* 수정: 양쪽 여백 포함 */
+  width: 420px; /* 수정: 양쪽 여백 포함 */
   height: 76px;
   padding: 10px 20px;
   background-color: #4a7648;
@@ -470,7 +475,7 @@ created() {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  width: 410px;
+  width: 100%;
   height: 74px;
   padding: 10px 10px;
   background-color: #ffffffff;

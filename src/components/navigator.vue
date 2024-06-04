@@ -192,7 +192,7 @@ export default {
 }
 
 .menu-container {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 200px;
@@ -212,7 +212,7 @@ export default {
 }
 
 .menu-overlay {
-  position: fixed;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
