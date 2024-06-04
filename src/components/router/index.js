@@ -8,6 +8,8 @@ import Chatbot from '@/components/chatbot.vue';
 import Home from '@/components/home.vue';
 import WritePost from '@/components/writePost.vue';
 import Errorpage from '@/components/errorpage.vue';
+//
+import Detail from '@/components/postDetails.vue';
 import axios from 'axios';
 
 axios.defaults.withCredentials = true;
@@ -23,6 +25,12 @@ const routes = [
         path: '/editpost/:id',
         name: 'WritePost',
         component: WritePost
+        , meta: { requiresAuth: true }
+    },
+    {
+        path: '/detail/:id(\\d+)',
+        name: 'Detail',
+        component: Detail
         , meta: { requiresAuth: true }
     },
     { path: '/signup_page', name: 'signup_page', component: Signup },
@@ -53,4 +61,3 @@ const router = createRouter({
 // });
 
 export default router;
-//내는 모르겠다
