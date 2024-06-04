@@ -62,9 +62,9 @@
     <div v-if="step == 1">
       <writePost @back="step = 0" @submit-post="addPost"></writePost>
     </div>
-    <!-- <div>
+     <!-- <div>
      <router-link   v-if="step == 3" :to="`/detail/${selectedPost.boardId}`" :post="selectedPost"></router-link>
-    </div> -->
+    </div>
 
     <div v-if="step == 3">
       <postDetails
@@ -72,14 +72,14 @@
         @back="step = 0"
         @delete-post="deletePost"
       ></postDetails>
-    </div> 
+    </div> -->
     
-  </div>
+  </div>  
 </template>
 
 <script>
 import writePost from "./writePost.vue";
-import postDetails from "./postDetails.vue";
+//import postDetails from "./postDetails.vue";
 import axios from "axios";
 import emitter from "../store/eventBus";  // eventBus import 추가
 
@@ -87,7 +87,7 @@ export default {
   name: "Reforme",
   components: {
     writePost,
-    postDetails,
+    //postDetails,
   },
   data() {
     return {
@@ -100,12 +100,11 @@ export default {
   },
   created() {
     this.$store.commit('setReforme', true);
+    this.$store.dispatch('updateReforme', true);
     emitter.on('filterByCategory', this.filterBoards);  // 이벤트 리스너 추가
     emitter.on('search', this.searchBoards);  // 검색 이벤트 리스너 추가
     this.fetchBoards();
-    const path = this.$route.path;
-    let reformeValue = path.includes('/reforme_page');
-    this.$store.dispatch('updateReforme', reformeValue);
+    //const path = this.$route.path;
     this.emitter.emit("updateButtons", {
       menuButton: true,
       searchButton: true,
@@ -187,12 +186,12 @@ export default {
       this.selectedFooterButton = button;
     },
     openPostDetails(post) {
-      this.selectedPost = post;
+      //this.selectedPost = post;
       //<router-link :to="`/detail/${selectedPost.boardId}`" :post="selectedPost"></router-link>
-      // this.$router.push({
-      //   name: "Detail",
-      //   params: { id: this.post.boardId },
-      // });
+      this.$router.push({
+        name: "Detail",
+        params: { id: post.boardId },
+      });
       this.step = 3;
     },
     createPost() {

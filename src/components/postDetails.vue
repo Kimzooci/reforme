@@ -61,15 +61,16 @@ export default {
       backButton: true,
     });
   },
-  props: {
-    post: {
-      type: Object,
-      required: false,
-      default: () => ({}),
-    },
-  },
+  // props: {
+  //   post: {
+  //     type: Object,
+  //     required: false,
+  //     default: () => ({}),
+  //   },
+  // },
   data() {
     return {
+      post: [],
       article: { id: 1 },
       comments: [],
       newComment: "",
@@ -87,14 +88,18 @@ export default {
   },
   methods: {
     fetchPostData() {
-      const url = this.getReforme
-        ? `/reforme/board/${this.post.boardId}`
-        : `/reforyou/board/${this.post.boardId}`;
+      //this.param = this.$route.params.id;
+      
+      // const url = this.getReforme
+      //   ? `/reforme/board/${this.$route.params.id}`
+      //   : `/reforyou/board/${this.$route.params.id}`;
+        const url = `/reforme/board/${this.$route.params.id}`;
       axios
         .get(url)
         .then((response) => {
           if (response.data.statusCode === 200) {
-            this.comments = response.data.data.comments;
+            this.post = response.data.data;
+            //this.comments = response.data.data.comments;
           } else {
             alert("수정해야될 데이터 불러오기 실패");
           }

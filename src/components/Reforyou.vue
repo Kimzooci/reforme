@@ -1,11 +1,10 @@
 <template>
   <div class="main-container">
     <div class="content">
-      
       <!-- Post List -->
       <div class="post-list">
         <div
-          v-for="post in filteredPosts"
+          v-for="post in 게시글"
           :key="post.boardId"
           class="post-item"
           @click="openPostDetails(post)"
@@ -63,6 +62,9 @@
     <div v-if="step == 1">
       <writePost @back="step = 0" @submit-post="addPost"></writePost>
     </div>
+     <!-- <div>
+     <router-link   v-if="step == 3" :to="`/detail/${selectedPost.boardId}`" :post="selectedPost"></router-link>
+    </div>
 
     <div v-if="step == 3">
       <postDetails
@@ -70,94 +72,82 @@
         @back="step = 0"
         @delete-post="deletePost"
       ></postDetails>
-    </div>
-  </div>
+    </div> -->
+    
+  </div>  
 </template>
 
 <script>
 import writePost from "./writePost.vue";
-import postDetails from "./postDetails.vue";
+//import postDetails from "./postDetails.vue";
 import axios from "axios";
-import emitter from "../store/eventBus";
+import emitter from "../store/eventBus";  // eventBus import 추가
 
 export default {
   name: "Reforyou",
   components: {
     writePost,
-    postDetails,
+    //postDetails,
   },
   data() {
     return {
       step: 0,
-      selectedFooterButton: "리포미",
+      selectedFooterButton: "리포유",
       게시글: [],
       selectedPost: null,
-      searchQuery: "", // 추가된 검색어 데이터
       category: 'ALL', // 기본 카테고리 설정
     };
   },
   created() {
-    this.$store.commit('setReforme', false);
-    emitter.on('filterByCategory', this.filterBoards);
-    emitter.on('search', this.searchBoards);
+    this.$store.commit('setReforme', true);
+    this.$store.dispatch('updateReforme', true);
+    emitter.on('filterByCategory', this.filterBoards);  // 이벤트 리스너 추가
+    emitter.on('search', this.searchBoards);  // 검색 이벤트 리스너 추가
     this.fetchBoards();
-    const path = this.$route.path;
-    let reformeValue = path.includes('/reforme_page');
-    this.$store.dispatch('updateReforme', reformeValue);
-    emitter.emit("updateButtons", {
+    //const path = this.$route.path;
+    this.emitter.emit("updateButtons", {
       menuButton: true,
       searchButton: true,
       backButton: false,
     });
   },
   mounted() {
-    const path = this.$route.path;
-    let reformeValue;
-    if (path.includes('/reforyou_page')) {
-      reformeValue = false;
-    } else if (path.includes('/reforme_page')) {
-      reformeValue = true;
-    }
+    // const path = this.$route.path;
+    // let reformeValue;
+    // if (path.includes('/reforyou_page')) {
+    //   reformeValue = false;
+    // } else if (path.includes('/reforme_page')) {
+    //   reformeValue = true;
+    // }
 
     // Vuex 상태 업데이트
-    this.$store.dispatch('updateReforme', reformeValue);
+    this.$store.dispatch('updateReforme', false);
     axios
-      .get(`/reforyou/${this.category}`)
+      .get("/reforyou/ALL")
       .then((response) => {
         if (response.data.statusCode === 200) {
-          alert("reforU 데이터 불러오기 성공");
+          alert("데이터 불러오기 성공");
           this.게시글 = response.data.data;
+          console.log(response.data.statusCode)
         } else {
-          alert("reforU 데이터 불러오기 실패");
+          alert("데이터 불러오기 실패");
         }
       })
       .catch((error) => {
-        alert("reforU 데이터 불러오기 실패: " + error.message);
+        alert("데이터 불러오기 실패: " + error.message);
       });
 
-    emitter.on("backfunction", (data) => {
+    this.emitter.on("backfunction", (data) => {
       this.step = data;
     });
   },
   updated() {
-    this.$store.dispatch('updateReforme', true);
-    emitter.emit("reforme_or_reforyou", {
+    this.$store.dispatch('updateReforme', false);
+    this.emitter.emit("reforme_or_reforyou", {
       menuButton: true,
       searchButton: true,
       backButton: false,
     });
-  },
-  computed: {
-    filteredPosts() {
-      if (this.searchQuery) {
-        const lowerCaseQuery = this.searchQuery.toLowerCase();
-        return this.게시글.filter(post => 
-          post.title.toLowerCase().includes(lowerCaseQuery) ||
-          this.getCategoryName(post.category).toLowerCase().includes(lowerCaseQuery)
-        );
-      }
-      return this.게시글;
-    },
   },
   methods: {
     async fetchBoards() {
@@ -188,10 +178,6 @@ export default {
         alert("검색 결과 불러오기 실패: " + error.message);
       }
     },
-    searchPosts() {
-      // 검색을 트리거하는 메서드
-      console.log("Searching for:", this.searchQuery);
-    },
     addPost(post) {
       this.게시글.push(post);
       this.step = 0;
@@ -200,32 +186,32 @@ export default {
       this.selectedFooterButton = button;
     },
     openPostDetails(post) {
-      this.selectedPost = post;
+      //this.selectedPost = post;
+      //<router-link :to="`/detail/${selectedPost.boardId}`" :post="selectedPost"></router-link>
+      this.$router.push({
+        name: "Detail",
+        params: { id: post.boardId },
+      });
       this.step = 3;
     },
     createPost() {
       this.selectedPost = null;
       this.step = 1;
-      if (this.$refs.writePost) {
-        this.$refs.writePost.reforme = false;
-      } else {
-        console.error("writePost component not found");
-      }
     },
-    deletePost(postId) {
-      this.게시글 = this.게시글.filter((post) => post.id !== postId);
-      this.step = 0;
-    },
+    // deletePost(postId) {
+    //   this.게시글 = this.게시글.filter((post) => post.id !== postId);
+    //   this.step = 0;
+    // },
     getFirstImage(images) {
       const image = images.find((image) => image.imagePath !== null);
       const imageUrl = image ? `${image.imagePath}` : "";
-      console.log("Image URL:", imageUrl);
+      console.log("Image URL:", imageUrl); // 디버깅을 위한 콘솔 로그
       return imageUrl;
     },
     getCategoryName(category) {
       const categoryMap = {
         CLOTHES: "옷",
-        BAG: "가방",
+        BAG : "가방",
         SHOES: "신발",
         ETC: "기타",
       };
@@ -233,8 +219,8 @@ export default {
     },
   },
   beforeUnmount() {
-    emitter.off('filterByCategory', this.filterBoards);
-    emitter.off('search', this.searchBoards);
+    emitter.off('filterByCategory', this.filterBoards);  // 이벤트 리스너 해제
+    emitter.off('search', this.searchBoards);  // 검색 이벤트 리스너 해제
   }
 };
 </script>
@@ -251,10 +237,10 @@ export default {
 .post-list {
   width: 100%;
   overflow-y: auto;
-  margin-top: 0;
+  margin-top: 0; /* 공백 없애기 */
   position: absolute;
-  top: 50px; /* Adjusted for search bar height */
-  height: calc(100% - 224px); /* Adjusted for footer and search bar */
+  top: 0px;
+  height: calc(100% - 174px);
 }
 
 .post-item {
@@ -283,6 +269,7 @@ export default {
   color: gray;
 }
 
+/* 스타일 조정 */
 .chat-button {
   display: flex;
   align-items: center;
@@ -294,8 +281,9 @@ export default {
   color: white;
   font-size: 36px;
   border: none;
-  text-decoration: none;
+  text-decoration: none; /* 링크 스타일 제거 */
   margin-bottom: 10px;
   cursor: pointer;
 }
 </style>
+
