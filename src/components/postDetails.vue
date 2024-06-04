@@ -4,13 +4,22 @@
       <h2 class="post-title">{{ post.title }}</h2>
       <p class="post-author">{{ post.userId }} 님</p>
       <div class="post-actions">
-        <button class="edit-button" @click="showEditConfirmation = true">수정</button>
-        <button class="delete-button" @click="showDeleteConfirmation = true">삭제</button>
+        <button class="edit-button" @click="showEditConfirmation = true">
+          수정
+        </button>
+        <button class="delete-button" @click="showDeleteConfirmation = true">
+          삭제
+        </button>
       </div>
     </div>
 
     <div class="post-images-section" v-if="post.images && post.images.length">
-      <div v-for="(image, index) in post.images" :key="index" class="post-image" :style="{ backgroundImage: 'url(' + getFirstImage(image) + ')' }"></div>
+      <div
+        v-for="(image, index) in post.images"
+        :key="index"
+        class="post-image"
+        :style="{ backgroundImage: 'url(' + getFirstImage(image) + ')' }"
+      ></div>
     </div>
 
     <div class="post-content-section">
@@ -26,7 +35,9 @@
         <p>게시글을 삭제하시겠습니까?</p>
         <div class="button-container">
           <button class="delete-yes" @click="confirmDelete">확인</button>
-          <button class="delete-no" @click="showDeleteConfirmation = false">취소</button>
+          <button class="delete-no" @click="showDeleteConfirmation = false">
+            취소
+          </button>
         </div>
       </div>
     </transition>
@@ -36,7 +47,9 @@
         <p>게시글을 수정하시겠습니까?</p>
         <div class="button-container">
           <button class="delete-yes" @click="confirmEdit">확인</button>
-          <button class="delete-no" @click="showEditConfirmation = false">취소</button>
+          <button class="delete-no" @click="showEditConfirmation = false">
+            취소
+          </button>
         </div>
       </div>
     </transition>
@@ -89,12 +102,18 @@ export default {
   methods: {
     fetchPostData() {
       //this.param = this.$route.params.id;
-      console.log(this.getReforme)
-      // const url = this.getReforme
-      //   ? `/reforme/board/${this.$route.params.id}`
-      //   : `/reforyou/board/${this.$route.params.id}`;
-        const url = `/reforme/board/${this.$route.params.id}`;
-      axios
+      
+      
+        
+      const path = this.$route.path;
+      let url;
+      if (path.includes("/reforme")) {
+        url = `/reforme/board/${this.$route.params.id}`;
+      } else if (path.includes("reforyou")) {
+        url = `/reforyou/board/${this.$route.params.id}`;
+      }
+
+    axios
         .get(url)
         .then((response) => {
           if (response.data.statusCode === 200) {

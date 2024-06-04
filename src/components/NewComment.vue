@@ -80,19 +80,34 @@ export default {
           body: this.newComment.body,
           articleId: this.article.id,
         });
-        const formData = new FormData();
-        formData.append("content", this.newComment.body);
-        formData.append("secret", this.secret);
+        const commentDto = {
+          content: this.newComment.body,
+          secret: false, // 혹은 필요한 값으로 설정
+        };
+
+        const path = this.$route.path;
+        let url;
+
+        if (path.includes("/reforme")) {
+          url = `/reforme/board/${this.post.boardId}/comment`;
+        } else if (path.includes("reforyou")) {
+          url = `/reforyou/board/${this.post.boardId}/comment`;
+        }
+
         axios
-          .post("/reforme/board/{{$this.boardId}}/comment", formData, {
+          .post(url, commentDto, {
             headers: {
-              "Content-Type": "multipart/form-data",
+              "Content-Type": "application/json",
             },
           })
           .then((response) => {
             if (response.data.statusCode === 200) {
               alert("댓글 작성 성공");
-              //localStorage.setItem("token", response.data.data); // JWT 토큰 저장
+              this.comments.push({
+                id: response.data.data.id,
+                content: this.newComment,
+              });
+              this.newComment = "";
             } else {
               alert("댓글 작성 실패");
             }
@@ -100,6 +115,7 @@ export default {
           .catch((error) => {
             alert("댓글 작성 실패: " + error.message);
           });
+
         this.newComment.nickname = "";
         this.newComment.body = "";
       }
