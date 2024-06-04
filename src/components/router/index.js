@@ -1,4 +1,3 @@
-
 import { createRouter, createWebHistory } from 'vue-router';
 import Reforme from '@/components/Reforme.vue';
 import Reforyou from '@/components/Reforyou.vue';
@@ -8,7 +7,6 @@ import Chatbot from '@/components/chatbot.vue';
 import Home from '@/components/home.vue';
 import WritePost from '@/components/writePost.vue';
 import Errorpage from '@/components/errorpage.vue';
-//
 import Detail from '@/components/postDetails.vue';
 import axios from 'axios';
 
@@ -18,26 +16,20 @@ const routes = [
     { path: '/', name: 'home', component: Home },
     { path: '/error_page', name: 'error_page', component: Errorpage },
     { path: '/reforme_page', name: 'reforme_page', component: Reforme, meta: { requiresAuth: true } },
-    { path: '/reforme_page/:id(\\d+)', name: 'reforme_detail', component: Reforme, meta: { requiresAuth: true } },
+    //{ path: '/reforme_page/:id(\\d+)', name: 'reforme_detail', component: Reforme, meta: { requiresAuth: true } },
     { path: '/reforyou_page', name: 'reforyou_page', component: Reforyou, meta: { requiresAuth: true } },
-    { path: '/reforyou_page/:id(\\d+)', name: 'reforyou_detail', component: Reforyou, meta: { requiresAuth: true } },
-    {
-        path: '/editpost/:id',
-        name: 'WritePost',
-        component: WritePost
-        , meta: { requiresAuth: true }
-    },
-    {
-        path: '/detail/:id(\\d+)',
-        name: 'Detail',
-        component: Detail
-        , meta: { requiresAuth: true }
-    },
+    //{ path: '/reforyou_page/:id(\\d+)', name: 'reforyou_detail', component: Reforyou, meta: { requiresAuth: true } },
+    { path: '/reforme/writepost', name: 'write_page', component: WritePost, meta: { requiresAuth: true } },
+    { path: '/reforme/writepost/:id', name: 'reforme_writePage', component: WritePost, meta: { requiresAuth: true } },
+    { path: '/refoyou/writepost/:id', name: 'reforyou_writePage', component: WritePost, meta: { requiresAuth: true } },
+    { path: '/reforme/detail/:id(\\d+)', name: 'reforme_detailPage', component: Detail,meta: { requiresAuth: true } },
+    { path: '/reforyou/detail/:id(\\d+)', name: 'reforyou_detailPage', component: Detail, meta: { requiresAuth: true } },
     { path: '/signup_page', name: 'signup_page', component: Signup },
     { path: '/signin_page', name: 'signin_page', component: Signin },
     { path: '/chatbot_page', name: 'chatbot_page', component: Chatbot, meta: { requiresAuth: true } },
     { path: '/:anything(.*)', name: 'catchAll', component: Errorpage },
 ];
+
 const router = createRouter({
     history: createWebHistory(),
     routes,

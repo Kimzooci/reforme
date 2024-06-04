@@ -135,7 +135,14 @@ created() {
       );
     },
     isReforme() {
-      return this.getReforme;
+      const path = this.$route.path;
+      let reformeValue;
+      if (path.includes("/reforyou")) {
+      reformeValue = false;
+      } else if (path.includes("/reforme")) {
+      reformeValue = true;
+      }
+      return reformeValue
     }
   },
 

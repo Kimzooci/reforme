@@ -89,7 +89,7 @@ export default {
   methods: {
     fetchPostData() {
       //this.param = this.$route.params.id;
-      
+      console.log(this.getReforme)
       // const url = this.getReforme
       //   ? `/reforme/board/${this.$route.params.id}`
       //   : `/reforyou/board/${this.$route.params.id}`;
@@ -118,23 +118,37 @@ export default {
     confirmEdit() {
       this.showEditConfirmation = false;
       const path = this.$route.path;
-      let reformeValue;
-      if (path.includes("/reforyou_page")) {
-        reformeValue = false;
-      } else if (path.includes("/reforme_page")) {
-        reformeValue = true;
-      }
-      this.$store.dispatch("updateReforme", reformeValue);
-      this.$router.push({
-        name: "WritePost",
+      //let reformeValue;
+      if (path.includes("/reforyou")) {
+        this.$router.push({
+        name: "reforyou_writePage",
         params: { id: this.post.boardId },
       });
+      } else if (path.includes("/reforme")) {
+        this.$router.push({
+        name: "reforme_writePage",
+        params: { id: this.post.boardId },
+      });
+      }
+      //this.$store.dispatch("updateReforme", reformeValue);
+      // this.$router.push({
+      //   name: "reforme_writePage",
+      //   params: { id: this.post.boardId },
+      // });
     },
     deletePost() {
       this.showDeleteConfirmation = true;
     },
     confirmDelete() {
-      const url = this.getReforme
+      const path = this.$route.path;
+      let reformeValue;
+      if (path.includes("/reforyou")) {
+        reformeValue = false;
+      } else if (path.includes("/reforme")) {
+        reformeValue = true;
+      }
+      console.log(reformeValue)
+      const url = reformeValue //this.getReforme
         ? `/reforme/board/${this.post.boardId}`
         : `/reforyou/board/${this.post.boardId}`;
       axios

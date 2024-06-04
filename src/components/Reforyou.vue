@@ -189,13 +189,22 @@ export default {
       //this.selectedPost = post;
       //<router-link :to="`/detail/${selectedPost.boardId}`" :post="selectedPost"></router-link>
       this.$router.push({
-        name: "Detail",
-        params: { id: post.boardId },
-      });
+    name: "meDetail",
+    params: { id: Number(post.boardId) }, // 숫자로 변환
+}).catch(err => {
+    console.error(err); // 에러 로그 추가
+});
       this.step = 3;
     },
     createPost() {
       this.selectedPost = null;
+      this.$router
+        .push({
+          name: "write_page",
+        })
+        .catch((err) => {
+          console.error(err); // 에러 로그 추가
+        });
       this.step = 1;
     },
     // deletePost(postId) {

@@ -59,10 +59,10 @@
       </router-link>
     </div>
 
-    <div v-if="step == 1">
+    <!-- <div v-if="step == 1">
       <writePost @back="step = 0" @submit-post="addPost"></writePost>
-    </div>
-     <!-- <div>
+    </div> -->
+    <!-- <div>
      <router-link   v-if="step == 3" :to="`/detail/${selectedPost.boardId}`" :post="selectedPost"></router-link>
     </div>
 
@@ -73,20 +73,19 @@
         @delete-post="deletePost"
       ></postDetails>
     </div> -->
-    
-  </div>  
+  </div>
 </template>
 
 <script>
-import writePost from "./writePost.vue";
+//import writePost from "./writePost.vue";
 //import postDetails from "./postDetails.vue";
 import axios from "axios";
-import emitter from "../store/eventBus";  // eventBus import 추가
+import emitter from "../store/eventBus"; // eventBus import 추가
 
 export default {
   name: "Reforme",
   components: {
-    writePost,
+   //writePost,
     //postDetails,
   },
   data() {
@@ -95,14 +94,14 @@ export default {
       selectedFooterButton: "리포미",
       게시글: [],
       selectedPost: null,
-      category: 'ALL', // 기본 카테고리 설정
+      category: "ALL", // 기본 카테고리 설정
     };
   },
   created() {
-    this.$store.commit('setReforme', true);
-    this.$store.dispatch('updateReforme', true);
-    emitter.on('filterByCategory', this.filterBoards);  // 이벤트 리스너 추가
-    emitter.on('search', this.searchBoards);  // 검색 이벤트 리스너 추가
+    this.$store.commit("setReforme", true);
+    this.$store.dispatch("updateReforme", true);
+    emitter.on("filterByCategory", this.filterBoards); // 이벤트 리스너 추가
+    emitter.on("search", this.searchBoards); // 검색 이벤트 리스너 추가
     this.fetchBoards();
     //const path = this.$route.path;
     this.emitter.emit("updateButtons", {
@@ -114,21 +113,21 @@ export default {
   mounted() {
     const path = this.$route.path;
     let reformeValue;
-    if (path.includes('/reforyou_page')) {
+    if (path.includes("/reforyou_page")) {
       reformeValue = false;
-    } else if (path.includes('/reforme_page')) {
+    } else if (path.includes("/reforme_page")) {
       reformeValue = true;
     }
 
     // Vuex 상태 업데이트
-    this.$store.dispatch('updateReforme', reformeValue);
+    this.$store.dispatch("updateReforme", reformeValue);
     axios
       .get("/reforme/ALL")
       .then((response) => {
         if (response.data.statusCode === 200) {
           alert("데이터 불러오기 성공");
           this.게시글 = response.data.data;
-          console.log(response.data.statusCode)
+          console.log(response.data.statusCode);
         } else {
           alert("데이터 불러오기 실패");
         }
@@ -142,7 +141,7 @@ export default {
     });
   },
   updated() {
-    this.$store.dispatch('updateReforme', true);
+    this.$store.dispatch("updateReforme", true);
     this.emitter.emit("reforme_or_reforyou", {
       menuButton: true,
       searchButton: true,
@@ -188,14 +187,25 @@ export default {
     openPostDetails(post) {
       //this.selectedPost = post;
       //<router-link :to="`/detail/${selectedPost.boardId}`" :post="selectedPost"></router-link>
-      this.$router.push({
-        name: "Detail",
-        params: { id: post.boardId },
-      });
+      this.$router
+        .push({
+          name: "reforme_detailPage",
+          params: { id: Number(post.boardId) }, // 숫자로 변환
+        })
+        .catch((err) => {
+          console.error(err); // 에러 로그 추가
+        });
       this.step = 3;
     },
     createPost() {
       this.selectedPost = null;
+      this.$router
+        .push({
+          name: "write_page",
+        })
+        .catch((err) => {
+          console.error(err); // 에러 로그 추가
+        });
       this.step = 1;
     },
     // deletePost(postId) {
@@ -220,9 +230,9 @@ export default {
     },
   },
   beforeUnmount() {
-    emitter.off('filterByCategory', this.filterBoards);  // 이벤트 리스너 해제
-    emitter.off('search', this.searchBoards);  // 검색 이벤트 리스너 해제
-  }
+    emitter.off("filterByCategory", this.filterBoards); // 이벤트 리스너 해제
+    emitter.off("search", this.searchBoards); // 검색 이벤트 리스너 해제
+  },
 };
 </script>
 
