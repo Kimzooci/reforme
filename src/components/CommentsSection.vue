@@ -52,6 +52,7 @@ export default {
         },
         addComment(newComment) {
             this.commentsList.push(newComment);
+            this.fetchPostData();
         },
         updateComment(updatedComment) {
             const index = this.commentsList.findIndex(comment => comment.id === updatedComment.id);

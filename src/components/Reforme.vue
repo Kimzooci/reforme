@@ -125,7 +125,7 @@ export default {
       .get("/reforme/ALL")
       .then((response) => {
         if (response.data.statusCode === 200) {
-          alert("데이터 불러오기 성공");
+          
           this.게시글 = response.data.data;
           console.log(response.data.statusCode);
         } else {

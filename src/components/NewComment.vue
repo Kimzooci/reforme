@@ -48,7 +48,7 @@ export default {
   data() {
     return {
       newComment: {
-        nickname: "",
+        //nickname: "",
         body: "",
         articleId: this.article.id,
         
@@ -59,10 +59,11 @@ export default {
   methods: {
 
     submitComment() {
-      console.log("댓글 제출")
+      
       //if (this.newComment.nickname.trim() && this.newComment.body.trim()) {
-        console.log("댓글 제출2")
+        
         this.$emit("add-comment", {
+          
           body: this.newComment.body,
           articleId: this.article.id,
         });
@@ -102,7 +103,7 @@ export default {
             alert("댓글 작성 실패: " + error.message);
           });
 
-        this.newComment.nickname = "";
+        //this.newComment.nickname = "";
         this.newComment.body = "";
       //}
     },

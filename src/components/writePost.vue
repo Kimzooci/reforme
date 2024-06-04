@@ -221,7 +221,7 @@ created() {
         .then((response) => {
           console.log("Response from server:", response);
           if (response.data.statusCode === 200) {
-            alert("게시글 수정 성공");
+            
             this.$router.push("/reforme_page");
           } else {
             alert("게시글 수정 실패");
@@ -260,7 +260,7 @@ created() {
         .then((response) => {
           console.log("Response from server:", response);
           if (response.data.statusCode === 200) {
-            alert("게시글 수정 성공");
+            
             this.$router.push("/reforyou_page");
           } else {
             alert("게시글 수정 실패");
