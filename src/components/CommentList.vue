@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-for="comment in comments" :key="comment.id" class="card m-3" :id="'comment-' + comment.id">
+        <div v-for="comment in post.comments" :key="comment.id" class="card m-3" :id="'comment-' + comment.id">
             <div class="card-header">
                 {{ comment.nickname }}
             </div>
@@ -34,7 +34,10 @@ export default {
     }
     },
     props: {
-        comments:[],
+        comments: {
+            type: Array,
+            required: true
+        }
     },
     methods: {
         deleteComment(commentId) {
@@ -70,14 +73,13 @@ export default {
     },
     created(){
         console.log("created ccc")
-        this.fetchPostData();},
+        this.fetchPostData();
+        },
     updated() {
     console.log("updated ccc")
         //this.fetchPostData();
     },
-    mounted(){console.log("mounted ccc")
-        this.fetchPostData();
-    },
+    
     
 
 

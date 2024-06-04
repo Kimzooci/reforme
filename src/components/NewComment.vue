@@ -3,7 +3,7 @@
     <div class="card-body">
       <form>
         <div class="mb-3">
-          <label class="form-label">닉네임</label>
+          <!-- <label class="form-label">닉네임</label> -->
           
         </div>
         <div class="mb-3">
@@ -48,10 +48,9 @@ export default {
   data() {
     return {
       newComment: {
-        //nickname: "",
+        nickname :'',
         body: "",
         articleId: this.article.id,
-        
         secret: false,
       },
     };
@@ -59,14 +58,14 @@ export default {
   methods: {
 
     submitComment() {
-      
+     
       //if (this.newComment.nickname.trim() && this.newComment.body.trim()) {
         
-        this.$emit("add-comment", {
-          
-          body: this.newComment.body,
-          articleId: this.article.id,
-        });
+        
+        // this.$emit("add-comment", {
+        //   content: this.newComment.body,
+        //   articleId: this.article.id,
+        // });
         const commentDto = {
           content: this.newComment.body,
           secret: false, // 혹은 필요한 값으로 설정
@@ -89,7 +88,7 @@ export default {
           })
           .then((response) => {
             if (response.data.statusCode === 200) {
-              alert("댓글 작성 성공");
+              
               // this.comments.push({
               //   id: response.data.data.id,
               //   content: this.newComment,
@@ -102,7 +101,12 @@ export default {
           .catch((error) => {
             alert("댓글 작성 실패: " + error.message);
           });
-
+this.$emit('add-comment', {
+                    id: Date.now(),
+                    nickname: this.newComment.nickname,
+                    body: this.newComment.body,
+                    articleId: this.article.id
+                });
         //this.newComment.nickname = "";
         this.newComment.body = "";
       //}

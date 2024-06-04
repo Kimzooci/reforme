@@ -51,8 +51,22 @@ export default {
                 });
         },
         addComment(newComment) {
+            console.log("눌리긴하는거니?")
             this.commentsList.push(newComment);
-            this.fetchPostData();
+            const path = this.$route.path;
+            let url = (path.includes("/reforme") ? `/reforme` : `/reforyou`) + `/board/${this.$route.params.id}`;
+            axios.get(url)
+                .then(response => {
+                    if (response.data.statusCode === 200) {
+                        this.commentsList = response.data.data.comments;
+                    } else {
+                        alert("댓글을 불러오는데 실패했습니다.");
+                    }
+                })
+                .catch(error => {
+                    console.error("댓글 불러오기 오류:", error);
+                    alert("댓글을 불러오는데 실패했습니다: " + error.message);
+                });
         },
         updateComment(updatedComment) {
             const index = this.commentsList.findIndex(comment => comment.id === updatedComment.id);
@@ -68,7 +82,7 @@ export default {
                 .then(response => {
                     if (response.status === 200) {
                         this.commentsList = this.commentsList.filter(comment => comment.id !== id);
-                        alert("댓글이 성공적으로 삭제되었습니다.");
+                        
                     } else {
                         alert("댓글 삭제에 실패했습니다.");
                     }

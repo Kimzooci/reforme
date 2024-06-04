@@ -14,11 +14,11 @@
         <div class="modal-body">
           <form>
             <div class="mb-3">
-              <label  class="form-label" id="edit-comment-nickname" >닉네임</label>
+              <label  class="form-label"  >닉네임</label>
               <input
                 type="text"
                 class="form-control form-control-sm"
-                
+                id="edit-comment-nickname"
               />
             </div>
             <div class="mb-3">
