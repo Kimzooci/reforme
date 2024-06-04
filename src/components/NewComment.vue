@@ -3,13 +3,8 @@
     <div class="card-body">
       <form>
         <div class="mb-3">
-          <label class="form-label">닉네임</label>
-          <input
-            type="text"
-            class="form-control form-control-sm"
-            v-model="newComment.nickname"
-            id="new-comment-nickname"
-          />
+          <label class="form-label">{{this.id}}</label>
+          
         </div>
         <div class="mb-3">
           <label class="form-label">댓글 내용</label>
@@ -44,6 +39,7 @@ import axios from "axios";
 export default {
   name: "NewComment",
   props: {
+    user_id: String,
     article: {
       type: Object,
       required: true,
@@ -55,28 +51,17 @@ export default {
         nickname: "",
         body: "",
         articleId: this.article.id,
+        id: this.id,
         secret: false,
       },
     };
   },
   methods: {
-    // submitComment() {
-    //     if (this.newComment.nickname.trim() && this.newComment.body.trim()) {
-    //         this.$emit('add-comment', {
-    //             id: Date.now(),
-    //             nickname: this.newComment.nickname,
-    //             body: this.newComment.body,
-    //             articleId: this.article.id
-    //         });
-    //         this.newComment.nickname = '';
-    //         this.newComment.body = '';
-    //     }
-    // },
+
     submitComment() {
       if (this.newComment.nickname.trim() && this.newComment.body.trim()) {
         this.$emit("add-comment", {
-          id: Date.now(),
-          nickname: this.newComment.nickname,
+          
           body: this.newComment.body,
           articleId: this.article.id,
         });
