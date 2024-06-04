@@ -1,12 +1,22 @@
 import { createStore } from 'vuex';
 
-export default createStore({
+const store = createStore({
   state: {
-    reforme: true // 기본값을 true로 설정
+    reforme: true,  // 기본값을 설정
   },
   mutations: {
     setReforme(state, value) {
       state.reforme = value;
-    }
-  }
+    },
+  },
+  actions: {
+    updateReforme({ commit }, value) {
+      commit('setReforme', value);
+    },
+  },
+  getters: {
+    getReforme: (state) => state.reforme,
+  },
 });
+
+export default store;
