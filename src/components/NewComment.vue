@@ -40,7 +40,6 @@
 </template>
 
 <script>
-
 import axios from "axios";
 export default {
   name: "NewComment",
@@ -74,37 +73,36 @@ export default {
     //     }
     // },
     submitComment() {
-        if (this.newComment.nickname.trim() && this.newComment.body.trim()) {
-            this.$emit('add-comment', {
-                id: Date.now(),
-                nickname: this.newComment.nickname,
-                body: this.newComment.body,
-                articleId: this.article.id
-            });
-            this.newComment.nickname = '';
-            this.newComment.body = '';
-        }
-      const formData = new FormData();
-      formData.append("content", this.newComment.body);
-      formData.append("secret", this.secret);
-
-      axios
-        .post("/reforme/board/{{$this.boardId}}/comment", formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        })
-        .then((response) => {
-          if (response.data.statusCode === 200) {
-            alert("댓글 작성 성공");
-            //localStorage.setItem("token", response.data.data); // JWT 토큰 저장
-          } else {
-            alert("댓글 작성 실패");
-          }
-        })
-        .catch((error) => {
-          alert("댓글 작성 실패: " + error.message);
+      if (this.newComment.nickname.trim() && this.newComment.body.trim()) {
+        this.$emit("add-comment", {
+          id: Date.now(),
+          nickname: this.newComment.nickname,
+          body: this.newComment.body,
+          articleId: this.article.id,
         });
+        const formData = new FormData();
+        formData.append("content", this.newComment.body);
+        formData.append("secret", this.secret);
+        axios
+          .post("/reforme/board/{{$this.boardId}}/comment", formData, {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          })
+          .then((response) => {
+            if (response.data.statusCode === 200) {
+              alert("댓글 작성 성공");
+              //localStorage.setItem("token", response.data.data); // JWT 토큰 저장
+            } else {
+              alert("댓글 작성 실패");
+            }
+          })
+          .catch((error) => {
+            alert("댓글 작성 실패: " + error.message);
+          });
+        this.newComment.nickname = "";
+        this.newComment.body = "";
+      }
     },
   },
 };
