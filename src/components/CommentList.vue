@@ -23,6 +23,7 @@
 </template>
 
 <script>
+
 export default {
     name: 'CommentsList',
     props: {
@@ -35,7 +36,12 @@ export default {
         deleteComment(commentId) {
             this.$emit('delete-comment', commentId);
         }
-    }
+    },
+    updated() {
+        
+    },
+
+
 };
 </script>
 

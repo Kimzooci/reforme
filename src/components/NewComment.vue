@@ -89,9 +89,9 @@ export default {
         let url;
 
         if (path.includes("/reforme")) {
-          url = `/reforme/board/${this.post.boardId}/comment`;
+          url = `/reforme/board/${ this.$route.params.id}/comment`;
         } else if (path.includes("reforyou")) {
-          url = `/reforyou/board/${this.post.boardId}/comment`;
+          url = `/reforyou/board/${ this.$route.params.id}/comment`;
         }
 
         axios
@@ -103,10 +103,10 @@ export default {
           .then((response) => {
             if (response.data.statusCode === 200) {
               alert("댓글 작성 성공");
-              this.comments.push({
-                id: response.data.data.id,
-                content: this.newComment,
-              });
+              // this.comments.push({
+              //   id: response.data.data.id,
+              //   content: this.newComment,
+              // });
               this.newComment = "";
             } else {
               alert("댓글 작성 실패");

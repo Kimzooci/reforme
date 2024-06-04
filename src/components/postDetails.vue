@@ -102,9 +102,7 @@ export default {
   methods: {
     fetchPostData() {
       //this.param = this.$route.params.id;
-      
-      
-        
+
       const path = this.$route.path;
       let url;
       if (path.includes("/reforme")) {
