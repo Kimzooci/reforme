@@ -3,7 +3,7 @@
     <div class="card-body">
       <form>
         <div class="mb-3">
-          <label class="form-label">{{this.id}}</label>
+          <label class="form-label">닉네임</label>
           
         </div>
         <div class="mb-3">
@@ -39,7 +39,7 @@ import axios from "axios";
 export default {
   name: "NewComment",
   props: {
-    user_id: String,
+    
     article: {
       type: Object,
       required: true,
@@ -51,7 +51,7 @@ export default {
         nickname: "",
         body: "",
         articleId: this.article.id,
-        id: this.id,
+        
         secret: false,
       },
     };
@@ -59,9 +59,10 @@ export default {
   methods: {
 
     submitComment() {
-      if (this.newComment.nickname.trim() && this.newComment.body.trim()) {
+      console.log("댓글 제출")
+      //if (this.newComment.nickname.trim() && this.newComment.body.trim()) {
+        console.log("댓글 제출2")
         this.$emit("add-comment", {
-          
           body: this.newComment.body,
           articleId: this.article.id,
         });
@@ -73,12 +74,12 @@ export default {
         const path = this.$route.path;
         let url;
 
-        if (path.includes("/reforme")) {
+        if (path.includes("reforme")) {
           url = `/reforme/board/${ this.$route.params.id}/comment`;
         } else if (path.includes("reforyou")) {
           url = `/reforyou/board/${ this.$route.params.id}/comment`;
         }
-
+        
         axios
           .post(url, commentDto, {
             headers: {
@@ -103,7 +104,7 @@ export default {
 
         this.newComment.nickname = "";
         this.newComment.body = "";
-      }
+      //}
     },
   },
 };

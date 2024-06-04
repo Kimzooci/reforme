@@ -1,7 +1,7 @@
 <template>
     <div>
         <comments-list :comments="commentsList" @delete-comment="deleteComment"></comments-list>
-        <new-comment @add-comment="addComment" :user_id="commentsList.nickname" :article="article"></new-comment>
+        <new-comment @add-comment="addComment" :article="article"></new-comment>
         <edit-comment-modal @update-comment="updateComment"></edit-comment-modal>
     </div>
 </template>
@@ -14,7 +14,6 @@ import axios from 'axios';
 
 export default {
     name: 'CommentsSection',
-    created(){this.fetchPostData()},
     components: {
         CommentsList,
         NewComment,
@@ -28,68 +27,55 @@ export default {
     },
     data() {
         return {
-            commentsList:[],
+            commentsList: [],
         };
+    },
+    created() {
+        this.fetchPostData();
     },
     methods: {
         fetchPostData() {
-      //this.param = this.$route.params.id;
-
-      const path = this.$route.path;
-      let url;
-      if (path.includes("/reforme")) {
-        url = `/reforme/board/${this.$route.params.id}`;
-      } else if (path.includes("reforyou")) {
-        url = `/reforyou/board/${this.$route.params.id}`;
-      }
-
-    axios
-        .get(url)
-        .then((response) => {
-          if (response.data.statusCode === 200) {
-            this.commentsList = response.data.data.comments;
-            //alert("댓글 불러오기 성공")
-            //this.comments = response.data.data.comments;
-          } else {
-            alert("수정해야될 데이터 불러오기 실패");
-          }
-        })
-        .catch((error) => {
-          alert("수정해야될 데이터 불러오기 실패: " + error.message);
-        });
-    },
+            const path = this.$route.path;
+            let url = (path.includes("/reforme") ? `/reforme` : `/reforyou`) + `/board/${this.$route.params.id}`;
+            axios.get(url)
+                .then(response => {
+                    if (response.data.statusCode === 200) {
+                        this.commentsList = response.data.data.comments;
+                    } else {
+                        alert("댓글을 불러오는데 실패했습니다.");
+                    }
+                })
+                .catch(error => {
+                    console.error("댓글 불러오기 오류:", error);
+                    alert("댓글을 불러오는데 실패했습니다: " + error.message);
+                });
+        },
         addComment(newComment) {
-            this.comments.push(newComment);
+            this.commentsList.push(newComment);
         },
         updateComment(updatedComment) {
-            const index = this.comments.findIndex(comment => comment.id === updatedComment.id);
+            const index = this.commentsList.findIndex(comment => comment.id === updatedComment.id);
             if (index !== -1) {
-                this.comments.splice(index, 1, updatedComment);
+                this.commentsList.splice(index, 1, updatedComment);
             }
         },
         deleteComment(id) {
-         //const path = this.$route.path
-         const boardId = this.$route.params.id;
-         const params = { id };
-         const headers = {
-         Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
-  };
-        //  let url;
-    //   if (path.includes("/reforme")) {
-    //     url = `../../reforme/board/${commentId}/comment`;
-    //   } else if (path.includes("reforyou")) {
-    //     url = `../../reforyou/board/${commentId}/comment`;
-    //   }
-            
-axios.delete('/reforme/board/' + boardId + '/comment', { params, headers })
-        // axios.
-        //     delete(url, {
-        //     }).then(response => {
-        //         const msg = (response.ok) ? "댓글이 삭제되었습니다." : "댓글 삭제 실패";
-        //         alert(msg);
-
-            
-        //     });
+            const headers = {
+                Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+            };
+            axios.delete(`${this.$route.path.includes('reforme') ? '/reforme' : '/reforyou'}/board/${this.$route.params.id}/comment`, { params: { id }, headers })
+                .then(response => {
+                    if (response.status === 200) {
+                        this.commentsList = this.commentsList.filter(comment => comment.id !== id);
+                        alert("댓글이 성공적으로 삭제되었습니다.");
+                    } else {
+                        alert("댓글 삭제에 실패했습니다.");
+                    }
+                })
+                .catch(error => {
+                    console.error("댓글 삭제 오류:", error);
+                    alert("댓글 삭제에 실패했습니다: " + error.message);
+                });
         }
     }
 };
