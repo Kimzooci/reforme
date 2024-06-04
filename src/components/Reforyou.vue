@@ -97,6 +97,7 @@ export default {
     };
   },
   created() {
+    this.$store.commit('setReforme', false);
     emitter.on('filterByCategory', this.filterBoards);
     emitter.on('search', this.searchBoards);
     this.fetchBoards();

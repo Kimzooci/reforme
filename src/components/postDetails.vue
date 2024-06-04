@@ -79,6 +79,7 @@
 <script>
 import axios from "axios";
 import { mapGetters } from "vuex";
+import { Modal } from 'bootstrap';
 
 export default {
   name: "PostDetails",
@@ -221,7 +222,7 @@ export default {
     },
     editComment(comment) {
       this.editCommentData = { ...comment };
-      const commentEditModal = new bootstrap.Modal(document.getElementById('comment-edit-modal'));
+      const commentEditModal = new Modal(document.getElementById('comment-edit-modal')); // 수정된 부분
       commentEditModal.show();
     },
     updateComment() {
@@ -243,7 +244,7 @@ export default {
                 ? { ...comment, content: this.editCommentData.content }
                 : comment
             );
-            const commentEditModal = bootstrap.Modal.getInstance(document.getElementById('comment-edit-modal'));
+            const commentEditModal = Modal.getInstance(document.getElementById('comment-edit-modal')); // 수정된 부분
             commentEditModal.hide();
           } else {
             alert("댓글 수정 실패");
@@ -277,7 +278,8 @@ export default {
 };
 </script>
 
-<style>
+
+<style scoped>
 .main-container {
   width: 430px;
   height: 932px;
