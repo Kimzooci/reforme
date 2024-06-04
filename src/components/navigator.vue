@@ -1,11 +1,15 @@
 <template>
   <div class="navbox">
+
+     <!-- 네비게이션바 -->
     <nav class="navbar">
       <button v-if="menu" class="menu-button" @click="toggleMenu">≡</button>
       <button v-if="back" class="back-button" @click="backFunction">＜</button>
       <span class="navbar-title">Reforme</span>
       <button v-if="searchButtonVisible" class="search-button" @click="toggleSearch">🔍</button>
     </nav>
+    
+     <!-- 로그아웃 및 카테고리 -->
     <div v-if="showMenu" class="menu-overlay" @click="toggleMenu">
       <div class="menu-container" @click.stop>
         <div class="menu-content">
@@ -29,6 +33,8 @@
         </div>
       </div>
     </div>
+    
+     <!-- 검색 모델창 -->
     <div v-if="showSearch" class="search-overlay" @click="toggleSearch">
       <div class="search-container" @click.stop>
         <input
@@ -163,15 +169,13 @@ export default {
   border: 2px solid black;
 }
 .navbar {
-  background: #2e482d;
-  padding: 9px 10px;
   display: flex;
   justify-content: space-between;
   align-items: center;
+  height: 70px;
+  padding: 9px 10px;
+  background: #2e482d;
   color: white;
-  position: relative;
-  z-index: 2;
-  height: 50px;
 }
 
 .menu-button,
@@ -184,11 +188,9 @@ export default {
 }
 
 .navbar-title {
+  flex-grow: 1;
+  text-align: center;
   font-size: 24px;
-  font-family: "YourFontFamily";
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .menu-container {
