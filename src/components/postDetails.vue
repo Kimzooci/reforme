@@ -4,22 +4,13 @@
       <h2 class="post-title">{{ post.title }}</h2>
       <p class="post-author">{{ post.userId }} 님</p>
       <div class="post-actions">
-        <button class="edit-button" @click="showEditConfirmation = true">
-          수정
-        </button>
-        <button class="delete-button" @click="showDeleteConfirmation = true">
-          삭제
-        </button>
+        <button class="edit-button" @click="showEditConfirmation = true">수정</button>
+        <button class="delete-button" @click="showDeleteConfirmation = true">삭제</button>
       </div>
     </div>
 
     <div class="post-images-section" v-if="post.images && post.images.length">
-      <div
-        v-for="(image, index) in post.images"
-        :key="index"
-        class="post-image"
-        :style="{ backgroundImage: 'url(' + getFirstImage(image) + ')' }"
-      ></div>
+      <div v-for="(image, index) in post.images" :key="index" class="post-image" :style="{ backgroundImage: 'url(' + getFirstImage(image) + ')' }"></div>
     </div>
 
     <div class="post-content-section">
@@ -35,9 +26,7 @@
         <p>게시글을 삭제하시겠습니까?</p>
         <div class="button-container">
           <button class="delete-yes" @click="confirmDelete">확인</button>
-          <button class="delete-no" @click="showDeleteConfirmation = false">
-            취소
-          </button>
+          <button class="delete-no" @click="showDeleteConfirmation = false">취소</button>
         </div>
       </div>
     </transition>
@@ -47,14 +36,13 @@
         <p>게시글을 수정하시겠습니까?</p>
         <div class="button-container">
           <button class="delete-yes" @click="confirmEdit">확인</button>
-          <button class="delete-no" @click="showEditConfirmation = false">
-            취소
-          </button>
+          <button class="delete-no" @click="showEditConfirmation = false">취소</button>
         </div>
       </div>
     </transition>
   </div>
 </template>
+
 
 <script>
 import axios from "axios";
@@ -300,12 +288,13 @@ export default {
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   margin: 0px;
   width: 350px;
-  height: 300px;
-  overflow-y: auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
 }
 
 .post-image {
-  width: 100px;
+  width: calc(33.33% - 10px);
   height: 100px;
   background: #b1b1b1;
   border-radius: 10px;
