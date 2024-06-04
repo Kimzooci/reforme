@@ -19,7 +19,7 @@ const routes = [
     //{ path: '/reforme_page/:id(\\d+)', name: 'reforme_detail', component: Reforme, meta: { requiresAuth: true } },
     { path: '/reforyou_page', name: 'reforyou_page', component: Reforyou, meta: { requiresAuth: true } },
     //{ path: '/reforyou_page/:id(\\d+)', name: 'reforyou_detail', component: Reforyou, meta: { requiresAuth: true } },
-    { path: '/reforme/writepost', name: 'write_page', component: WritePost, meta: { requiresAuth: true } },
+    { path: '/writepost', name: 'write_page', component: WritePost, meta: { requiresAuth: true } },
     { path: '/reforme/writepost/:id', name: 'reforme_writePage', component: WritePost, meta: { requiresAuth: true } },
     { path: '/refoyou/writepost/:id', name: 'reforyou_writePage', component: WritePost, meta: { requiresAuth: true } },
     { path: '/reforme/detail/:id(\\d+)', name: 'reforme_detailPage', component: Detail,meta: { requiresAuth: true } },

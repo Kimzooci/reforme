@@ -189,11 +189,11 @@ export default {
       //this.selectedPost = post;
       //<router-link :to="`/detail/${selectedPost.boardId}`" :post="selectedPost"></router-link>
       this.$router.push({
-    name: "meDetail",
-    params: { id: Number(post.boardId) }, // 숫자로 변환
-}).catch(err => {
-    console.error(err); // 에러 로그 추가
-});
+        name: "reforyou_detailPage",
+        params: { id: Number(post.boardId) }, // 숫자로 변환
+    }).catch(err => {
+        console.error(err); // 에러 로그 추가
+    });
       this.step = 3;
     },
     createPost() {
