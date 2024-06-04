@@ -5,6 +5,8 @@ import router from './components/router/index';
 import axios from 'axios';
 import store from './store'; // store import
 import mitt from 'mitt';
+import 'bootstrap'
+import 'bootstrap/dist/css/bootstrap.min.css'
 
 let emitter = mitt();
 

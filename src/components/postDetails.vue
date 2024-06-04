@@ -18,15 +18,7 @@
     </div>
 
     <div class="comments-container">
-      <div v-for="comment in comments" :key="comment.id" class="comment">
-        <div class="comment-text">{{ comment.content }}</div>
-        <button class="comment-action" @click="editComment(comment)">수정</button>
-        <button class="comment-action" @click="deleteComment(comment.id)">삭제</button>
-      </div>
-    </div>
-
-    <div class="footer-bar">
-      <input v-model="newComment" class="input-comment" @keyup.enter="addComment" placeholder="댓글을 입력하세요" />
+      <comments-section :article="article"></comments-section>
     </div>
 
     <transition name="fade">
@@ -48,42 +40,20 @@
         </div>
       </div>
     </transition>
-
-    <!-- 댓글 수정 모달 -->
-    <div class="modal fade" id="comment-edit-modal" tabindex="-1">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">댓글 수정</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <form>
-              <div class="mb-3">
-                <label class="form-label">닉네임</label>
-                <input type="text" class="form-control form-control-sm" v-model="editCommentData.nickname">
-              </div>
-              <div class="mb-3">
-                <label class="form-label">댓글 내용</label>
-                <textarea class="form-control form-control-sm" rows="3" v-model="editCommentData.content"></textarea>
-              </div>
-              <button type="button" class="btn btn-outline-primary btn-sm" @click="updateComment">수정 완료</button>
-            </form>
-          </div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 
 <script>
 import axios from "axios";
 import { mapGetters } from "vuex";
+import CommentsSection from './CommentsSection.vue';
 
 export default {
   name: "PostDetails",
+  components: {
+    CommentsSection
+  },
   created() {
-    console.log("created");
     this.fetchPostData();
     this.emitter.emit("updateButtons", {
       menuButton: false,
@@ -100,7 +70,7 @@ export default {
   },
   data() {
     return {
-      게시글: [],
+      article: { id: 1 },
       comments: [],
       newComment: "",
       showDeleteConfirmation: false,
@@ -135,48 +105,13 @@ export default {
     },
     getFirstImage(image) {
       const imageUrl = image ? `${image.imagePath}` : "";
-      console.log("Image URL:", imageUrl);
       return imageUrl;
-    },
-    addComment() {
-      const url = this.getReforme
-        ? `/reforme/board/${this.post.boardId}/comment`
-        : `/reforyou/board/${this.post.boardId}/comment`;
-
-      const commentDto = {
-        content: this.newComment,
-        secret: false, // 혹은 필요한 값으로 설정
-      };
-
-      axios
-        .post(url, commentDto, {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        })
-        .then((response) => {
-          if (response.data.statusCode === 200) {
-            alert("댓글 작성 성공");
-            this.comments.push({
-              id: response.data.data.id,
-              content: this.newComment,
-            });
-            this.newComment = "";
-          } else {
-            alert("댓글 작성 실패");
-          }
-        })
-        .catch((error) => {
-          alert("댓글 작성 실패: " + error.message);
-        });
     },
     editPost() {
       this.showEditConfirmation = true;
     },
     confirmEdit() {
       this.showEditConfirmation = false;
-
-      // 현재 경로에 따라 reforme 값을 설정
       const path = this.$route.path;
       let reformeValue;
       if (path.includes("/reforyou_page")) {
@@ -184,11 +119,7 @@ export default {
       } else if (path.includes("/reforme_page")) {
         reformeValue = true;
       }
-
-      // Vuex 상태 업데이트
       this.$store.dispatch("updateReforme", reformeValue);
-
-      // WritePost 컴포넌트로 이동
       this.$router.push({
         name: "WritePost",
         params: { id: this.post.boardId },
@@ -221,14 +152,11 @@ export default {
     },
     editComment(comment) {
       this.editCommentData = { ...comment };
-      const commentEditModal = new bootstrap.Modal(document.getElementById('comment-edit-modal'));
-      commentEditModal.show();
     },
     updateComment() {
       const url = this.getReforme
         ? `/reforme/board/${this.post.boardId}/comment?id=${this.editCommentData.id}`
         : `/reforyou/board/${this.post.boardId}/comment?id=${this.editCommentData.id}`;
-
       axios
         .patch(url, this.editCommentData, {
           headers: {
@@ -243,8 +171,6 @@ export default {
                 ? { ...comment, content: this.editCommentData.content }
                 : comment
             );
-            const commentEditModal = bootstrap.Modal.getInstance(document.getElementById('comment-edit-modal'));
-            commentEditModal.hide();
           } else {
             alert("댓글 수정 실패");
           }
@@ -276,6 +202,7 @@ export default {
   },
 };
 </script>
+
 
 <style>
 .main-container {
