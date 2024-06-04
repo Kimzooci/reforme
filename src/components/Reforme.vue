@@ -62,24 +62,24 @@
     <div v-if="step == 1">
       <writePost @back="step = 0" @submit-post="addPost"></writePost>
     </div>
-    <div>
-      <router-link   v-if="step == 3" :to="`/detail/${selectedPost.boardId}`" :post="selectedPost"></router-link>
-    </div>
+    <!-- <div>
+     <router-link   v-if="step == 3" :to="`/detail/${selectedPost.boardId}`" :post="selectedPost"></router-link>
+    </div> -->
 
-    <!-- <div v-if="step == 3">
+    <div v-if="step == 3">
       <postDetails
         :post="selectedPost"
         @back="step = 0"
         @delete-post="deletePost"
       ></postDetails>
-    </div> -->
+    </div> 
     
   </div>
 </template>
 
 <script>
 import writePost from "./writePost.vue";
-//import postDetails from "./postDetails.vue";
+import postDetails from "./postDetails.vue";
 import axios from "axios";
 import emitter from "../store/eventBus";  // eventBus import 추가
 
@@ -87,7 +87,7 @@ export default {
   name: "Reforme",
   components: {
     writePost,
-    //postDetails,
+    postDetails,
   },
   data() {
     return {
@@ -188,6 +188,11 @@ export default {
     },
     openPostDetails(post) {
       this.selectedPost = post;
+      //<router-link :to="`/detail/${selectedPost.boardId}`" :post="selectedPost"></router-link>
+      // this.$router.push({
+      //   name: "Detail",
+      //   params: { id: this.post.boardId },
+      // });
       this.step = 3;
     },
     createPost() {
