@@ -2,7 +2,7 @@
   <div class="main-container">
     <div class="content">
       
-      <!-- Post List ..-->
+      <!-- Post List -->
       <div class="post-list">
         <div
           v-for="post in filteredPosts"
@@ -74,12 +74,11 @@
   </div>
 </template>
 
-
 <script>
 import writePost from "./writePost.vue";
 import postDetails from "./postDetails.vue";
 import axios from "axios";
-import emitter from "../store/eventBus";  // eventBus import 추가
+import emitter from "../store/eventBus";
 
 export default {
   name: "Reforyou",
@@ -94,16 +93,17 @@ export default {
       게시글: [],
       selectedPost: null,
       searchQuery: "", // 추가된 검색어 데이터
+      category: 'ALL', // 기본 카테고리 설정
     };
   },
   created() {
-    emitter.on('filterByCategory', this.filterBoards);  // 이벤트 리스너 추가
-    emitter.on('search', this.searchBoards);  // 검색 이벤트 리스너 추가
+    emitter.on('filterByCategory', this.filterBoards);
+    emitter.on('search', this.searchBoards);
     this.fetchBoards();
     const path = this.$route.path;
     let reformeValue = path.includes('/reforme_page');
     this.$store.dispatch('updateReforme', reformeValue);
-    this.emitter.emit("updateButtons", {
+    emitter.emit("updateButtons", {
       menuButton: true,
       searchButton: true,
       backButton: false,
@@ -121,12 +121,11 @@ export default {
     // Vuex 상태 업데이트
     this.$store.dispatch('updateReforme', reformeValue);
     axios
-      .get("/reforyou/ALL")
+      .get(`/reforyou/${this.category}`)
       .then((response) => {
         if (response.data.statusCode === 200) {
           alert("reforU 데이터 불러오기 성공");
           this.게시글 = response.data.data;
-          console.log(response.data.statusCode)
         } else {
           alert("reforU 데이터 불러오기 실패");
         }
@@ -135,13 +134,13 @@ export default {
         alert("reforU 데이터 불러오기 실패: " + error.message);
       });
 
-    this.emitter.on("backfunction", (data) => {
+    emitter.on("backfunction", (data) => {
       this.step = data;
     });
   },
   updated() {
     this.$store.dispatch('updateReforme', true);
-    this.emitter.emit("reforme_or_reforyou", {
+    emitter.emit("reforme_or_reforyou", {
       menuButton: true,
       searchButton: true,
       backButton: false,
@@ -162,7 +161,7 @@ export default {
   methods: {
     async fetchBoards() {
       try {
-        const response = await axios.get(`/reforyou/ALL`);
+        const response = await axios.get(`/reforyou/${this.category}`);
         if (response.data.statusCode === 200) {
           this.게시글 = response.data.data;
         } else {
@@ -219,7 +218,7 @@ export default {
     getFirstImage(images) {
       const image = images.find((image) => image.imagePath !== null);
       const imageUrl = image ? `${image.imagePath}` : "";
-      console.log("Image URL:", imageUrl); // 디버깅을 위한 콘솔 로그
+      console.log("Image URL:", imageUrl);
       return imageUrl;
     },
     getCategoryName(category) {
@@ -233,12 +232,11 @@ export default {
     },
   },
   beforeUnmount() {
-    emitter.off('filterByCategory', this.filterBoards);  // 이벤트 리스너 해제
-    emitter.off('search', this.searchBoards);  // 검색 이벤트 리스너 해제
+    emitter.off('filterByCategory', this.filterBoards);
+    emitter.off('search', this.searchBoards);
   }
 };
 </script>
-
 
 <style scoped>
 @import "../styles/main.css";
@@ -254,8 +252,8 @@ export default {
   overflow-y: auto;
   margin-top: 0;
   position: absolute;
-  top: 50px; /* Adjusted for search bar height */
-  height: calc(100% - 224px); /* Adjusted for footer and search bar */
+  top: 50px;
+  height: calc(100% - 224px);
 }
 
 .post-item {

@@ -11,13 +11,17 @@
         <div class="menu-content">
           <div class="menu-item">{{ userId }}</div>
           <div class="menu-item" @click="logout">로그아웃</div>
+          <div class="menu-item">리포미</div>
           <div class="menu-item" @click="filterByCategory('TOP')">상의</div>
-          <div class="menu-item" @click="filterByCategory('OUTWEAR')">외투</div>
           <div class="menu-item" @click="filterByCategory('BOTTOM')">하의</div>
+          <div class="menu-item" @click="filterByCategory('OUTWEAR')">외투</div>
           <div class="menu-item" @click="filterByCategory('BAG')">가방</div>
           <div class="menu-item" @click="filterByCategory('ETC')">기타</div>
-          
-          
+          <div class="menu-item">리포유</div>
+          <div class="menu-item" @click="filterByCategory('CLOTHES')">옷</div>
+          <div class="menu-item" @click="filterByCategory('BAG')">가방</div>
+          <div class="menu-item" @click="filterByCategory('SHOES')">신발</div>
+          <div class="menu-item" @click="filterByCategory('ETC')">기타</div>
         </div>
       </div>
     </div>
