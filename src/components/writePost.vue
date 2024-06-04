@@ -406,7 +406,7 @@ created() {
   transition: background-color 0.5s; /* 배경 색상 전환 애니메이션 */
   flex: 1; /* 각 버튼의 크기를 균등하게 만듦 */
   max-width: 70px; /* 버튼 최대 너비를 설정 */
-  margin: 0 15px;
+  margin: 0 10px;
   margin-bottom: 10px;
   margin-top: 10px;
 }
