@@ -61,23 +61,26 @@ export default {
       const boardId = this.$route.params.id; // 게시글 ID 추출
       const baseUrl = `/reforme/board/${boardId}/comment`;
 
-      const commentDto = new URLSearchParams();
-      commentDto.append('id', id);
+      const commentDto = {
+        content,
+        secret
+      }
+      //commentDto.append('id', id);
       //const formData = new FormData();
-      commentDto.append('content', content);
-      commentDto.append('secret', secret); // secret 값을 보낼 때 필요한 경우에만 추가
+      //commentDto.append('content', content);
+      //commentDto.append('secret', secret); // secret 값을 보낼 때 필요한 경우에만 추가
       
       const headers = {
-        "Content-Type": "multipart/form-data", // JSON 형식으로 데이터를 전송해야 합니다.
+        "Content-Type": "application/json", // JSON 형식으로 데이터를 전송해야 합니다.
         "Authorization": `Bearer ${localStorage.getItem('accessToken')}` // 인증 토큰을 헤더에 추가합니다.
       };
 
       axios.patch(`${baseUrl}?id=${id}`, commentDto, { headers }) // 요청 URL에 쿼리 스트링을 포함합니다.
         .then(response => {
-          const msg = (response.status === 200) ? "댓글이 수정되었습니다." : "댓글 수정 실패";
+          const msg = (response.data.statusCode === 200) ? "댓글이 수정되었습니다." : "댓글 수정 실패";
           alert(msg);
 
-          if (response.status === 200) {
+          if (response.data.statusCode === 200) {
             this.$emit('update-comment', { id, content, secret });
             const modalElement = document.getElementById('comment-edit-modal');
             const modalInstance = Modal.getInstance(modalElement);
