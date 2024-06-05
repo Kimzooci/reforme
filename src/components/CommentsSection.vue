@@ -73,6 +73,12 @@ export default {
             if (index !== -1) {
                 this.commentsList.splice(index, 1, updatedComment);
             }
+
+            const path = this.$route.path;
+            if(path.includes("reforme"))
+                this.$router.push("/reforme_page");
+              else if(path.includes("reforyou"))
+                this.$router.push("/reforyou_page");
         },
         deleteComment(id) {
             const headers = {

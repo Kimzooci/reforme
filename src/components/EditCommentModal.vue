@@ -14,7 +14,7 @@
         <div class="modal-body">
           <form>
             <div class="mb-3">
-              <label  class="form-label"  >닉네임</label>
+              <label  class="form-label" >닉네임</label>
               <input
                 type="text"
                 class="form-control form-control-sm"
@@ -59,8 +59,13 @@ export default {
       const secret = false; // 사용자 입력 값으로 변경해야 합니다.
 
       const boardId = this.$route.params.id; // 게시글 ID 추출
-      const baseUrl = `/reforme/board/${boardId}/comment`;
+       const path = this.$route.path;
+       let baseUrl ;
 
+      if(path.includes("reforme"))
+          baseUrl = `/reforme/board/${boardId}/comment`;
+      else if(path.includes("reforyou"))
+          baseUrl = `/reforme/board/${boardId}/comment`;
       const commentDto = { content , secret }
       
       
@@ -74,12 +79,18 @@ export default {
           const msg = (response.data.statusCode === 200) ? "댓글이 수정되었습니다." : "댓글 수정 실패";
           alert(msg);
 
-          if (response.data.statusCode === 200) {
+          
             this.$emit('update-comment', { id, content, secret });
             const modalElement = document.getElementById('comment-edit-modal');
             const modalInstance = Modal.getInstance(modalElement);
             modalInstance.hide();
-          }
+
+              if(path.includes("reforme"))
+                this.$router.push("/reforme_page");
+              else if(path.includes("reforyou"))
+                this.$router.push("/reforyou_page");
+          //baseUrl = `/reforme/board/${boardId}/comment`;
+
         })
         .catch(error => {
           console.error("댓글 수정 실패:", error);
@@ -104,3 +115,4 @@ export default {
   },
 };
 </script>
+

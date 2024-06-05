@@ -63,6 +63,7 @@ export default {
             this.updateUserId(this.userId); // store/category에 추가함
             this.$router.push("/reforme_page");
           } else {
+            console.log(response.data.statusCode)
             alert("유효하지 않은 로그인입니다");
           }
         })

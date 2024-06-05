@@ -102,7 +102,7 @@ export default {
   methods: {
     fetchPostData() {
       //this.param = this.$route.params.id;
-
+    console.log("업데이트 됨?")
       const path = this.$route.path;
       let url;
       if (path.includes("reforme")) {

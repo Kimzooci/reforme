@@ -30,7 +30,6 @@ export default {
     data(){
         return {
                 post:[],
-                
     }
     },
     props: {
@@ -45,7 +44,7 @@ export default {
         },
 
         fetchPostData() {
-      //this.param = this.$route.params.id;
+        //this.param = this.$route.params.id;
 
       const path = this.$route.path;
       let url;
