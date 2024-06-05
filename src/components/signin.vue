@@ -60,6 +60,7 @@ export default {
           if (response.data.statusCode === 200) {
             //alert("로그인 성공");
             //localStorage.setItem("token", response.data.data); // JWT 토큰 저장
+            this.updateUserId(this.userId); // store/category에 추가함
             this.$router.push("/reforme_page");
           } else {
             alert("유효하지 않은 로그인입니다");
