@@ -80,15 +80,17 @@ export default {
           alert(msg);
 
           
-            this.$emit('update-comment', { id, content, secret });
-            const modalElement = document.getElementById('comment-edit-modal');
-            const modalInstance = Modal.getInstance(modalElement);
-            modalInstance.hide();
+            
 
               if(path.includes("reforme"))
                 this.$router.push("/reforme_page");
               else if(path.includes("reforyou"))
                 this.$router.push("/reforyou_page");
+              
+              this.$emit('update-comment', { id, content, secret });
+            const modalElement = document.getElementById('comment-edit-modal');
+            const modalInstance = Modal.getInstance(modalElement);
+            modalInstance.hide();
           //baseUrl = `/reforme/board/${boardId}/comment`;
 
         })
