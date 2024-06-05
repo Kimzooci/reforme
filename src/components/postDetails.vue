@@ -54,6 +54,18 @@ export default {
   components: {
     CommentsSection
   },
+  updated(){
+    console.log("updated")
+  },
+  mounted(){
+    console.log("mounted")
+    this.fetchPostData();
+    this.emitter.emit("updateButtons", {
+      menuButton: false,
+      searchButton: false,
+      backButton: true,
+    });
+  },
   created() {
     this.fetchPostData();
     this.emitter.emit("updateButtons", {
@@ -93,7 +105,7 @@ export default {
 
       const path = this.$route.path;
       let url;
-      if (path.includes("/reforme")) {
+      if (path.includes("reforme")) {
         url = `/reforme/board/${this.$route.params.id}`;
       } else if (path.includes("reforyou")) {
         url = `/reforyou/board/${this.$route.params.id}`;

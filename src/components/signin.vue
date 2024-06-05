@@ -58,7 +58,7 @@ export default {
         })
         .then((response) => {
           if (response.data.statusCode === 200) {
-            alert("로그인 성공");
+            //alert("로그인 성공");
             //localStorage.setItem("token", response.data.data); // JWT 토큰 저장
             this.$router.push("/reforme_page");
           } else {

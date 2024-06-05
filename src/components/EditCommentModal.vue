@@ -61,14 +61,8 @@ export default {
       const boardId = this.$route.params.id; // 게시글 ID 추출
       const baseUrl = `/reforme/board/${boardId}/comment`;
 
-      const commentDto = {
-        content,
-        secret
-      }
-      //commentDto.append('id', id);
-      //const formData = new FormData();
-      //commentDto.append('content', content);
-      //commentDto.append('secret', secret); // secret 값을 보낼 때 필요한 경우에만 추가
+      const commentDto = { content , secret }
+      
       
       const headers = {
         "Content-Type": "application/json", // JSON 형식으로 데이터를 전송해야 합니다.

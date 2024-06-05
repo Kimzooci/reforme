@@ -81,8 +81,7 @@ export default {
             axios.delete(`${this.$route.path.includes('reforme') ? '/reforme' : '/reforyou'}/board/${this.$route.params.id}/comment`, { params: { id }, headers })
                 .then(response => {
                     if (response.status === 200) {
-                        this.commentsList = this.commentsList.filter(comment => comment.id !== id);
-                        
+                        this.commentsList = this.commentsList.filter(comment => comment.id !== id); 
                     } else {
                         alert("댓글 삭제에 실패했습니다.");
                     }

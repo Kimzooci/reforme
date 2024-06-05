@@ -39,7 +39,6 @@ import axios from "axios";
 export default {
   name: "NewComment",
   props: {
-    
     article: {
       type: Object,
       required: true,
@@ -48,7 +47,7 @@ export default {
   data() {
     return {
       newComment: {
-        nickname :'',
+        nickname: '',
         body: "",
         articleId: this.article.id,
         secret: false,
@@ -56,61 +55,51 @@ export default {
     };
   },
   methods: {
-
     submitComment() {
-     
-      //if (this.newComment.nickname.trim() && this.newComment.body.trim()) {
-        
-        
-        // this.$emit("add-comment", {
-        //   content: this.newComment.body,
-        //   articleId: this.article.id,
-        // });
-        const commentDto = {
-          content: this.newComment.body,
-          secret: false, // 혹은 필요한 값으로 설정
-        };
+      const commentDto = {
+        content: this.newComment.body,
+        secret: this.newComment.secret, // 입력에 따라 설정
+      };
 
-        const path = this.$route.path;
-        let url;
+      const path = this.$route.path;
+      let url;
 
-        if (path.includes("reforme")) {
-          url = `/reforme/board/${ this.$route.params.id}/comment`;
-        } else if (path.includes("reforyou")) {
-          url = `/reforyou/board/${ this.$route.params.id}/comment`;
-        }
-        
-        axios
-          .post(url, commentDto, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          })
-          .then((response) => {
-            if (response.data.statusCode === 200) {
-              
-              // this.comments.push({
-              //   id: response.data.data.id,
-              //   content: this.newComment,
-              // });
-              this.newComment = "";
-            } else {
-              alert("댓글 작성 실패");
-            }
-          })
-          .catch((error) => {
-            alert("댓글 작성 실패: " + error.message);
+      if (path.includes("reforme")) {
+        url = `/reforme/board/${this.$route.params.id}/comment`;
+      } else if (path.includes("reforyou")) {
+        url = `/reforyou/board/${this.$route.params.id}/comment`;
+      }
+
+      axios.post(url, commentDto, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+      .then((response) => {
+        if (response.data.statusCode === 200) {
+          // 댓글 초기화
+          this.newComment.body = "";
+
+          // 이벤트 방출
+          this.$emit('add-comment', {
+            id: Date.now(), // 실제 ID는 서버 응답에서 가져와야 합니다
+            nickname: this.newComment.nickname,
+            body: commentDto.content,
+            articleId: this.newComment.articleId
           });
-this.$emit('add-comment', {
-                    id: Date.now(),
-                    nickname: this.newComment.nickname,
-                    body: this.newComment.body,
-                    articleId: this.article.id
-                });
-        //this.newComment.nickname = "";
-        this.newComment.body = "";
-      //}
+
+          // 성공적으로 댓글을 추가하고 상세 페이지로 이동
+           this.$router.push({ name: "reforme_detailPage", params: { id: this.$route.params.id } });
+        } else {
+          alert("댓글 작성 실패");
+        }
+      })
+      .catch((error) => {
+        alert("댓글 작성 실패: " + error.message);
+      });
     },
   },
 };
 </script>
+
+
