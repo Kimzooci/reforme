@@ -1,4 +1,14 @@
+*{
+  font-family: 'jua';
+  src: url('../fonts/BMJUA_ttf.ttf');
+}
 
+
+
+@font-face {
+  font-family: 'jua';
+  src: url('../fonts/BMJUA_ttf.ttf');
+}
 
 .main-container {
   width: 100%;
