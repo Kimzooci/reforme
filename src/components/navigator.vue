@@ -3,8 +3,8 @@
 
      <!-- 네비게이션바 -->
     <nav class="navbar">
-      <button v-if="menu" class="menu-button" @click="toggleMenu">≡</button>
-      <button v-if="back" class="back-button" @click="backFunction">＜</button>
+      <button v-if="menu" class="menu-button" @click="toggleMenu"></button>
+      <button v-if="back" class="back-button" @click="backFunction"></button>
       <span class="navbar-title">Reforme</span>
       <button v-if="searchButtonVisible" class="search-button" @click="toggleSearch">🔍</button>
     </nav>
@@ -165,6 +165,8 @@ export default {
 </script>
 
 <style scoped>
+
+
 .navbox {
   border: 2px solid black;
 }
@@ -178,7 +180,18 @@ export default {
   color: white;
 }
 
-.menu-button,
+.menu-button {
+  background-image: url('../assets/images/hamburger.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #2e482d; /* 배경색 추가 */
+  width: 30px;
+  height: 30px;
+  border: none;
+  cursor: pointer;
+}
+
 .search-button {
   background: none;
   border: none;
@@ -265,11 +278,16 @@ export default {
   display: flex;
   justify-content: space-between;
 }
+
 .back-button {
-  background: none;
+  background-image: url('../assets/images/back.png');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-color: #2e482d; /* 배경색 추가 */
+  width: 30px;
+  height: 30px;
   border: none;
-  color: white;
-  font-size: 24px;
   cursor: pointer;
 }
 
