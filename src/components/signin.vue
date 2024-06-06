@@ -57,21 +57,21 @@ export default {
           },
         })
         .then((response) => {
-          if (response.data.statusCode === 200) {
+          if (response.data.statusCode == 200) {
             //alert("로그인 성공");
             //localStorage.setItem("token", response.data.data); // JWT 토큰 저장
             this.updateUserId(this.userId); // store/category에 추가함
             this.$router.push("/reforme_page");
           } else {
             console.log(response.data.statusCode)
-            //alert("유효하지 않은 로그인입니다"); 지금 여기서 오류남
+            //alert("유효하지 않은 로그인입니다"); 
           }
         })
-        // .catch((error) => {
-        //   // alert("유효하지 않은 로그인입니다.");
-        //   // console.log(error.message);
-        //   this.$router.push("/reforme_page");
-        // });
+        .catch((error) => {
+          //alert("유효하지 않은 로그인입니다."); 지금 여기서 오류남
+          console.log(error.message);
+          this.$router.push("/reforme_page");
+        });
     },
   },
 };
