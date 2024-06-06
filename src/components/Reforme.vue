@@ -19,7 +19,7 @@
             <h3 class="post-title">{{ post.title }}</h3>
             <div class="post-details">
               <p>
-                {{ post.createdDateTime }} |
+                {{ formatDate(post.createdDateTime)}} |
                 <span>{{ getCategoryName(post.category) }}</span>
               </p>
               <span>{{ post.comments.length }} 댓글</span>
@@ -80,7 +80,9 @@
 //import writePost from "./writePost.vue";
 //import postDetails from "./postDetails.vue";
 import axios from "axios";
+import moment from "moment";
 import emitter from "../store/eventBus"; // eventBus import 추가
+
 
 export default {
   name: "Reforme",
@@ -229,6 +231,9 @@ export default {
       return categoryMap[category] || "";
     },
   },
+  formatDate(dateTime) {
+      return moment(dateTime).format('HH:mm');
+    },
   beforeUnmount() {
     emitter.off("filterByCategory", this.filterBoards); // 이벤트 리스너 해제
     emitter.off("search", this.searchBoards); // 검색 이벤트 리스너 해제
@@ -238,6 +243,7 @@ export default {
 
 <style scoped>
 @import "../styles/main.css";
+
 
 .content {
   flex-grow: 1;
