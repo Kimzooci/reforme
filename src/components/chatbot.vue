@@ -83,7 +83,7 @@
         @click="triggerFileInput('mask')"
         v-if="inputType === 'edit'"
       >
-        <img src="../assets/images/masklogo.png" alt="mask" />
+        <!-- <img src="../assets/images/masklogo.png" alt="mask" /> -->
       </button>
       <button class="ai_submit_button" @click="sendMessage">
         <img src="../assets/images/submitlogo.png" alt="submit" />
