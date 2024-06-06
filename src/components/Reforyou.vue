@@ -19,7 +19,7 @@
             <h3>{{ post.title }}</h3>
             <div class="post-details">
               <p>
-                {{ post.createdDateTime }} |
+                {{ post.createdDateTime.slice(0, 19).replace('T', ' ') }} |
                 <span>{{ getCategoryName(post.category) }}</span>
               </p>
               <span>{{ post.comments.length }} 댓글</span>
@@ -293,6 +293,9 @@ export default {
   text-decoration: none; /* 링크 스타일 제거 */
   margin-bottom: 10px;
   cursor: pointer;
+}
+.post-title{
+  font-size: 20px;
 }
 </style>
 
