@@ -16,7 +16,7 @@
             }"
           ></div>
           <div class="post-info">
-            <h3>{{ post.title }}</h3>
+            <h3 class="post-title">{{ post.title }}</h3>
             <div class="post-details">
               <p>
                 {{ post.createdDateTime.slice(0, 19).replace('T', ' ') }} |
@@ -294,8 +294,10 @@ export default {
   margin-bottom: 10px;
   cursor: pointer;
 }
+
 .post-title{
   font-size: 20px;
 }
+
 </style>
 
