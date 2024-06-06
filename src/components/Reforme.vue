@@ -19,7 +19,7 @@
             <h3 class="post-title">{{ post.title }}</h3>
             <div class="post-details">
               <p>
-                {{ formatDate(post.createdDateTime)}} |
+                {{ post.createdDateTime.slice(0, 19).replace('T', ' ')}} |
                 <span>{{ getCategoryName(post.category) }}</span>
               </p>
               <span>{{ post.comments.length }} 댓글</span>
@@ -80,7 +80,7 @@
 //import writePost from "./writePost.vue";
 //import postDetails from "./postDetails.vue";
 import axios from "axios";
-import moment from "moment";
+
 import emitter from "../store/eventBus"; // eventBus import 추가
 
 
@@ -231,9 +231,7 @@ export default {
       return categoryMap[category] || "";
     },
   },
-  formatDate(dateTime) {
-      return moment(dateTime).format('HH:mm');
-    },
+
   beforeUnmount() {
     emitter.off("filterByCategory", this.filterBoards); // 이벤트 리스너 해제
     emitter.off("search", this.searchBoards); // 검색 이벤트 리스너 해제
