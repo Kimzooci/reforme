@@ -201,8 +201,9 @@ export default {
 }
 
 .navbar-title {
-  flex-grow: 1;
-  text-align: center;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
   font-size: 24px;
 }
 
