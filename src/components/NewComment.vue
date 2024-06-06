@@ -66,6 +66,8 @@ export default {
       //   content: this.newComment.body,
       //   articleId: this.article.id,
       // });
+
+      
       const commentDto = {
         content: this.newComment.body,
         secret: false, // 혹은 필요한 값으로 설정
@@ -106,8 +108,12 @@ export default {
         body: this.newComment.body,
         articleId: this.article.id,
       });
+
       //this.newComment.nickname = "";
       this.newComment.body = "";
+
+      if (path.includes("reforme")) this.$router.push("/reforme_page");
+      else if (path.includes("reforyou")) this.$router.push("/reforyou_page");
       //}
     },
   },

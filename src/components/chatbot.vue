@@ -27,7 +27,7 @@
           <i class="fas fa-check"></i>
           <div class="hobbies-icon"></div>
         </span>
-        프롬프트
+        사진 생성
       </label>
       <label class="custom-radio">
         <input
@@ -40,7 +40,7 @@
           <i class="fas fa-check"></i>
           <div class="hobbies-icon"></div>
         </span>
-        메세지
+        대화하기
       </label>
       <label class="custom-radio">
         <input type="radio" name="inputType" value="edit" v-model="inputType" />
@@ -48,7 +48,7 @@
           <i class="fas fa-check"></i>
           <div class="hobbies-icon"></div>
         </span>
-        수정하기
+        리폼하기
       </label>
     </div>
     <div class="ai_input_container">

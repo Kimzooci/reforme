@@ -67,11 +67,11 @@ export default {
             //alert("유효하지 않은 로그인입니다"); 지금 여기서 오류남
           }
         })
-        .catch((error) => {
-          alert("유효하지 않은 로그인입니다.");
-          console.log(error.message);
-          this.$router.push("/reforme_page");
-        });
+        // .catch((error) => {
+        //   // alert("유효하지 않은 로그인입니다.");
+        //   // console.log(error.message);
+        //   this.$router.push("/reforme_page");
+        // });
     },
   },
 };

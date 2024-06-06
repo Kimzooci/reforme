@@ -51,7 +51,7 @@ export default {
                 });
         },
         addComment(newComment) {
-            console.log("눌리긴하는거니?")
+            
             this.commentsList.push(newComment);
             const path = this.$route.path;
             let url = (path.includes("/reforme") ? `/reforme` : `/reforyou`) + `/board/${this.$route.params.id}`;
@@ -88,6 +88,11 @@ export default {
                 .then(response => {
                     if (response.status === 200) {
                         this.commentsList = this.commentsList.filter(comment => comment.id !== id); 
+                       const path = this.$route.path;
+                       if(path.includes("reforme"))
+                this.$router.push("/reforme_page");
+              else if(path.includes("reforyou"))
+                this.$router.push("/reforyou_page");
                     } else {
                         alert("댓글 삭제에 실패했습니다.");
                     }
