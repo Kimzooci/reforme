@@ -58,11 +58,11 @@
 
 ### UI 구성
 
-1) 리포미 메인페이지 & 회원가입 & 로그인 페이지 
+1. 리포미 메인 페이지 & 회원가입 페이지 & 로그인 페이지
 
 - ![image](https://github.com/user-attachments/assets/d700ea7f-09d3-48cc-bafa-5956c01b9ee8)
 
-2) 각각 리폼을 의뢰하는 게시글들의 목록으로 구성된 리포미 탭과 디자이너들이 자기 자신을 소개하는 리포유 탭
+2. 리포미 탭(리폼을 의뢰) & 리포유 탭(디자이너들의 바이럴 페이지)
 
 - ![image](https://github.com/user-attachments/assets/291a84b9-1061-47a2-9fa8-cc36a3aefb46)
 
