@@ -62,11 +62,11 @@
 
 - ![image](https://github.com/user-attachments/assets/d700ea7f-09d3-48cc-bafa-5956c01b9ee8)
 
-2. 리포미 탭(리폼을 의뢰) & 리포유 탭(디자이너들의 바이럴 페이지)
+2. 리포미 탭(리폼 의뢰) & 리포유 탭(디자이너 소개)
 
 - ![image](https://github.com/user-attachments/assets/291a84b9-1061-47a2-9fa8-cc36a3aefb46)
 
-3) 생성형 이미지를 제공하는 AI 리포머 기능
+3) 생성형 이미지를 제공하는 AI 챗봇
 
 - ![image](https://github.com/user-attachments/assets/04dc37c6-ad2d-473a-8eb2-6814738094b5)
 
