@@ -59,7 +59,8 @@
 ### UI 구성
 
 1) 리포미 메인페이지 & 회원가입 & 로그인 페이지 
-![image](https://github.com/user-attachments/assets/d700ea7f-09d3-48cc-bafa-5956c01b9ee8)
+
+- ![image](https://github.com/user-attachments/assets/d700ea7f-09d3-48cc-bafa-5956c01b9ee8)
 
 
 
