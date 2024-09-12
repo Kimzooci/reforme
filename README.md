@@ -55,7 +55,14 @@
 ![프로젝트 아키텍쳐](https://github.com/gmlstjq123/INHA_NET_ZERO_HACKATHON/blob/hello_there-12/%ED%94%84%EB%A1%9C%EC%A0%9D%ED%8A%B8%20%EC%95%84%ED%82%A4%ED%85%8D%EC%B3%90.png)
 
 ## 📌 개발 구성
-![image](https://github.com/user-attachments/assets/b546e471-6218-4d63-aecf-7883a4230d7f)
+
+### UI 구성
+![image](https://github.com/user-attachments/assets/d700ea7f-09d3-48cc-bafa-5956c01b9ee8)
+
+
+
+
+
 
 
 
